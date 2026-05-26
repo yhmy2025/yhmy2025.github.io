@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>🇹🇭 泰国工作生活小科普</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,sans-serif}
+body{background:#0f172a;padding-bottom:68px;max-width:500px;margin:0 auto;color:#e2e8f0}
+.top-bar{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#1e3a5f,#2563eb,#0891b2);color:#fff;padding:14px 16px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.top-bar .title{font-size:18px;font-weight:700}
+.top-bar .sub{font-size:11px;opacity:.8;margin-top:2px}
+.top-bar .loc{font-size:10px;opacity:.6;margin-top:2px}
+.pg{display:none;padding:12px;animation:fadeIn .2s}
+.pg.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#1e293b;border-top:1px solid #334155;display:flex;max-width:500px;margin:0 auto;z-index:10}
+.bnav .tb{flex:1;text-align:center;padding:8px 2px;font-size:10px;color:#94a3b8;cursor:pointer;transition:color .15s}
+.bnav .tb.on{color:#38bdf8}
+.bnav .tb .ic{font-size:18px;display:block;margin-bottom:1px}
+.btn{display:inline-block;border:none;border-radius:8px;cursor:pointer;text-align:center;padding:8px 14px;font-size:12px;font-weight:600;transition:all .15s}
+.btn-p{background:linear-gradient(135deg,#2563eb,#0891b2);color:#fff;width:100%}
+.btn-s{background:#334155;color:#e2e8f0}
+.card{background:#1e293b;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #334155}
+.card.danger{border-color:#dc2626;background:#1e1b2e}
+.card.warn{border-color:#f59e0b;background:#1e1f1a}
+.card.info{border-color:#38bdf8;background:#0f1e2e}
+.card-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.card-title .icon{font-size:18px}
+.tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;margin-left:6px}
+.tag.r{background:#dc2626;color:#fff}.tag.o{background:#f59e0b;color:#000}.tag.y{background:#eab308;color:#000}.tag.g{background:#22c55e;color:#fff}
+.section{margin-bottom:10px}
+.section .h{font-size:13px;font-weight:600;color:#38bdf8;margin-bottom:6px;padding-left:8px;border-left:3px solid #38bdf8}
+.section .item{font-size:12px;line-height:1.7;padding:4px 0;color:#cbd5e1}
+.section .item b{color:#f1f5f9}
+.danger-text{color:#f87171;font-weight:600}
+.warn-text{color:#fbbf24;font-weight:600}
+.good-text{color:#4ade80}
+.copy-btn{cursor:pointer;background:#334155;color:#38bdf8;border:1px solid #38bdf8;border-radius:6px;padding:3px 8px;font-size:10px;margin-left:6px;transition:all .15s}
+.copy-btn:active{background:#38bdf8;color:#0f172a}
+.phrase-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e293b}
+.phrase-row:last-child{border:none}
+.phrase-th{font-size:16px;font-weight:500;color:#f1f5f9;min-width:70px}
+.phrase-cn{font-size:12px;color:#38bdf8;min-width:80px;text-align:center}
+.phrase-use{font-size:11px;color:#94a3b8;flex:1;text-align:right}
+.qr{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.qc{padding:10px;border-radius:10px;text-align:center;font-size:12px;cursor:pointer;background:#1e293b;border:2px solid #334155;transition:all .15s}
+.qc:active{background:#2563eb;border-color:#38bdf8;color:#fff}
+.qc .num{font-size:22px;font-weight:700;margin:4px 0}
+.qc .lbl{font-size:10px;color:#94a3b8}
+.flow{display:flex;align-items:center;padding:8px 0}
+.flow .icon{font-size:24px;margin-right:10px;min-width:32px;text-align:center}
+.flow .body{flex:1;font-size:12px;line-height:1.6}
+.price{font-size:12px;color:#fbbf24;font-weight:600}
+.checkbox-list{list-style:none}
+.checkbox-list li{padding:6px 0;font-size:12px;color:#cbd5e1;display:flex;align-items:flex-start;gap:8px}
+.checkbox-list li::before{content:'☐';color:#38bdf8;font-size:14px;min-width:16px}
+hr{border:none;border-top:1px solid #334155;margin:8px 0}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#38bdf8;color:#0f172a;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+#toast.sh{opacity:1}
+.search-box{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:8px 12px;width:100%;color:#e2e8f0;font-size:13px;outline:none;margin-bottom:10px}
+.search-box:focus{border-color:#38bdf8}
+.highlight{background:#2563eb50;color:#38bdf8}
+.collapse .ch{font-size:13px;font-weight:600;padding:10px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155}
+.collapse .ch .arr{transition:transform .2s;font-size:10px}
+.collapse .cb{display:none;padding:8px 0}
+.collapse.open .cb{display:block}
+.collapse.open .arr{transform:rotate(180deg)}
+.empty-state{text-align:center;padding:30px 20px;color:#64748b}
+.empty-state .icon{font-size:40px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="title">🇹🇭 泰国工作生活小科普</div>
+  <div class="sub">四川攀枝花 → 春武里 · 建材行业</div>
+  <div class="loc">Chonburi, Thailand</div>
+</div>
+
+<!-- Page 1: 紧急 -->
+<div id="pg-sos" class="pg on">
+
+  <div class="card danger">
+    <div class="card-title"><span class="icon">🚨</span> 救命号码 <span class="tag r">存手机锁屏</span></div>
+    <div class="qr">
+      <div class="qc" onclick="call('191')"><div class="lbl">警察/急救/火警</div><div class="num">191</div></div>
+      <div class="qc" onclick="call('1669')"><div class="lbl">救护车（比191快）</div><div class="num">1669</div></div>
+      <div class="qc" onclick="call('1155')"><div class="lbl">旅游警察（有中文）</div><div class="num">1155</div></div>
+      <div class="qc" onclick="copyText('+66-2-245-7010')"><div class="lbl">中国使馆领保</div><div class="num" style="font-size:14px">+66-2-245-7010</div></div>
+      <div class="qc" onclick="copyText('+86-10-12308')"><div class="lbl">外交部24h领保</div><div class="num" style="font-size:14px">+86-10-12308</div></div>
+      <div class="qc" onclick="copyText('038-272-510')"><div class="lbl">春武里移民局</div><div class="num" style="font-size:14px">038-272-510</div></div>
+    </div>
+  </div>
+
+  <div class="card info">
+    <div class="card-title"><span class="icon">🏥</span> 春武里三大医院</div>
+    <div class="flow"><span class="icon">🏥</span><div class="body"><b>春武里医院</b><br><span style="color:#94a3b8">公立 · 便宜 · 排队久</span></div></div>
+    <div class="flow"><span class="icon">🏨</span><div class="body"><b>芭提雅曼谷医院</b><br><span style="color:#94a3b8">私立 · 贵 · 有中文翻译</span></div></div>
+    <div class="flow"><span class="icon">⚓</span><div class="body"><b>诗丽叻海军医院</b><br><span style="color:#94a3b8">性价比最高</span></div></div>
+  </div>
+
+  <div class="card" style="border-color:#22c55e">
+    <div class="card-title"><span class="icon">📋</span> 每日出门检查 <span class="tag g">5秒</span></div>
+    <ul class="checkbox-list">
+      <li>🔑 钥匙</li>
+      <li>📱 手机</li>
+      <li>🪪 护照复印件 + 工作许可证复印件</li>
+      <li>🧴 防晒霜 SPF50+</li>
+      <li>🦟 驱蚊液</li>
+      <li>💵 少量现金 + 银行卡</li>
+      <li>💊 随身药包</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- Page 2: 语言 -->
+<div id="pg-lang" class="pg">
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🗣</span> 七句走天下</div>
+    <div class="phrase-row"><span class="phrase-th">สวัสดีครับ</span><span class="phrase-cn">萨瓦迪卡</span><span class="phrase-use">见面打招呼</span></div>
+    <div class="phrase-row"><span class="phrase-th">ขอบคุณครับ</span><span class="phrase-cn">考坤卡</span><span class="phrase-use">说谢谢</span></div>
+    <div class="phrase-row"><span class="phrase-th">ไม่เป็นไร</span><span class="phrase-cn">卖奔来</span><span class="phrase-use">没关系/别在意</span></div>
+    <div class="phrase-row"><span class="phrase-th">เท่าไหร่</span><span class="phrase-cn">讨来</span><span class="phrase-use">问价格</span></div>
+    <div class="phrase-row"><span class="phrase-th">ห้องน้ำอยู่ที่ไหน</span><span class="phrase-cn">红南油替奶</span><span class="phrase-use">找厕所</span></div>
+    <div class="phrase-row"><span class="phrase-th">ไม่เอา</span><span class="phrase-cn">卖凹</span><span class="phrase-use">拒绝推销/不要</span></div>
+    <div class="phrase-row"><span class="phrase-th">ช่วยด้วย</span><span class="phrase-cn">吹对</span><span class="phrase-use">救命！</span></div>
+    <div style="font-size:11px;color:#94a3b8;margin-top:8px;text-align:center">💡 男性句尾加"卡"(krap)，短促干脆</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🤝</span> 更多实用词</div>
+    <div class="phrase-row"><span class="phrase-th">อร่อย</span><span class="phrase-cn">阿罗伊</span><span class="phrase-use">好吃</span></div>
+    <div class="phrase-row"><span class="phrase-th">เผ็ด</span><span class="phrase-cn">佩</span><span class="phrase-use">辣</span></div>
+    <div class="phrase-row"><span class="phrase-th">ไป</span><span class="phrase-cn">拜</span><span class="phrase-use">去</span></div>
+    <div class="phrase-row"><span class="phrase-th">ช้าย</span><span class="phrase-cn">猜</span><span class="phrase-use">是/对</span></div>
+    <div class="phrase-row"><span class="phrase-th">ไม่ใช่</span><span class="phrase-cn">卖猜</span><span class="phrase-use">不是/不对</span></div>
+    <div class="phrase-row"><span class="phrase-th">ซ้าย</span><span class="phrase-cn">赛</span><span class="phrase-use">左</span></div>
+    <div class="phrase-row"><span class="phrase-th">ขวา</span><span class="phrase-cn">垮</span><span class="phrase-use">右</span></div>
+    <div class="phrase-row"><span class="phrase-th">ตรงไป</span><span class="phrase-cn">东拜</span><span class="phrase-use">直走</span></div>
+    <div class="phrase-row"><span class="phrase-th">โรงพยาบาล</span><span class="phrase-cn">龙怕班</span><span class="phrase-use">医院</span></div>
+    <div class="phrase-row"><span class="phrase-th">สถานีตำรวจ</span><span class="phrase-cn">沙他尼丹路</span><span class="phrase-use">警察局</span></div>
+  </div>
+
+</div>
+
+<!-- Page 3: 花费 -->
+<div id="pg-money" class="pg">
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💱</span> 汇率速算</div>
+    <div style="text-align:center;padding:12px">
+      <div style="font-size:32px;font-weight:700;color:#38bdf8">1 CNY ≈ 5 THB</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:4px">泰铢÷5=人民币 · 比如100铢≈20元</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🏦</span> 换钱排序</div>
+    <div class="flow"><span class="icon">🥇</span><div class="body"><b class="good-text">SuperRich</b>（橙色/绿色都行）<br><span style="color:#94a3b8">汇率最好</span></div></div>
+    <div class="flow"><span class="icon">🥈</span><div class="body"><b>银行柜台</b><br><span style="color:#94a3b8">安全可靠</span></div></div>
+    <div class="flow"><span class="icon">🥉</span><div class="body"><b>ATM取现</b><br><span style="color:#94a3b8">方便 · 每笔手续费220铢</span></div></div>
+    <div class="flow"><span class="icon">❌</span><div class="body"><b>机场柜台</b><br><span style="color:#f87171">汇率最坑</span></div></div>
+    <div class="flow"><span class="icon">❌</span><div class="body"><b>私下跟人换</b><br><span style="color:#f87171">违法 · 可能是陷阱</span></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🏧</span> 办银行卡</div>
+    <div class="section"><div class="h">推荐银行</div><div class="item">• <b>盘谷银行 Bangkok Bank</b> — 对中国友好，有中文</div><div class="item">• <b>开泰银行 Kasikorn Bank</b> — 中国业务多，有中文</div></div>
+    <div class="section"><div class="h">怎么办</div><div class="item">带护照 + 工作许可证去柜台，当场拿卡</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💰</span> 日常消费参考 <span class="price">泰铢THB</span></div>
+    <div class="flow"><span class="icon">🍜</span><div class="body">路边一碗面<div class="price">50-60铢（10-12元）</div></div></div>
+    <div class="flow"><span class="icon">💧</span><div class="body">7-11一瓶水<div class="price">7-14铢</div></div></div>
+    <div class="flow"><span class="icon">🚗</span><div class="body">Grab打车短途<div class="price">60-120铢</div></div></div>
+    <div class="flow"><span class="icon">🏠</span><div class="body">工地附近单间月租<div class="price">3000-6000铢</div></div></div>
+    <div class="flow"><span class="icon">📱</span><div class="body">手机月套餐<div class="price">200-300铢</div></div></div>
+    <div class="flow"><span class="icon">🍺</span><div class="body">一瓶啤酒<div class="price">50-80铢</div></div></div>
+    <div class="flow"><span class="icon">⛽</span><div class="body">一升汽油<div class="price">35-40铢</div></div></div>
+  </div>
+
+</div>
+
+<!-- Page 4: 吃喝 -->
+<div id="pg-eat" class="pg">
+
+  <div class="card danger">
+    <div class="card-title"><span class="icon">🚱</span> 水的生死线 <span class="tag r">重要</span></div>
+    <div class="item"><b class="danger-text">❌ 自来水 = 禁止喝</b>，烧开也不行（管道老旧）</div>
+    <div class="item">✅ 瓶装水：7-11大瓶14铢</div>
+    <div class="item">✅ 冰块判断：连锁店/7-11的冰安全，路边摊碎冰❌</div>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title"><span class="icon">🍽️</span> 吃的法则</div>
+    <div class="section"><div class="h">路边摊选择</div><div class="item">饭点人多排队 → <span class="good-text">可以吃</span>（高翻台率=新鲜）</div><div class="item">冷冷清清 → <span class="danger-text">绕道走</span></div></div>
+    <div class="section"><div class="h">海鲜注意</div><div class="item"><span class="danger-text">不吃生的</span>：生蚝/生虾有细菌风险</div><div class="item">不买已经死掉的海鲜</div></div>
+    <div class="section"><div class="h">🌶️ 辣度警告</div><div class="item">泰国辣≠四川辣：不是麻辣是<b>纯灼烧感</b>（小辣椒 Prik Kee Noo）</div><div class="item">先试一口，别整盘拌完才后悔</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💊</span> 必带肠胃药</div>
+    <div class="item">• <b>蒙脱石散</b>（思密达）— 止泻</div>
+    <div class="item">• <b>黄连素</b> — 肠胃炎</div>
+    <div class="item">• <b>口服补液盐</b> — 拉肚子脱水时救命</div>
+    <div style="font-size:11px;color:#94a3b8;margin-top:8px">💡 7-11和Boots药店到处都有，常用药好买不贵</div>
+  </div>
+
+  <div class="card info">
+    <div class="card-title"><span class="icon">🥡</span> 中国胃救星</div>
+    <div class="item">春武里有中国超市，<b>老干妈、火锅底料、方便面</b>都能买到</div>
+    <div class="item" style="margin-top:4px">不用从国内背太多吃的，占行李又可能被海关查</div>
+  </div>
+
+</div>
+
+<!-- Page 5: 安全 -->
+<div id="pg-safe" class="pg">
+
+  <div class="card danger">
+    <div class="card-title"><span class="icon">🚗</span> 交通安全 <span class="tag r">头号杀手</span></div>
+    <div class="section"><div class="h">春武里特别危险（港口重卡+摩托车混行）</div></div>
+    <div class="flow"><span class="icon">✅</span><div class="body"><b>Grab / Bolt 叫车</b><br><span style="color:#94a3b8">价格透明有记录</span></div></div>
+    <div class="flow"><span class="icon">⚠️</span><div class="body"><b>打表出租车</b><br><span style="color:#94a3b8">很多拒打表</span></div></div>
+    <div class="flow"><span class="icon">⚠️</span><div class="body"><b>摩的</b><br><span style="color:#94a3b8">必须戴头盔，记车牌</span></div></div>
+    <div class="flow"><span class="icon">❌</span><div class="body"><b class="danger-text">别自己骑摩托车</b></div></div>
+    <div class="flow"><span class="icon">❌</span><div class="body"><b class="danger-text">别酒驾</b><span style="color:#94a3b8"> · 罚款2万铢起+可能遣返</span></div></div>
+    <hr>
+    <div style="text-align:center;font-size:14px;font-weight:700;color:#f87171;padding:6px 0">
+      ⚠️ 过马路：<b>先看右！先看右！先看右！</b><br>
+      <span style="font-size:11px;font-weight:400;color:#94a3b8">泰国靠左行驶，和中国反的</span>
+    </div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title"><span class="icon">🌡️</span> 高温作业 <span class="tag r">建材行业</span></div>
+    <div class="item">春武里体感 <b class="danger-text">常年35-42°C</b>，湿度80%+</div>
+    <hr>
+    <div class="section"><div class="h">每天做到</div><div class="item">🚰 喝 <b>3-4升水</b>（不是渴了才喝）</div><div class="item">🧂 水里加电解质冲剂（7-11有卖）</div><div class="item">🧴 SPF50+防晒 · 出汗要补涂</div><div class="item">👕 长袖透气工服 + 宽檐帽</div></div>
+    <hr>
+    <div class="section"><div class="h">中暑识别</div><div class="item">头晕 → 恶心 → <b class="warn-text">不出汗但皮肤发烫</b> → 意识模糊</div><div class="item" style="margin-top:4px">前三步就要停下！最后一步 <b class="danger-text">打1669</b></div></div>
+    <hr>
+    <div class="section"><div class="h">工地动物危险</div><div class="item">🐍 翻料前用棍子敲 — <b>眼镜蛇/竹叶青/金环蛇</b></div><div class="item">🦂 穿鞋前往下抖三下 — 蜈蚣/蝎子</div></div>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title"><span class="icon">🦟</span> 防病日常</div>
+    <div class="collapse" onclick="this.classList.toggle('open')">
+      <div class="ch">🦟 登革热（高发区！）<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">每天涂驱蚊液（7-11买 <b>Soffell</b> 牌）</div><div class="item">睡觉蚊帐或电蚊香</div><div class="item">症状：高烧+全身痛，不是感冒</div></div>
+    </div>
+    <div class="collapse" onclick="this.classList.toggle('open')">
+      <div class="ch">🤢 肠胃炎<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">不吃生食，不喝自来水</div><div class="item">拉肚子+呕吐 → 先补液再吃药</div></div>
+    </div>
+    <div class="collapse" onclick="this.classList.toggle('open')">
+      <div class="ch">🧴 皮肤病<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">湿热环境易湿疹/脚气</div><div class="item">保持干燥，穿透气衣服</div><div class="item">7-11有药膏</div></div>
+    </div>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title"><span class="icon">🎭</span> 针对中国人的骗局 <span class="tag o">小心</span></div>
+    <div class="item"><b class="danger-text">"高汇率换钱"</b> = 洗钱陷阱</div>
+    <div class="item"><b class="danger-text">"老乡带你赚钱"</b> = 多半灰色产业</div>
+    <div class="item"><b class="danger-text">"代办签证"</b> = 可能是假文件</div>
+    <div class="item"><b class="warn-text">酒吧/KTV消费陷阱</b> = 进去先问价格</div>
+    <div style="font-size:11px;color:#f87171;margin-top:6px">🛑 只走正规渠道，不贪便宜就不会被骗</div>
+  </div>
+
+</div>
+
+<!-- Page 6: 红线 -->
+<div id="pg-law" class="pg">
+
+  <div class="card danger">
+    <div class="card-title"><span class="icon">⚖️</span> 法律红线 <span class="tag r">碰了完蛋</span></div>
+
+    <div class="collapse open" onclick="this.classList.toggle('open')">
+      <div class="ch" style="color:#f87171">🔴🔴🔴 电子烟<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">携带+使用都违法，罚款最高3万铢+监禁</div><div class="item" style="color:#f87171">从中国带电子烟入境=违法</div></div>
+    </div>
+
+    <div class="collapse open" onclick="this.classList.toggle('open')">
+      <div class="ch" style="color:#f87171">🔴🔴🔴 毒品<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">冰毒/海洛因最高死刑</div><div class="item">中国法律对境外吸毒有管辖权，回国也追责</div></div>
+    </div>
+
+    <div class="collapse open" onclick="this.classList.toggle('open')">
+      <div class="ch" style="color:#f87171">🔴🔴 大麻（中国人）<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">泰国部分合法 ≠ 中国人能碰</div><div class="item" style="color:#f87171">回国体内检出 = 吸毒罪</div></div>
+    </div>
+
+    <div class="collapse" onclick="this.classList.toggle('open')">
+      <div class="ch" style="color:#f87171">🔴🔴 评论王室<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">大不敬罪(Article 112)，最高判15年</div><div class="item">不评论、不转发、不开玩笑</div></div>
+    </div>
+
+    <div class="collapse" onclick="this.classList.toggle('open')">
+      <div class="ch" style="color:#f87171">🔴🔴 无WP打工<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">持旅游签打工=非法务工</div><div class="item">抓到遣返+黑名单</div></div>
+    </div>
+
+    <div class="collapse" onclick="this.classList.toggle('open')">
+      <div class="ch" style="color:#fbbf24">🔴 私下换汇<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">违法+洗钱嫌疑</div><div class="item">只去SuperRich或银行</div></div>
+    </div>
+
+    <div class="collapse" onclick="this.classList.toggle('open')">
+      <div class="ch" style="color:#eab308">🟠 赌博<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">除了政府彩票，任何形式都非法</div></div>
+    </div>
+
+    <div class="collapse" onclick="this.classList.toggle('open')">
+      <div class="ch" style="color:#eab308">🟡 海滩吸烟 / 无人机无证<span class="arr">▼</span></div>
+      <div class="cb"><div class="item">海滩吸烟：罚款10万铢或监禁1年</div><div class="item">无人机：需注册许可，否则没收+罚款</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🙏</span> 文化禁忌</div>
+    <div class="item"><b class="danger-text">不摸别人的头</b> — 头是神圣的</div>
+    <div class="item"><b class="danger-text">不用脚指东西</b> — 脚是"低贱"的</div>
+    <div class="item"><b class="warn-text">不当众发火</b> — 泰国人讲面子，吵=输</div>
+    <div class="item">进寺庙：脱鞋、长裤、有袖上衣</div>
+    <div class="item">听到国歌（早8晚8/电影院）起立</div>
+    <div class="item">递东西用<b>右手</b></div>
+    <hr>
+    <div style="text-align:center;font-size:13px;color:#4ade80;font-weight:600">😊 微笑解决80%的问题</div>
+  </div>
+
+  <div class="card info">
+    <div class="card-title"><span class="icon">✈️</span> 出入境速查</div>
+    <div class="section"><div class="h">能带</div><div class="item">香烟：<b>1条（200支）</b>，超量罚款+没收</div><div class="item">酒：1升</div><div class="item">现金：等值≤2万美元（无需申报）</div></div>
+    <div class="section"><div class="h">不能带</div><div class="item"><span class="danger-text">❌ 电子烟及烟弹</span></div><div class="item">❌ IQOS等加热烟草</div><div class="item">❌ 大麻及CBD制品</div><div class="item">❌ 色情/盗版物品</div></div>
+    <div class="section"><div class="h">回国注意</div><div class="item">不帮任何人带不明包裹</div><div class="item">大麻制品不带上飞机</div></div>
+  </div>
+
+</div>
+
+<!-- Page 7: 工具 -->
+<div id="pg-tools" class="pg">
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📱</span> 数字生存必备 App</div>
+    <div class="flow"><span class="icon">💬</span><div class="body"><b>LINE</b><br><span style="color:#94a3b8">泰国人通讯全靠它，不是微信！到了注册</span></div></div>
+    <div class="flow"><span class="icon">🚗</span><div class="body"><b>Grab</b><br><span style="color:#94a3b8">打车+外卖</span></div></div>
+    <div class="flow"><span class="icon">🚗</span><div class="body"><b>Bolt</b><br><span style="color:#94a3b8">打车（比Grab便宜）</span></div></div>
+    <div class="flow"><span class="icon">🗺️</span><div class="body"><b>Google Maps</b><br><span style="color:#94a3b8">导航 · 提前下离线地图</span></div></div>
+    <div class="flow"><span class="icon">🌐</span><div class="body"><b>Google Translate</b><br><span style="color:#94a3b8">翻译 · 提前下泰语离线包</span></div></div>
+    <div class="flow"><span class="icon">🏪</span><div class="body"><b>7-11 App</b><br><span style="color:#94a3b8">积分+优惠券</span></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📶</span> 通信</div>
+    <div class="item">SIM卡：<b>AIS</b> 或 <b>TrueMove</b>，机场/7-11买</div>
+    <div class="item">月套餐：200-300铢就有几十GB流量</div>
+    <div style="font-size:11px;color:#94a3b8;margin-top:6px">💡 到了泰国机场就买卡，别等到春武里再办</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🏠</span> 租房避坑</div>
+    <div class="section"><div class="h">找房建议</div><div class="item">• 优先住工地附近 — 省通勤减风险</div><div class="item">• <b>Si Racha</b>（是拉差）、<b>Bang Saen</b>（邦盛）方便</div><div class="item">• 合租单间月租 3000-6000铢</div></div>
+    <div class="section"><div class="h">签合同前</div><div class="item">• 📸 拍照留底所有破损 → 防扣押金</div><div class="item">• ⚡ 问清水电单价 → 正常4-5铢/度</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🏪</span> 生活配套</div>
+    <div class="item"><b>7-11</b> — 24小时，啥都有，支持支付宝</div>
+    <div class="item"><b>Big C / Makro / Lotus's</b> — 大型超市</div>
+    <div class="item"><b>中国超市</b> — 老干妈、火锅底料、方便面</div>
+  </div>
+
+  <div class="card info">
+    <div class="card-title"><span class="icon">📌</span> 签证重要提醒</div>
+    <div class="item">✅ 确认Non-B签证 + Work Permit</div>
+    <div class="item">✅ 每<b>90天</b>去移民局报到（逾期2000铢/天）</div>
+    <div class="item">✅ WP地点和实际工作地点必须一致</div>
+    <div class="item" style="color:#f87171">❌ 旅游签打工 = 遣返+黑名单</div>
+  </div>
+
+</div>
+
+<!-- Bottom Nav -->
+<div class="bnav">
+  <div class="tb on" onclick="switchTab('sos',this)"><span class="ic">🆘</span>紧急</div>
+  <div class="tb" onclick="switchTab('lang',this)"><span class="ic">🗣</span>语言</div>
+  <div class="tb" onclick="switchTab('money',this)"><span class="ic">💰</span>花费</div>
+  <div class="tb" onclick="switchTab('eat',this)"><span class="ic">🍜</span>吃喝</div>
+  <div class="tb" onclick="switchTab('safe',this)"><span class="ic">🌡</span>安全</div>
+  <div class="tb" onclick="switchTab('law',this)"><span class="ic">⚖️</span>红线</div>
+  <div class="tb" onclick="switchTab('tools',this)"><span class="ic">🧰</span>工具</div>
+</div>
+
+<script>
+function switchTab(id, el) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.getElementById('pg-' + id).classList.add('on');
+  document.querySelectorAll('.bnav .tb').forEach(t => t.classList.remove('on'));
+  if (el) el.classList.add('on');
+}
+
+function call(num) {
+  window.location.href = 'tel:' + num;
+}
+
+function copyText(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('✅ 已复制: ' + text));
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✅ 已复制: ' + text);
+  }
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('sh');
+  clearTimeout(t._t);
+  t._t = setTimeout(function() { t.classList.remove('sh'); }, 1800);
+}
+
+// Mark visited checklist items
+document.addEventListener('click', function(e) {
+  if (e.target.tagName === 'LI' && e.target.parentElement.classList.contains('checkbox-list')) {
+    e.target.style.textDecoration = 
+      e.target.style.textDecoration === 'line-through' ? 'none' : 'line-through';
+    e.target.style.opacity = 
+      e.target.style.textDecoration === 'line-through' ? '0.5' : '1';
+  }
+});
+</script>
+</body>
+</html>
