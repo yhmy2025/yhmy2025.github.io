@@ -15,7 +15,7 @@ body{background:#0f172a;padding-bottom:68px;max-width:500px;margin:0 auto;color:
 .pg.on{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .bnav{position:fixed;bottom:0;left:0;right:0;background:#1e293b;border-top:1px solid #334155;display:flex;max-width:500px;margin:0 auto;z-index:10}
-.bnav .tb{flex:1;text-align:center;padding:8px 2px;font-size:10px;color:#94a3b8;cursor:pointer;transition:color .15s}
+.bnav .tb{flex:1;text-align:center;padding:7px 1px;font-size:9px;color:#94a3b8;cursor:pointer;transition:color .15s}
 .bnav .tb.on{color:#38bdf8}
 .bnav .tb .ic{font-size:18px;display:block;margin-bottom:1px}
 .btn{display:inline-block;border:none;border-radius:8px;cursor:pointer;text-align:center;padding:8px 14px;font-size:12px;font-weight:600;transition:all .15s}
@@ -344,7 +344,108 @@ hr{border:none;border-top:1px solid #334155;margin:8px 0}
 
 </div>
 
-<!-- Page 7: 工具 -->
+<!-- Page 7: 住宿 -->
+<div id="pg-house" class="pg">
+
+  <div class="card info">
+    <div class="card-title"><span class="icon">🗺️</span> 春武里住哪里好</div>
+    <div class="section"><div class="h">按区域选</div>
+      <div class="item"><b>Si Racha（是拉差）</b> — 工业区集中，中国工人最多，生活配套成熟，餐饮选择多。离林查班港近，建材行业首选。</div>
+      <div class="item"><b>Bang Saen（邦盛）</b> — 大学城，相对安静，房租略低于是拉差，靠海环境好，适合长租。</div>
+      <div class="item"><b>Pattaya（芭提雅）</b> — 旅游区，房租贵且乱。除非工地在芭提雅附近，否则不建议住这里。</div>
+      <div class="item"><b>Laem Chabang（林查班）</b> — 港口区，物流/建材相关工地方便，但生活配套少，偏工业区氛围。</div>
+      <div class="item"><b>Mueang Chonburi（春武里市区）</b> — 房租最便宜，但离工业区可能较远，通勤时间长。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💰</span> 租金参考 <span class="price">月租/泰铢</span></div>
+    <div class="flow"><span class="icon">🛏️</span><div class="body">工厂宿舍/工棚<div class="price">免费或1000-2000</div></div></div>
+    <div class="flow"><span class="icon">🏠</span><div class="body">合租单间（共用卫浴）<div class="price">2500-4000</div></div></div>
+    <div class="flow"><span class="icon">🚿</span><div class="body">独卫单间<div class="price">4000-7000</div></div></div>
+    <div class="flow"><span class="icon">🏡</span><div class="body">一室一厅小公寓<div class="price">6000-10000</div></div></div>
+    <div class="flow"><span class="icon">🏘️</span><div class="body">两室/整栋小房子<div class="price">10000-20000</div></div></div>
+    <div style="font-size:11px;color:#94a3b8;margin-top:6px">💡 建材同行合租最实惠，2-3人分摊独卫房每人只要1500-2500铢</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🔍</span> 怎么找房子</div>
+    <div class="section"><div class="h">渠道排序（推荐到不推荐）</div>
+      <div class="item">🥇 <b>雇主/工友介绍</b> — 最靠谱，已经在本地的人知道哪里好、哪个房东不坑</div>
+      <div class="item">🥈 <b>Facebook Marketplace</b> — 泰国本地人最常用的找房平台，搜 "ห้องเช่า ศรีราชา"（是拉差租房）</div>
+      <div class="item">🥉 <b>DDproperty / Hipflat</b> — 泰国主流租房网站，有英文版</div>
+      <div class="item">⚠️ <b>线下扫街</b> — 看到公寓楼直接进去问前台有没有空房（"Mee hong wang mai krap?"）</div>
+      <div class="item">❌ <b>微信群里转租</b> — 可能是二房东加价转租，不合法也没有保障</div>
+    </div>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title"><span class="icon">⚠️</span> 租房避坑清单 <span class="tag o">签合同前必查</span></div>
+    <ul class="checkbox-list">
+      <li>📸 拍照+视频留底所有破损、污渍、故障（退房时防扯皮）</li>
+      <li>⚡ 确认电费单价（正常4-5铢/度，高于7铢=被宰）</li>
+      <li>💧 确认水费单价（正常20-30铢/吨或包月100-200铢）</li>
+      <li>📄 签书面合同（泰文也要签，拍照翻译软件对照）</li>
+      <li>💰 押金正常=1-2个月租金，超过2个月=不正常</li>
+      <li>🚪 提前退租条款（干几个月要走押金怎么算）</li>
+      <li>🐜 检查是否有白蚁/蟑螂/老鼠痕迹</li>
+      <li>💡 所有灯、空调、热水器、马桶都试一遍</li>
+      <li>🔑 确认有几把钥匙，换锁或加自己买的小锁</li>
+      <li>📶 测手机信号和WiFi（泰国很多房子信号差）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💡</span> 住宿实用常识</div>
+    <div class="section"><div class="h">水电空调</div>
+      <div class="item">• 泰国电费不便宜，空调是耗电大户。晚上睡觉定26-28°C+风扇比开18°C省一半电</div>
+      <div class="item">• 部分老房子水压不稳，看房时开水龙头和花洒试一下</div>
+      <div class="item">• 如果有热水器，确认是储水式还是即热式（即热式省电但冬天水不够热）</div>
+    </div>
+    <div class="section"><div class="h">防虫防潮</div>
+      <div class="item">• 热带蚂蚁多：食物密封，垃圾每天倒</div>
+      <div class="item">• 雨季（5-10月）墙壁容易发霉：买除湿盒（7-11有）放衣柜</div>
+      <div class="item">• 蟑螂是常客：备蟑螂药/蟑螂屋，保持厨房干燥</div>
+    </div>
+    <div class="section"><div class="h">邻里关系</div>
+      <div class="item">• 泰国公寓隔音一般，晚上10点后注意音量</div>
+      <div class="item">• 楼道不要堆杂物，泰国人很在意公共区域整洁</div>
+      <div class="item">• 遇到问题先找房东/前台，不要直接和邻居冲突</div>
+    </div>
+  </div>
+
+  <div class="card info">
+    <div class="card-title"><span class="icon">🛒</span> 入住采购清单</div>
+    <div class="section"><div class="h">刚需（当天搞定）</div>
+      <div class="item">🛏️ 床单+枕头（Big C / Lotus's 买，不贵）</div>
+      <div class="item">🧹 扫把/拖把/垃圾桶</div>
+      <div class="item">🪥 洗漱用品（7-11全部解决）</div>
+      <div class="item">🦟 蚊帐或电蚊香（登革热高发区必买）</div>
+    </div>
+    <div class="section"><div class="h">提升幸福感（慢慢添）</div>
+      <div class="item">🌀 落地风扇（比空调省电太多）</div>
+      <div class="item">🍳 电磁炉+小锅（自己做中餐省一大笔钱）</div>
+      <div class="item">🧊 小冰箱（剩饭菜不浪费）</div>
+      <div class="item">📶 WiFi路由器（如果房子不带网络，找AIS/True办宽带，月费300-500铢）</div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:#22c55e">
+    <div class="card-title"><span class="icon">✅</span> 入住当天 To-Do</div>
+    <ul class="checkbox-list">
+      <li>📸 全屋拍照+拍视频存云端</li>
+      <li>🔌 试所有插座、灯、空调遥控器</li>
+      <li>🚽 冲马桶、开水龙头看水流/水压</li>
+      <li>🔑 确认钥匙数量，外门最好加把锁</li>
+      <li>📝 记下电表/水表初始读数</li>
+      <li>📱 存房东电话 + 最近派出所地址</li>
+      <li>🗺️ 周围走一圈：找7-11、药店、最近医院</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- Page 8: 工具 -->
 <div id="pg-tools" class="pg">
 
   <div class="card">
@@ -362,12 +463,6 @@ hr{border:none;border-top:1px solid #334155;margin:8px 0}
     <div class="item">SIM卡：<b>AIS</b> 或 <b>TrueMove</b>，机场/7-11买</div>
     <div class="item">月套餐：200-300铢就有几十GB流量</div>
     <div style="font-size:11px;color:#94a3b8;margin-top:6px">💡 到了泰国机场就买卡，别等到春武里再办</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><span class="icon">🏠</span> 租房避坑</div>
-    <div class="section"><div class="h">找房建议</div><div class="item">• 优先住工地附近 — 省通勤减风险</div><div class="item">• <b>Si Racha</b>（是拉差）、<b>Bang Saen</b>（邦盛）方便</div><div class="item">• 合租单间月租 3000-6000铢</div></div>
-    <div class="section"><div class="h">签合同前</div><div class="item">• 📸 拍照留底所有破损 → 防扣押金</div><div class="item">• ⚡ 问清水电单价 → 正常4-5铢/度</div></div>
   </div>
 
   <div class="card">
@@ -395,6 +490,7 @@ hr{border:none;border-top:1px solid #334155;margin:8px 0}
   <div class="tb" onclick="switchTab('eat',this)"><span class="ic">🍜</span>吃喝</div>
   <div class="tb" onclick="switchTab('safe',this)"><span class="ic">🌡</span>安全</div>
   <div class="tb" onclick="switchTab('law',this)"><span class="ic">⚖️</span>红线</div>
+  <div class="tb" onclick="switchTab('house',this)"><span class="ic">🏠</span>住宿</div>
   <div class="tb" onclick="switchTab('tools',this)"><span class="ic">🧰</span>工具</div>
 </div>
 
