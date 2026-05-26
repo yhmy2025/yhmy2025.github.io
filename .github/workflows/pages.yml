@@ -1,0 +1,16 @@
+name: Force Pages Rebuild
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Pages build
+        run: |
+          echo "Pushing to trigger Pages rebuild"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
