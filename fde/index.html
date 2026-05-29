@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>FDE Portfolio · Janz</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px 40px}
+
+.back{padding:16px 0 0}
+.back a{color:#64748b;text-decoration:none;font-size:13px}
+.back a:hover{color:#94a3b8}
+
+.hero{padding:32px 0 20px}
+.hero h1{font-size:26px;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.hero .sub{font-size:13px;color:#94a3b8;line-height:1.6}
+
+.badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.badge{font-size:10px;padding:3px 8px;border-radius:6px;font-weight:600}
+.badge-ai{background:rgba(56,189,248,.15);color:#38bdf8;border:1px solid rgba(56,189,248,.3)}
+.badge-biz{background:rgba(129,140,248,.15);color:#818cf8;border:1px solid rgba(129,140,248,.3)}
+.badge-trade{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
+
+.model{padding:24px;background:#1e293b;border:1px solid #334155;border-radius:16px;margin:20px 0}
+.model h2{font-size:16px;margin-bottom:16px;color:#e2e8f0;text-align:center}
+.triangle{display:flex;flex-direction:column;align-items:center;gap:8px}
+.triangle .top{font-size:14px;font-weight:700;color:#38bdf8;text-align:center}
+.triangle .mid{font-size:24px;font-weight:800;background:linear-gradient(135deg,#38bdf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.triangle .bottom{display:flex;gap:32px}
+.triangle .bottom span{font-size:13px;color:#94a3b8}
+
+.case{margin:20px 0}
+.case h3{font-size:15px;font-weight:700;margin-bottom:12px;color:#e2e8f0}
+.case-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;margin-bottom:10px}
+.case-card .title{font-size:14px;font-weight:600;margin-bottom:4px}
+.case-card .meta{font-size:11px;color:#64748b;margin-bottom:8px}
+.case-card .tags{display:flex;gap:4px;flex-wrap:wrap}
+.case-card .tag{font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(56,189,248,.1);color:#38bdf8}
+
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.stat{background:#0f172a;border-radius:10px;padding:12px;text-align:center}
+.stat .num{font-size:20px;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat .label{font-size:10px;color:#64748b;margin-top:4px}
+
+.roadmap{padding:20px;background:linear-gradient(135deg,rgba(56,189,248,.05),rgba(192,132,252,.05));border:1px solid #334155;border-radius:16px;margin:20px 0}
+.roadmap h3{font-size:15px;margin-bottom:12px;color:#e2e8f0}
+.roadmap .phase{margin-bottom:12px;padding-left:16px;border-left:2px solid #334155}
+.roadmap .phase.active{border-left-color:#38bdf8}
+.roadmap .phase .name{font-size:13px;font-weight:600;color:#e2e8f0}
+.roadmap .phase .desc{font-size:11px;color:#94a3b8;margin-top:2px}
+
+.contact{padding:20px;text-align:center;margin:24px 0}
+.contact .cta{font-size:14px;color:#e2e8f0;margin-bottom:8px}
+.contact .wx{font-size:20px;font-weight:700;color:#22c55e;letter-spacing:1px}
+
+.footer{text-align:center;padding:30px 0;font-size:11px;color:#475569}
+.footer a{color:#64748b}
+</style>
+</head>
+<body>
+
+<div class="back"><a href="/">← 工具箱</a></div>
+
+<div class="hero">
+  <h1>FDE Portfolio</h1>
+  <div class="sub">Full-Stack AI × Business × Delivery<br>AI全栈工程师 · 业务架构师 · 交付顾问</div>
+  <div class="badge-row">
+    <span class="badge badge-ai">AI Agent开发</span>
+    <span class="badge badge-biz">业务拆解</span>
+    <span class="badge badge-trade">大宗贸易</span>
+    <span class="badge badge-ai">多模型编排</span>
+    <span class="badge badge-biz">方案交付</span>
+  </div>
+</div>
+
+<div class="model">
+  <h2>🔺 FDE 三角能力模型</h2>
+  <div class="triangle">
+    <div class="top">AI全栈</div>
+    <div class="mid">FDE</div>
+    <div class="bottom">
+      <span>业务理解</span>
+      <span>客户对接</span>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><div class="num">6</div><div class="label">实战业务线</div></div>
+    <div class="stat"><div class="num">3</div><div class="label">节点AI集群</div></div>
+  </div>
+</div>
+
+<div class="case">
+  <h3>📂 案例展示</h3>
+  
+  <div class="case-card">
+    <div class="title">🏭 温氏股份 · 大宗贸易AI渗透方案</div>
+    <div class="meta">饲料原料供应链 · 年采购额380亿+ · 14章53表</div>
+    <div class="tags">
+      <span class="tag">价值链拆解</span>
+      <span class="tag">AI可替代评估</span>
+      <span class="tag">财务模型</span>
+      <span class="tag">竞争分析</span>
+    </div>
+  </div>
+
+  <div class="case-card">
+    <div class="title">🎨 Logo设计FDE化</div>
+    <div class="meta">AI生成Logo · 自适应排版引擎 · 多风格哈希系统</div>
+    <div class="tags">
+      <span class="tag">Python+Pillow</span>
+      <span class="tag">Streamlit</span>
+      <span class="tag">哈希配色轮转</span>
+      <span class="tag">闲鱼变现</span>
+    </div>
+  </div>
+
+  <div class="case-card">
+    <div class="title">🦞 OpenClaw三节点系统</div>
+    <div class="meta">分布式AI助手 · DeepSeek双模型 · 6条业务线运营</div>
+    <div class="tags">
+      <span class="tag">多模型编排</span>
+      <span class="tag">Agent开发</span>
+      <span class="tag">Tailscale VPN</span>
+      <span class="tag">自动化监控</span>
+    </div>
+  </div>
+
+  <div class="case-card">
+    <div class="title">🇹🇭 泰国工作生活小科普</div>
+    <div class="meta">春武里建材人随身手册 · 纯HTML/CSS静态站</div>
+    <div class="tags">
+      <span class="tag">产品化思维</span>
+      <span class="tag">GitHub Pages</span>
+      <span class="tag">免费工具引流</span>
+    </div>
+  </div>
+</div>
+
+<div class="roadmap">
+  <h3>🗺️ FDE转型路线图</h3>
+  <div class="phase active">
+    <div class="name">阶段一 · AI武器库（1-2月）</div>
+    <div class="desc">Agent开发 · RAG系统 · 多模型编排 · API集成 → 进行中</div>
+  </div>
+  <div class="phase">
+    <div class="name">阶段二 · 业务拆解力（2-3月）</div>
+    <div class="desc">大宗贸易全流程AI化 · 六条线FDE案例化</div>
+  </div>
+  <div class="phase">
+    <div class="name">阶段三 · 商业包装（1-2月）</div>
+    <div class="desc">一页纸方案 · Live Demo · 驻场诊断服务</div>
+  </div>
+</div>
+
+<div class="contact">
+  <div class="cta">🤝 需要AI业务诊断？</div>
+  <div class="wx">微信 Yhgc_2025</div>
+  <div style="font-size:11px;color:#64748b;margin-top:6px">闲鱼搜索「YHmy」</div>
+</div>
+
+<div class="footer">
+  Powered by <a href="https://openclaw.ai" target="_blank">OpenClaw</a> · Janz FDE Portfolio v1
+</div>
+
+</body>
+</html>
