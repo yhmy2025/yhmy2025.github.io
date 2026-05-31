@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小红书配图卡片生成器</title>
+<style>
+  :root { --accent: #c4a574; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a2e;
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ===== 顶部工具栏 ===== */
+  .toolbar {
+    background: #0f0f1a;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #2a2a3e;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .toolbar .logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-right: auto;
+  }
+  .toolbar label { color: #888; font-size: 13px; }
+  .toolbar select, .toolbar input {
+    background: #1a1a2e;
+    color: #ddd;
+    border: 1px solid #333;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .toolbar select { cursor: pointer; }
+  .toolbar input[type=range] { width: 100px; accent-color: var(--accent); }
+  .toolbar .scale-val { color: var(--accent); font-size: 13px; min-width: 40px; text-align: center; font-weight: 600; }
+  .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; }
+  .btn-shot { background: #4a3728; color: #d4b896; }
+  .btn-shot:hover { background: #5c4432; }
+  .btn-shot.active { background: #c4a574; color: #0a0a0a; }
+  .btn-switch { background: #1a1a2e; color: #888; border: 1px solid #333; }
+  .btn-switch.active { background: #2d3a4a; color: #ddd; border-color: var(--accent); }
+
+  /* ===== 预览区 ===== */
+  .preview-area {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 30px 20px 60px;
+    min-height: calc(100vh - 60px);
+  }
+  .card-stage {
+    transform-origin: top center;
+    transition: transform 0.2s;
+  }
+
+  /* ===== 卡片容器 ===== */
+  .card-wrapper {
+    position: relative;
+    width: 1080px;
+    height: 1440px;
+    overflow: hidden;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    display: none;
+  }
+  .card-wrapper.active { display: block; }
+
+  /* 风格1: 深夜渐变 */
+  .card-night {
+    background: linear-gradient(160deg, #0d0d2b 0%, #1a1040 30%, #0f1a2e 60%, #0a0a1a 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 80px;
+  }
+  .card-night::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(120,100,180,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .card-night::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(180,140,100,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .card-night .moon {
+    position: absolute;
+    top: 120px; right: 140px;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f5f0e8, #c4a574);
+    box-shadow: 0 0 40px rgba(200,170,120,0.2), 0 0 80px rgba(200,170,120,0.08);
+  }
+  .card-night .content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+  }
+  .card-night .main-title {
+    font-size: 72px;
+    font-weight: 700;
+    color: #f0ece4;
+    line-height: 1.3;
+    letter-spacing: 4px;
+    margin-bottom: 50px;
+  }
+  .card-night .divider {
+    width: 60px; height: 2px;
+    background: rgba(200,180,150,0.4);
+    margin: 40px auto;
+  }
+  .card-night .sub-line {
+    font-size: 32px;
+    color: rgba(200,180,150,0.7);
+    letter-spacing: 2px;
+    font-weight: 300;
+  }
+  .card-night .footer-tag {
+    font-size: 26px;
+    color: rgba(180,170,160,0.5);
+    letter-spacing: 6px;
+    margin-top: 40px;
+  }
+
+  /* 风格2: 极简黑底 */
+  .card-minimal {
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 100px;
+  }
+  .card-minimal .big-quote {
+    font-size: 96px;
+    color: rgba(255,255,255,0.06);
+    position: absolute;
+    top: 80px; left: 80px;
+    line-height: 1;
+    font-family: Georgia, serif;
+  }
+  .card-minimal .main-text {
+    font-size: 64px;
+    font-weight: 600;
+    color: #e8e0d0;
+    line-height: 1.4;
+    text-align: center;
+    letter-spacing: 3px;
+  }
+  .card-minimal .accent-bar {
+    width: 80px; height: 3px;
+    background: linear-gradient(90deg, #8b7355, #c4a574);
+    margin: 50px auto;
+  }
+  .card-minimal .sub-text {
+    font-size: 28px;
+    color: #666;
+    letter-spacing: 4px;
+    text-align: center;
+    max-width: 700px;
+  }
+
+  /* 风格3: 备忘录风 */
+  .card-memo {
+    background: #1c1c1e;
+    display: flex;
+    flex-direction: column;
+    padding: 100px 90px;
+    font-family: "SF Mono", "PingFang SC", "Microsoft YaHei", monospace;
+  }
+  .card-memo .memo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+    color: #666;
+    font-size: 28px;
+  }
+  .card-memo .memo-date { color: #555; }
+  .card-memo .memo-title-input {
+    font-size: 52px;
+    color: #e0d8c8;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .card-memo .memo-dots {
+    display: flex; gap: 10px; margin-bottom: 30px;
+  }
+  .card-memo .memo-dots span {
+    width: 8px; height: 8px;
+    background: #444;
+    border-radius: 50%;
+  }
+  .card-memo .memo-body {
+    font-size: 30px;
+    color: #999;
+    line-height: 2;
+    flex: 1;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .card-memo .memo-body em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .card-memo .cursor {
+    display: inline-block;
+    width: 3px; height: 32px;
+    background: var(--accent);
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* ===== 编辑面板 ===== */
+  .edit-panel {
+    background: #0f0f1a;
+    border-left: 1px solid #2a2a3e;
+    padding: 24px;
+    width: 380px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 99;
+  }
+  .edit-panel h3 {
+    color: var(--accent);
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  .edit-panel label {
+    font-size: 12px;
+    color: #777;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .edit-panel input, .edit-panel textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #1a1a2e;
+    color: #ddd;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .edit-panel textarea { resize: vertical; min-height: 60px; font-size: 13px; }
+  .edit-panel .hint {
+    font-size: 11px;
+    color: #555;
+    margin-top: -8px;
+  }
+
+  /* 响应式：小屏隐藏面板 */
+  @media (max-width: 900px) {
+    .edit-panel { display: none; }
+    .preview-area { margin-right: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== 工具栏 ===== -->
+<div class="toolbar">
+  <div class="logo">🦞 小红书配图卡片</div>
+
+  <button class="btn btn-switch active" onclick="switchCard(0)">🌙 深夜渐变</button>
+  <button class="btn btn-switch" onclick="switchCard(1)">⬛ 极简黑底</button>
+  <button class="btn btn-switch" onclick="switchCard(2)">📝 备忘录</button>
+
+  <label>缩放</label>
+  <input type="range" id="scaleSlider" min="25" max="100" value="35" oninput="setScale(this.value)">
+  <span class="scale-val" id="scaleLabel">35%</span>
+
+  <button class="btn btn-shot" id="shotBtn" onclick="toggleShotMode()">📸 截图模式</button>
+
+  <span style="color:#555;font-size:12px;margin-left:8px;">| 1080×1440 · 小红书3:4</span>
+</div>
+
+<!-- ===== 预览区 ===== -->
+<div class="preview-area" id="previewArea">
+  <div class="card-stage" id="cardStage">
+
+    <!-- 卡片1: 深夜渐变 -->
+    <div class="card-wrapper card-night active" id="card0">
+      <div class="moon"></div>
+      <div class="content">
+        <div class="main-title" id="title1">你不必急着<br>"好起来"</div>
+        <div class="divider"></div>
+        <div class="sub-line" id="sub1">休息够了，主场自然会来</div>
+        <div class="footer-tag" id="footer1">深夜树洞 · 第23夜</div>
+      </div>
+    </div>
+
+    <!-- 卡片2: 极简黑底 -->
+    <div class="card-wrapper card-minimal" id="card1">
+      <div class="big-quote">"</div>
+      <div class="main-text" id="title2">你不必急着<br>"好起来"</div>
+      <div class="accent-bar"></div>
+      <div class="sub-text" id="sub2">你现在的样子，已经是很多人咬牙也撑不到的程度了</div>
+    </div>
+
+    <!-- 卡片3: 备忘录 -->
+    <div class="card-wrapper card-memo" id="card2">
+      <div class="memo-header">
+        <span>📝 备忘录</span>
+        <span class="memo-date" id="memoDate">5月31日 23:47</span>
+      </div>
+      <div class="memo-title-input" id="memoTitle">你不必急着"好起来"</div>
+      <div class="memo-dots"><span></span><span></span><span></span></div>
+      <div class="memo-body" id="memoBody">
+        伤口结痂之前，要先疼一阵子。<br>
+        真正的成长不是"迅速翻篇"，<br>
+        而是<em>这一次，我没有逃避自己的感受。</em><span class="cursor"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== 编辑面板 ===== -->
+<div class="edit-panel" id="editPanel">
+  <h3>✏️ 快速编辑</h3>
+
+  <label>标题（≤20字）</label>
+  <input type="text" id="ctrlTitle" value="你不必急着"好起来"" oninput="updateAll()">
+
+  <label>副标题 / 金句</label>
+  <input type="text" id="ctrlSub" value="休息够了，主场自然会来" oninput="updateAll()">
+
+  <label>极简卡底部文字</label>
+  <input type="text" id="ctrlSub2" value="你现在的样子，已经是很多人咬牙也撑不到的程度了" oninput="updateAll()">
+
+  <label>日期（备忘录风）</label>
+  <input type="text" id="ctrlDate" value="5月31日 23:47" oninput="updateAll()">
+
+  <label>底部署名</label>
+  <input type="text" id="ctrlFooter" value="深夜树洞 · 第23夜" oninput="updateAll()">
+
+  <label>备忘录正文（用 &lt;em&gt; 标记金句）</label>
+  <textarea id="ctrlMemo" oninput="updateAll()" rows="4">伤口结痂之前，要先疼一阵子。
+真正的成长不是"迅速翻篇"，
+而是&lt;em&gt;这一次，我没有逃避自己的感受。&lt;/em&gt;</textarea>
+
+  <span class="hint">💡 改完自动更新预览</span>
+  <span class="hint">📸 点顶部「截图模式」→ 100%显示 → Win+Shift+S 截图</span>
+  <span class="hint">📱 建议输出 1080×1440，小红书最优尺寸</span>
+</div>
+
+<script>
+  let currentCard = 0;
+  let shotMode = false;
+
+  // 生成星星
+  (function() {
+    const card = document.getElementById('card0');
+    for (let i = 0; i < 40; i++) {
+      const star = document.createElement('div');
+      star.style.cssText = [
+        'position:absolute',
+        'width:' + (1 + Math.random() * 2) + 'px',
+        'height:' + (1 + Math.random() * 2) + 'px',
+        'background:#fff',
+        'border-radius:50%',
+        'opacity:' + (0.2 + Math.random() * 0.4),
+        'top:' + (Math.random() * 60) + '%',
+        'left:' + (Math.random() * 80) + '%'
+      ].join(';');
+      card.appendChild(star);
+    }
+  })();
+
+  function switchCard(n) {
+    currentCard = n;
+    document.querySelectorAll('.card-wrapper').forEach((c,i) => c.classList.toggle('active', i===n));
+    document.querySelectorAll('.btn-switch').forEach((b,i) => b.classList.toggle('active', i===n));
+  }
+
+  function setScale(v) {
+    document.getElementById('cardStage').style.transform = 'scale(' + (v/100) + ')';
+    document.getElementById('scaleLabel').textContent = v + '%';
+    document.getElementById('scaleSlider').value = v;
+  }
+
+  function toggleShotMode() {
+    shotMode = !shotMode;
+    const btn = document.getElementById('shotBtn');
+    if (shotMode) {
+      setScale(100);
+      btn.textContent = '↩ 退出截图';
+      btn.classList.add('active');
+      document.getElementById('editPanel').style.display = 'none';
+    } else {
+      setScale(35);
+      btn.textContent = '📸 截图模式';
+      btn.classList.remove('active');
+      document.getElementById('editPanel').style.display = 'flex';
+    }
+  }
+
+  function updateAll() {
+    const title = document.getElementById('ctrlTitle').value;
+    const sub = document.getElementById('ctrlSub').value;
+    const sub2 = document.getElementById('ctrlSub2').value;
+    const date = document.getElementById('ctrlDate').value;
+    const footer = document.getElementById('ctrlFooter').value;
+    const memo = document.getElementById('ctrlMemo').value.replace(/\n/g, '<br>');
+
+    document.getElementById('title1').innerHTML = title.replace(/\n/g, '<br>');
+    document.getElementById('sub1').textContent = sub;
+    document.getElementById('title2').innerHTML = title.replace(/\n/g, '<br>');
+    document.getElementById('sub2').textContent = sub2;
+    document.getElementById('memoDate').textContent = date;
+    document.getElementById('memoTitle').textContent = title.replace(/<br>/g, ' ');
+    document.getElementById('memoBody').innerHTML = memo + '<span class="cursor"></span>';
+
+    const f1 = document.getElementById('footer1');
+    if (f1) f1.textContent = footer;
+  }
+
+  // 初始缩放
+  setScale(35);
+
+  // 键盘快捷键
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 's' && e.ctrlKey && !shotMode) {
+      e.preventDefault();
+      toggleShotMode();
+    }
+    if (e.key === 'Escape' && shotMode) {
+      toggleShotMode();
+    }
+    if (e.key >= '1' && e.key <= '3' && !e.ctrlKey && !e.metaKey) {
+      switchCard(parseInt(e.key) - 1);
+    }
+  });
+</script>
+
+</body>
+</html>
