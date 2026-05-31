@@ -3,779 +3,351 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>小红书配图卡片生成器</title>
+<title>小红书配图卡片生成器 — 15款模板</title>
 <style>
-  :root {
-    --accent: #c4a574;
-    --panel-bg: #0f0f1a;
-    --panel-border: #2a2a3e;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+:root{--accent:#c4a574;--panel-bg:#0f0f1a;--panel-border:#2a2a3e}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1a2e;font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;min-height:100vh;margin-right:360px}
+/* toolbar */
+.toolbar{background:#0f0f1a;padding:10px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--panel-border);position:sticky;top:0;z-index:100}
+.toolbar .logo{font-size:16px;font-weight:700;color:var(--accent);margin-right:8px;white-space:nowrap}
+.toolbar .sep{color:#333;margin:0 2px;user-select:none}
+.toolbar .cat-label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px}
+.btn{padding:5px 10px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;white-space:nowrap;transition:all .15s}
+.btn-style{background:#1a1a2e;color:#888;border:1px solid #333}
+.btn-style:hover{border-color:#666;color:#ccc}
+.btn-style.active{background:#2d3a4a;color:#ddd;border-color:var(--accent)}
+.btn-shot{background:#4a3728;color:#d4b896}
+.btn-shot:hover{background:#5c4432}
+.btn-shot.active{background:var(--accent);color:#0a0a0a}
+.toolbar input[type=range]{width:70px;accent-color:var(--accent)}
+.scale-val{color:var(--accent);font-size:11px;min-width:30px;text-align:center;font-weight:600}
+/* preview */
+.preview-area{display:flex;justify-content:center;align-items:flex-start;padding:30px 20px 60px}
+.card-stage{transform-origin:top center;transition:transform .2s}
+/* card base */
+.card-wrap{position:relative;width:1080px;height:1440px;overflow:hidden;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.5);display:none}
+.card-wrap.active{display:flex}
+.card-inner{position:relative;z-index:1;width:100%;display:flex;flex-direction:column}
+.card-inner.c-c{justify-content:center;align-items:center;text-align:center}
+.card-inner.c-t{justify-content:flex-start;padding-top:160px}
+/* common */
+.ct{line-height:1.3;letter-spacing:2px}
+.cd{width:60px;height:2px;margin:36px 0}
+.cs{line-height:1.6;letter-spacing:1px}
+.cf{letter-spacing:4px;margin-top:auto;padding-top:60px}
 
-  body {
-    background: #1a1a2e;
-    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
-    min-height: 100vh;
-    margin-right: 360px;
-  }
+/* ====== 0:深夜渐变 ====== */
+.s0{background:linear-gradient(160deg,#0d0d2b,#1a1040 30%,#0f1a2e 60%,#0a0a1a)}
+.s0 .moon{position:absolute;top:120px;right:140px;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f5f0e8,#c4a574);box-shadow:0 0 40px rgba(200,170,120,.2),0 0 80px rgba(200,170,120,.08)}
+.s0 .ct{color:#f0ece4;font-size:72px;font-weight:700}.s0 .cd{background:rgba(200,180,150,.4)}.s0 .cs{color:rgba(200,180,150,.7);font-size:32px;font-weight:300}.s0 .cf{color:rgba(180,170,160,.5);font-size:26px}
+/* 1:极简黑底 */
+.s1{background:#0a0a0a}
+.s1 .big-q{position:absolute;top:60px;left:70px;font-size:160px;color:rgba(255,255,255,.04);line-height:1;font-family:Georgia,serif}
+.s1 .ct{color:#e8e0d0;font-size:64px;font-weight:600;letter-spacing:3px}.s1 .cd{background:linear-gradient(90deg,#8b7355,#c4a574);width:80px;height:3px}.s1 .cs{color:#666;font-size:28px;max-width:700px}
+/* 2:备忘录 */
+.s2{background:#1c1c1e}
+.s2 .mh{display:flex;justify-content:space-between;align-items:center;color:#666;font-size:28px;margin-bottom:60px;font-family:"SF Mono","PingFang SC","Microsoft YaHei",monospace}
+.s2 .md{display:flex;gap:10px;margin-bottom:30px}.s2 .md span{width:8px;height:8px;background:#444;border-radius:50%}
+.s2 .ct{color:#e0d8c8;font-size:56px;font-weight:600;font-family:"PingFang SC","Microsoft YaHei",sans-serif}
+.s2 .cb{font-size:32px;color:#999;line-height:2;flex:1;font-family:"PingFang SC","Microsoft YaHei",sans-serif}.s2 .cb em{font-style:normal;color:var(--accent)}
+.s2 .cur{display:inline-block;width:3px;height:32px;background:var(--accent);margin-left:4px;vertical-align:middle;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+/* 3:温暖日常 */
+.s3{background:linear-gradient(160deg,#fef9f0,#fdf2e4 30%,#fce4c8 70%,#f8d5b0)}
+.s3 .sun{position:absolute;top:80px;right:100px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff8e7,#f0c070);box-shadow:0 0 80px rgba(240,180,100,.3)}
+.s3 .ct{color:#5c3d2e;font-size:68px;font-weight:700}.s3 .cd{background:rgba(180,130,80,.5)}.s3 .cs{color:#8b6f5e;font-size:32px}.s3 .cf{color:#b8957a;font-size:26px}
+/* 4:知识卡片 */
+.s4{background:#fafaf9}
+.s4 .strip{position:absolute;top:0;left:0;width:12px;height:100%;background:linear-gradient(180deg,#4f46e5,#7c3aed)}
+.s4 .tag{display:inline-block;background:#eef2ff;color:#4f46e5;font-size:24px;padding:8px 24px;border-radius:20px;margin-bottom:40px;font-weight:600;letter-spacing:2px;align-self:flex-start}
+.s4 .ct{color:#1e1b4b;font-size:62px;font-weight:700}.s4 .cd{background:#c7d2fe}.s4 .cs{color:#6b7280;font-size:30px}.s4 .cf{color:#9ca3af;font-size:24px}
+/* 5:商务 */
+.s5{background:linear-gradient(160deg,#0f172a,#1e293b 50%,#0f172a)}
+.s5 .gl{position:absolute;top:0;right:0;width:500px;height:500px;border-left:1px solid rgba(148,163,184,.08);border-bottom:1px solid rgba(148,163,184,.08)}
+.s5 .ad{position:absolute;top:100px;right:100px;width:16px;height:16px;background:#38bdf8;border-radius:50%;box-shadow:0 0 30px rgba(56,189,248,.3)}
+.s5 .ct{color:#f1f5f9;font-size:64px;font-weight:700;letter-spacing:3px}.s5 .cd{background:#38bdf8}.s5 .cs{color:#94a3b8;font-size:28px}.s5 .cf{color:#475569;font-size:24px}
+/* 6:清新自然 */
+.s6{background:linear-gradient(160deg,#f0f7f0,#e8f4e8 30%,#dcefdc 60%,#e0f0e0)}
+.s6 .leaf{position:absolute;bottom:80px;right:80px;font-size:200px;opacity:.08;transform:rotate(-15deg)}
+.s6 .ct{color:#2d5a3d;font-size:62px;font-weight:700}.s6 .cd{background:rgba(74,124,89,.4)}.s6 .cs{color:#5a8a6a;font-size:30px}.s6 .cf{color:#8ab89a;font-size:24px}
+/* 7:纯色 */
+.s7 .ct{font-size:68px;font-weight:700}.s7 .cd{width:80px;height:3px}.s7 .cs{font-size:30px}.s7 .cf{font-size:24px}
+/* 8:金句 */
+.s8{background:linear-gradient(160deg,#1a1a2e,#16213e 50%,#0f3460)}
+.s8 .ct{color:#ffd700;font-size:72px;font-weight:700;letter-spacing:4px}.s8 .cd{background:linear-gradient(90deg,transparent,#ffd700,transparent);width:200px}.s8 .cs{color:rgba(255,215,0,.5);font-size:30px;font-weight:300}.s8 .cf{color:rgba(255,215,0,.3);font-size:24px}
+/* 9:毛玻璃 */
+.s9{background:linear-gradient(135deg,#667eea,#764ba2)}
+.s9 .gp{background:rgba(255,255,255,.1);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.15);border-radius:32px;padding:80px 60px;max-width:800px;width:100%}
+.s9 .ct{color:#fff;font-size:60px;font-weight:700}.s9 .cd{background:rgba(255,255,255,.4)}.s9 .cs{color:rgba(255,255,255,.75);font-size:28px;font-weight:300}
 
-  /* ===== 工具栏 ===== */
-  .toolbar {
-    background: #0f0f1a;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    border-bottom: 1px solid var(--panel-border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .toolbar .logo {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--accent);
-    margin-right: 12px;
-    white-space: nowrap;
-  }
-  .toolbar .sep { color: #333; margin: 0 4px; user-select: none; }
-  .toolbar .cat-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-right: 2px; }
-  .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; font-family: inherit; white-space: nowrap; transition: all .15s; }
-  .btn-style { background: #1a1a2e; color: #888; border: 1px solid #333; }
-  .btn-style:hover { border-color: #666; color: #ccc; }
-  .btn-style.active { background: #2d3a4a; color: #ddd; border-color: var(--accent); }
-  .btn-shot { background: #4a3728; color: #d4b896; }
-  .btn-shot:hover { background: #5c4432; }
-  .btn-shot.active { background: var(--accent); color: #0a0a0a; }
+/* ====== 10:聊天截图风 ====== */
+.s10{background:#ededed}
+.s10 .chat-top{display:flex;align-items:center;gap:16px;padding:0 100px;margin-bottom:20px;width:100%}
+.s10 .chat-top .avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#f9a8d4,#c084fc);display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;flex-shrink:0}
+.s10 .chat-top .name{font-size:32px;font-weight:600;color:#333}
+.s10 .bubbles{display:flex;flex-direction:column;gap:28px;padding:0 100px;width:100%}
+.s10 .bubble{max-width:700px;padding:24px 36px;border-radius:24px;font-size:30px;line-height:1.6;color:#333;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.s10 .bubble.me{background:#95ec69;align-self:flex-end;border-bottom-right-radius:6px}
+.s10 .bubble.other{align-self:flex-start;border-bottom-left-radius:6px}
+.s10 .time{text-align:center;font-size:22px;color:#999;margin:12px 0}
+/* 11:好物清单 */
+.s11{background:linear-gradient(160deg,#fefce8,#fffbeb 50%,#fef3c7)}
+.s11 .header-strip{position:absolute;top:0;left:0;right:0;height:280px;background:linear-gradient(180deg,rgba(251,191,36,.15),transparent)}
+.s11 .list-badge{font-size:28px;font-weight:700;color:#b45309;background:#fef3c7;padding:8px 28px;border-radius:30px;align-self:flex-start;margin-bottom:30px;letter-spacing:2px}
+.s11 .list-items{display:flex;flex-direction:column;gap:36px;width:100%}
+.s11 .list-item{display:flex;align-items:baseline;gap:24px}
+.s11 .list-num{font-size:56px;font-weight:800;color:#d97706;min-width:80px;text-align:right;line-height:1}
+.s11 .list-text{font-size:36px;font-weight:600;color:#78350f;line-height:1.5}
+.s11 .list-sub{font-size:24px;font-weight:400;color:#a16207;margin-top:4px}
+/* 12:评测打分 */
+.s12{background:linear-gradient(160deg,#f8fafc,#f1f5f9)}
+.s12 .score-circle{width:200px;height:200px;border-radius:50%;border:8px solid #3b82f6;display:flex;align-items:center;justify-content:center;margin-bottom:40px}
+.s12 .score-num{font-size:72px;font-weight:800;color:#1e40af}
+.s12 .score-total{font-size:28px;color:#93c5fd;margin-left:4px}
+.s12 .stars{font-size:36px;letter-spacing:6px;margin-bottom:24px}
+.s12 .ct{color:#1e293b;font-size:52px;font-weight:700}
+.s12 .cs{color:#64748b;font-size:28px;max-width:700px}
+.s12 .pros-cons{display:flex;gap:40px;width:100%;margin-top:40px}
+.s12 .pc-col{flex:1;background:#fff;border-radius:16px;padding:36px}
+.s12 .pc-label{font-size:24px;font-weight:700;margin-bottom:16px}
+.s12 .pc-label.good{color:#16a34a}.s12 .pc-label.bad{color:#dc2626}
+.s12 .pc-item{font-size:26px;color:#475569;line-height:1.8;padding-left:8px}
+/* 13:给自己的一封信 */
+.s13{background:linear-gradient(160deg,#fdf6f0,#fef3e7 30%,#fef0e0 60%,#fde8d0)}
+.s13 .paper-line{position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(transparent,transparent 59px,rgba(210,180,140,.15) 60px)}
+.s13 .dear{font-size:36px;color:#8b6914;margin-bottom:30px;font-style:italic}
+.s13 .ct{color:#5c3d2e;font-size:56px;font-weight:700;line-height:1.5}
+.s13 .cs{color:#8b6f5e;font-size:28px;line-height:2;margin-top:30px}
+.s13 .sign{color:#b8957a;font-size:30px;text-align:right;align-self:flex-end;margin-top:auto;font-style:italic}
+/* 14:自愈清单 */
+.s14{background:linear-gradient(160deg,#f5f3ff,#ede9fe 30%,#e0e7ff 70%,#eef2ff)}
+.s14 .check-header{margin-bottom:56px;width:100%}
+.s14 .ct{color:#3730a3;font-size:60px;font-weight:700}
+.s14 .cs{color:#6366f1;font-size:30px;margin-top:12px}
+.s14 .checks{display:flex;flex-direction:column;gap:40px;width:100%}
+.s14 .check-item{display:flex;align-items:center;gap:24px}
+.s14 .check-box{width:48px;height:48px;border-radius:12px;background:#c7d2fe;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.s14 .check-box.done{background:#a5b4fc}.s14 .check-box.done::after{content:'✓';color:#4338ca;font-weight:700}
+.s14 .check-text{font-size:32px;color:#312e81;line-height:1.4}
+/* 15:左右对比 */
+.s15{background:#fafafa}
+.s15 .vs-row{display:flex;gap:40px;width:100%;align-items:stretch}
+.s15 .vs-col{flex:1;border-radius:24px;padding:60px 40px;display:flex;flex-direction:column;align-items:center}
+.s15 .vs-before{background:linear-gradient(180deg,#fee2e2,#fecaca)}.s15 .vs-before .vs-label{color:#dc2626}
+.s15 .vs-after{background:linear-gradient(180deg,#dcfce7,#bbf7d0)}.s15 .vs-after .vs-label{color:#16a34a}
+.s15 .vs-label{font-size:42px;font-weight:800;margin-bottom:30px;letter-spacing:2px}
+.s15 .vs-point{font-size:28px;line-height:2;text-align:center}
+.s15 .vs-before .vs-point{color:#7f1d1d}.s15 .vs-after .vs-point{color:#14532d}
+.s15 .vs-divider{display:flex;align-items:center;flex-shrink:0}.s15 .vs-divider span{font-size:56px;font-weight:900;color:#9ca3af}
+.s15 .vs-title{text-align:center;margin-bottom:50px;width:100%}
+.s15 .vs-title .ct{color:#1f2937;font-size:52px;font-weight:700}
 
-  .toolbar input[type=range] { width: 80px; accent-color: var(--accent); }
-  .scale-val { color: var(--accent); font-size: 12px; min-width: 35px; text-align: center; font-weight: 600; }
+/* font variants */
+.font-sans .ct,.font-sans .cs,.font-sans .cf{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif}
+.font-serif .ct,.font-serif .cs,.font-serif .cf{font-family:"Noto Serif SC","STSong","SimSun",Georgia,serif}
+.font-hand .ct{font-family:"KaiTi","STKaiti","楷体",cursive}
 
-  /* ===== 预览区 ===== */
-  .preview-area {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 30px 20px 60px;
-  }
-  .card-stage {
-    transform-origin: top center;
-    transition: transform 0.2s;
-  }
-
-  /* ===== 卡片基础 ===== */
-  .card-wrapper {
-    position: relative;
-    width: 1080px;
-    height: 1440px;
-    overflow: hidden;
-    border-radius: 24px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    display: none;
-  }
-  .card-wrapper.active { display: flex; }
-  .card-content {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 140px 100px;
-  }
-  .card-content.center { justify-content: center; align-items: center; text-align: center; }
-  .card-content.top { justify-content: flex-start; padding-top: 160px; }
-  .card-content.between { justify-content: space-between; }
-
-  /* ===== 通用文字组件 ===== */
-  .ctitle {
-    line-height: 1.3;
-    letter-spacing: 2px;
-  }
-  .cdivider {
-    width: 60px; height: 2px;
-    margin: 36px 0;
-  }
-  .csub {
-    line-height: 1.6;
-    letter-spacing: 1px;
-  }
-  .cfooter {
-    letter-spacing: 4px;
-    margin-top: auto;
-    padding-top: 60px;
-  }
-
-  /* ===== 风格 0: 深夜渐变 ===== */
-  .s-night {
-    background: linear-gradient(160deg, #0d0d2b 0%, #1a1040 30%, #0f1a2e 60%, #0a0a1a 100%);
-  }
-  .s-night .moon {
-    position: absolute;
-    top: 120px; right: 140px;
-    width: 60px; height: 60px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #f5f0e8, #c4a574);
-    box-shadow: 0 0 40px rgba(200,170,120,0.2), 0 0 80px rgba(200,170,120,0.08);
-  }
-  .s-night .glow1 {
-    position: absolute;
-    top: -200px; right: -200px;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(120,100,180,0.12) 0%, transparent 70%);
-    border-radius: 50%;
-  }
-  .s-night .glow2 {
-    position: absolute;
-    bottom: -100px; left: -100px;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(180,140,100,0.08) 0%, transparent 70%);
-    border-radius: 50%;
-  }
-  .s-night .ctitle { color: #f0ece4; font-size: 72px; font-weight: 700; }
-  .s-night .cdivider { background: rgba(200,180,150,0.4); }
-  .s-night .csub { color: rgba(200,180,150,0.7); font-size: 32px; font-weight: 300; }
-  .s-night .cfooter { color: rgba(180,170,160,0.5); font-size: 26px; }
-
-  /* ===== 风格 1: 极简黑底 ===== */
-  .s-minimal {
-    background: #0a0a0a;
-  }
-  .s-minimal .big-quote {
-    position: absolute;
-    top: 60px; left: 70px;
-    font-size: 160px;
-    color: rgba(255,255,255,0.04);
-    line-height: 1;
-    font-family: Georgia, serif;
-  }
-  .s-minimal .ctitle { color: #e8e0d0; font-size: 64px; font-weight: 600; letter-spacing: 3px; }
-  .s-minimal .cdivider { background: linear-gradient(90deg, #8b7355, #c4a574); width: 80px; height: 3px; }
-  .s-minimal .csub { color: #666; font-size: 28px; font-weight: 400; max-width: 700px; }
-
-  /* ===== 风格 2: 备忘录 ===== */
-  .s-memo {
-    background: #1c1c1e;
-    font-family: "SF Mono", "PingFang SC", "Microsoft YaHei", monospace;
-  }
-  .s-memo .memo-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #666;
-    font-size: 28px;
-    margin-bottom: 60px;
-    font-family: "SF Mono", "PingFang SC", "Microsoft YaHei", monospace;
-  }
-  .s-memo .memo-dots {
-    display: flex; gap: 10px; margin-bottom: 30px;
-  }
-  .s-memo .memo-dots span {
-    width: 8px; height: 8px; background: #444; border-radius: 50%;
-  }
-  .s-memo .ctitle { color: #e0d8c8; font-size: 56px; font-weight: 600; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
-  .s-memo .cbody {
-    font-size: 32px; color: #999; line-height: 2;
-    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-    flex: 1;
-  }
-  .s-memo .cbody em { font-style: normal; color: var(--accent); }
-  .s-memo .cursor {
-    display: inline-block;
-    width: 3px; height: 32px;
-    background: var(--accent);
-    margin-left: 4px;
-    vertical-align: middle;
-    animation: blink 1s infinite;
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-  /* ===== 风格 3: 温暖日常 ===== */
-  .s-warm {
-    background: linear-gradient(160deg, #fef9f0 0%, #fdf2e4 30%, #fce4c8 70%, #f8d5b0 100%);
-  }
-  .s-warm .sun {
-    position: absolute;
-    top: 80px; right: 100px;
-    width: 100px; height: 100px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 40% 40%, #fff8e7, #f0c070);
-    box-shadow: 0 0 80px rgba(240,180,100,0.3);
-  }
-  .s-warm .ctitle { color: #5c3d2e; font-size: 68px; font-weight: 700; }
-  .s-warm .cdivider { background: rgba(180,130,80,0.5); }
-  .s-warm .csub { color: #8b6f5e; font-size: 32px; font-weight: 400; }
-  .s-warm .cfooter { color: #b8957a; font-size: 26px; }
-
-  /* ===== 风格 4: 知识卡片 ===== */
-  .s-knowledge {
-    background: #fafaf9;
-  }
-  .s-knowledge .accent-strip {
-    position: absolute;
-    top: 0; left: 0;
-    width: 12px; height: 100%;
-    background: linear-gradient(180deg, #4f46e5, #7c3aed);
-  }
-  .s-knowledge .tag {
-    display: inline-block;
-    background: #eef2ff;
-    color: #4f46e5;
-    font-size: 24px;
-    padding: 8px 24px;
-    border-radius: 20px;
-    margin-bottom: 40px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    align-self: flex-start;
-  }
-  .s-knowledge .ctitle { color: #1e1b4b; font-size: 62px; font-weight: 700; }
-  .s-knowledge .cdivider { background: #c7d2fe; }
-  .s-knowledge .csub { color: #6b7280; font-size: 30px; font-weight: 400; }
-  .s-knowledge .cfooter { color: #9ca3af; font-size: 24px; }
-
-  /* ===== 风格 5: 商务干练 ===== */
-  .s-biz {
-    background: linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-  }
-  .s-biz .geom-line {
-    position: absolute;
-    top: 0; right: 0;
-    width: 500px; height: 500px;
-    border-left: 1px solid rgba(148,163,184,0.08);
-    border-bottom: 1px solid rgba(148,163,184,0.08);
-  }
-  .s-biz .accent-dot {
-    position: absolute;
-    top: 100px; right: 100px;
-    width: 16px; height: 16px;
-    background: #38bdf8;
-    border-radius: 50%;
-    box-shadow: 0 0 30px rgba(56,189,248,0.3);
-  }
-  .s-biz .ctitle { color: #f1f5f9; font-size: 64px; font-weight: 700; letter-spacing: 3px; }
-  .s-biz .cdivider { background: #38bdf8; }
-  .s-biz .csub { color: #94a3b8; font-size: 28px; font-weight: 400; }
-  .s-biz .cfooter { color: #475569; font-size: 24px; }
-
-  /* ===== 风格 6: 清新自然 ===== */
-  .s-nature {
-    background: linear-gradient(160deg, #f0f7f0 0%, #e8f4e8 30%, #dcefdc 60%, #e0f0e0 100%);
-  }
-  .s-nature .leaf {
-    position: absolute;
-    bottom: 80px; right: 80px;
-    font-size: 200px;
-    opacity: 0.08;
-    transform: rotate(-15deg);
-  }
-  .s-nature .dot-pattern {
-    position: absolute;
-    top: 60px; left: 60px;
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
-    opacity: 0.12;
-  }
-  .s-nature .dot-pattern span {
-    width: 10px; height: 10px; background: #4a7c59; border-radius: 50%;
-  }
-  .s-nature .ctitle { color: #2d5a3d; font-size: 62px; font-weight: 700; }
-  .s-nature .cdivider { background: rgba(74,124,89,0.4); }
-  .s-nature .csub { color: #5a8a6a; font-size: 30px; font-weight: 400; }
-  .s-nature .cfooter { color: #8ab89a; font-size: 24px; }
-
-  /* ===== 风格 7: 纯色自定义 ===== */
-  .s-solid .ctitle { font-size: 68px; font-weight: 700; }
-  .s-solid .cdivider { width: 80px; height: 3px; }
-  .s-solid .csub { font-size: 30px; font-weight: 400; }
-  .s-solid .cfooter { font-size: 24px; }
-
-  /* ===== 风格 8: 金句语录 ===== */
-  .s-quote {
-    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  }
-  .s-quote .spark {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255,215,0,0.15);
-  }
-  .s-quote .ctitle { color: #ffd700; font-size: 72px; font-weight: 700; letter-spacing: 4px; }
-  .s-quote .cdivider { background: linear-gradient(90deg, transparent, #ffd700, transparent); width: 200px; }
-  .s-quote .csub { color: rgba(255,215,0,0.5); font-size: 30px; font-weight: 300; }
-  .s-quote .cfooter { color: rgba(255,215,0,0.3); font-size: 24px; }
-
-  /* ===== 风格 9: 毛玻璃 ===== */
-  .s-glass {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  }
-  .s-glass .glass-panel {
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 32px;
-    padding: 80px 60px;
-    max-width: 800px;
-    width: 100%;
-  }
-  .s-glass .ctitle { color: #fff; font-size: 60px; font-weight: 700; }
-  .s-glass .cdivider { background: rgba(255,255,255,0.4); }
-  .s-glass .csub { color: rgba(255,255,255,0.75); font-size: 28px; font-weight: 300; }
-
-  /* ===== 文字样式变体 ===== */
-  .font-sans .ctitle, .font-sans .csub, .font-sans .cfooter { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
-  .font-serif .ctitle, .font-serif .csub, .font-serif .cfooter { font-family: "Noto Serif SC", "STSong", "SimSun", Georgia, serif; }
-  .font-hand .ctitle { font-family: "KaiTi", "STKaiti", "楷体", cursive; }
-
-  /* ===== 编辑面板 ===== */
-  .edit-panel {
-    background: var(--panel-bg);
-    border-left: 1px solid var(--panel-border);
-    padding: 20px;
-    width: 360px;
-    position: fixed;
-    right: 0;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 99;
-  }
-  .edit-panel h3 {
-    color: var(--accent);
-    font-size: 14px;
-    margin-bottom: 2px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--panel-border);
-  }
-  .edit-panel label {
-    font-size: 11px;
-    color: #777;
-    display: block;
-    margin-bottom: 2px;
-  }
-  .edit-panel input, .edit-panel textarea, .edit-panel select {
-    width: 100%;
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid #333;
-    background: #1a1a2e;
-    color: #ddd;
-    font-size: 13px;
-    font-family: inherit;
-  }
-  .edit-panel textarea { resize: vertical; min-height: 50px; font-size: 12px; }
-  .edit-panel select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; }
-  .edit-panel .row { display: flex; gap: 8px; }
-  .edit-panel .row > * { flex: 1; }
-  .edit-panel .hint {
-    font-size: 10px;
-    color: #555;
-    line-height: 1.4;
-    padding: 6px 8px;
-    background: #111;
-    border-radius: 4px;
-    margin-top: 4px;
-  }
-  .edit-panel .color-pick {
-    display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0;
-  }
-  .edit-panel .color-dot {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all .15s;
-    flex-shrink: 0;
-  }
-  .edit-panel .color-dot:hover { transform: scale(1.15); }
-  .edit-panel .color-dot.active { border-color: #fff; box-shadow: 0 0 8px rgba(255,255,255,0.3); }
-
-  @media (max-width: 860px) {
-    body { margin-right: 0; }
-    .edit-panel { display: none; }
-  }
+/* edit panel */
+.edit-panel{background:var(--panel-bg);border-left:1px solid var(--panel-border);padding:20px;width:360px;position:fixed;right:0;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px;z-index:99}
+.edit-panel h3{color:var(--accent);font-size:13px;margin-bottom:0;padding-bottom:6px;border-bottom:1px solid var(--panel-border)}
+.edit-panel label{font-size:11px;color:#777;display:block;margin-bottom:1px}
+.edit-panel input,.edit-panel textarea,.edit-panel select{width:100%;padding:7px 9px;border-radius:6px;border:1px solid #333;background:#1a1a2e;color:#ddd;font-size:12px;font-family:inherit}
+.edit-panel textarea{resize:vertical;min-height:44px;font-size:11px}
+.edit-panel select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.edit-panel .row{display:flex;gap:6px}.edit-panel .row>*{flex:1}
+.edit-panel .hint{font-size:9px;color:#555;line-height:1.4;padding:5px 7px;background:#111;border-radius:4px;margin-top:2px}
+.edit-panel .color-pick{display:flex;gap:5px;flex-wrap:wrap;margin:2px 0}
+.edit-panel .color-dot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0}
+.edit-panel .color-dot:hover{transform:scale(1.15)}.edit-panel .color-dot.active{border-color:#fff;box-shadow:0 0 8px rgba(255,255,255,.3)}
+@media(max-width:860px){body{margin-right:0}.edit-panel{display:none}}
 </style>
 </head>
 <body>
 
-<!-- ===== 工具栏 ===== -->
+<!-- toolbar -->
 <div class="toolbar">
-  <div class="logo">🦞 卡片生成器</div>
-  <span class="cat-label">氛围</span>
-  <button class="btn btn-style active" onclick="switchCard(0)">🌙 深夜</button>
-  <button class="btn btn-style" onclick="switchCard(1)">⬛ 极简</button>
-  <button class="btn btn-style" onclick="switchCard(8)">✨ 金句</button>
-  <span class="sep">|</span>
-  <span class="cat-label">日常</span>
-  <button class="btn btn-style" onclick="switchCard(3)">🌸 温暖</button>
-  <button class="btn btn-style" onclick="switchCard(2)">📝 备忘录</button>
-  <button class="btn btn-style" onclick="switchCard(6)">🌿 清新</button>
-  <span class="sep">|</span>
-  <span class="cat-label">专业</span>
-  <button class="btn btn-style" onclick="switchCard(4)">📚 知识卡</button>
-  <button class="btn btn-style" onclick="switchCard(5)">💼 商务</button>
-  <span class="sep">|</span>
-  <span class="cat-label">特效</span>
-  <button class="btn btn-style" onclick="switchCard(9)">🔮 毛玻璃</button>
-  <button class="btn btn-style" onclick="switchCard(7)">🎯 纯色</button>
-
-  <span style="flex:1"></span>
-
-  <input type="range" id="scaleSlider" min="25" max="100" value="30" oninput="setScale(this.value)">
-  <span class="scale-val" id="scaleLabel">30%</span>
-  <button class="btn btn-shot" id="shotBtn" onclick="toggleShotMode()">📸 截图模式</button>
+<div class="logo">🦞 卡片生成器</div>
+<span class="cat-label">氛围</span>
+<button class="btn btn-style active" onclick="sw(0)">🌙深夜</button>
+<button class="btn btn-style" onclick="sw(1)">⬛极简</button>
+<button class="btn btn-style" onclick="sw(8)">✨金句</button>
+<span class="sep">|</span><span class="cat-label">日常</span>
+<button class="btn btn-style" onclick="sw(3)">🌸温暖</button>
+<button class="btn btn-style" onclick="sw(2)">📝备忘录</button>
+<button class="btn btn-style" onclick="sw(6)">🌿清新</button>
+<span class="sep">|</span><span class="cat-label">专业</span>
+<button class="btn btn-style" onclick="sw(4)">📚知识卡</button>
+<button class="btn btn-style" onclick="sw(5)">💼商务</button>
+<span class="sep">|</span><span class="cat-label">特效</span>
+<button class="btn btn-style" onclick="sw(9)">🔮毛玻璃</button>
+<button class="btn btn-style" onclick="sw(7)">🎯纯色</button>
+<span class="sep">|</span><span class="cat-label">小红书</span>
+<button class="btn btn-style" onclick="sw(10)">💬聊天</button>
+<button class="btn btn-style" onclick="sw(11)">🛒清单</button>
+<button class="btn btn-style" onclick="sw(12)">⭐评测</button>
+<button class="btn btn-style" onclick="sw(13)">💌写信</button>
+<button class="btn btn-style" onclick="sw(14)">✅自愈</button>
+<button class="btn btn-style" onclick="sw(15)">🏷️对比</button>
+<span style="flex:1"></span>
+<input type="range" id="ss" min="25" max="100" value="30" oninput="zs(this.value)">
+<span class="scale-val" id="sl">30%</span>
+<button class="btn btn-shot" id="sb" onclick="ts()">📸截图模式</button>
 </div>
 
-<!-- ===== 预览区 ===== -->
-<div class="preview-area">
-  <div class="card-stage" id="cardStage">
+<!-- preview -->
+<div class="preview-area"><div class="card-stage" id="cs">
 
-    <!-- 0: 深夜渐变 -->
-    <div class="card-wrapper s-night active" id="card0">
-      <div class="glow1"></div><div class="glow2"></div><div class="moon"></div>
-      <div class="card-content center">
-        <div class="ctitle" data-key="title"></div>
-        <div class="cdivider"></div>
-        <div class="csub" data-key="sub"></div>
-        <div class="cfooter" data-key="footer"></div>
-      </div>
-    </div>
+<!-- 0:深夜 -->
+<div class="card-wrap s0 active" id="c0"><div style="position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(120,100,180,.12),transparent 70%);border-radius:50%"></div><div style="position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(180,140,100,.08),transparent 70%);border-radius:50%"></div><div class="moon"></div><div class="card-inner c-c"><div class="ct" data-k="t"></div><div class="cd"></div><div class="cs" data-k="s"></div><div class="cf" data-k="f"></div></div></div>
 
-    <!-- 1: 极简黑底 -->
-    <div class="card-wrapper s-minimal" id="card1">
-      <div class="big-quote">"</div>
-      <div class="card-content center">
-        <div class="ctitle" data-key="title"></div>
-        <div class="cdivider"></div>
-        <div class="csub" data-key="sub2"></div>
-      </div>
-    </div>
+<!-- 1:极简 -->
+<div class="card-wrap s1" id="c1"><div class="big-q">"</div><div class="card-inner c-c"><div class="ct" data-k="t"></div><div class="cd"></div><div class="cs" data-k="s2"></div></div></div>
 
-    <!-- 2: 备忘录 -->
-    <div class="card-wrapper s-memo" id="card2">
-      <div class="card-content top">
-        <div class="memo-header">
-          <span>📝 备忘录</span>
-          <span style="color:#555" data-key="date"></span>
-        </div>
-        <div class="ctitle" data-key="title" style="font-size:56px"></div>
-        <div class="memo-dots"><span></span><span></span><span></span></div>
-        <div class="cbody" data-key="memo"></div>
-      </div>
-    </div>
+<!-- 2:备忘录 -->
+<div class="card-wrap s2" id="c2"><div class="card-inner c-t"><div class="mh"><span>📝 备忘录</span><span style="color:#555" data-k="d"></span></div><div class="ct" data-k="t" style="font-size:56px"></div><div class="md"><span></span><span></span><span></span></div><div class="cb" data-k="mo"></div></div></div>
 
-    <!-- 3: 温暖日常 -->
-    <div class="card-wrapper s-warm" id="card3">
-      <div class="sun"></div>
-      <div class="card-content center">
-        <div class="ctitle" data-key="title"></div>
-        <div class="cdivider"></div>
-        <div class="csub" data-key="sub"></div>
-        <div class="cfooter" data-key="footer"></div>
-      </div>
-    </div>
+<!-- 3:温暖 -->
+<div class="card-wrap s3" id="c3"><div class="sun"></div><div class="card-inner c-c"><div class="ct" data-k="t"></div><div class="cd"></div><div class="cs" data-k="s"></div><div class="cf" data-k="f"></div></div></div>
 
-    <!-- 4: 知识卡片 -->
-    <div class="card-wrapper s-knowledge" id="card4">
-      <div class="accent-strip"></div>
-      <div class="card-content top">
-        <div class="tag" data-key="tag"></div>
-        <div class="ctitle" data-key="title"></div>
-        <div class="cdivider"></div>
-        <div class="csub" data-key="sub"></div>
-        <div class="cfooter" data-key="footer"></div>
-      </div>
-    </div>
+<!-- 4:知识卡 -->
+<div class="card-wrap s4" id="c4"><div class="strip"></div><div class="card-inner c-t"><div class="tag" data-k="tg"></div><div class="ct" data-k="t"></div><div class="cd"></div><div class="cs" data-k="s"></div><div class="cf" data-k="f"></div></div></div>
 
-    <!-- 5: 商务干练 -->
-    <div class="card-wrapper s-biz" id="card5">
-      <div class="geom-line"></div><div class="accent-dot"></div>
-      <div class="card-content center">
-        <div class="ctitle" data-key="title"></div>
-        <div class="cdivider"></div>
-        <div class="csub" data-key="sub"></div>
-        <div class="cfooter" data-key="footer"></div>
-      </div>
-    </div>
+<!-- 5:商务 -->
+<div class="card-wrap s5" id="c5"><div class="gl"></div><div class="ad"></div><div class="card-inner c-c"><div class="ct" data-k="t"></div><div class="cd"></div><div class="cs" data-k="s"></div><div class="cf" data-k="f"></div></div></div>
 
-    <!-- 6: 清新自然 -->
-    <div class="card-wrapper s-nature" id="card6">
-      <div class="leaf">🌿</div>
-      <div class="dot-pattern"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-      <div class="card-content center">
-        <div class="ctitle" data-key="title"></div>
-        <div class="cdivider"></div>
-        <div class="csub" data-key="sub"></div>
-        <div class="cfooter" data-key="footer"></div>
-      </div>
-    </div>
+<!-- 6:清新 -->
+<div class="card-wrap s6" id="c6"><div class="leaf">🌿</div><div class="card-inner c-c"><div class="ct" data-k="t"></div><div class="cd"></div><div class="cs" data-k="s"></div><div class="cf" data-k="f"></div></div></div>
 
-    <!-- 7: 纯色自定义 -->
-    <div class="card-wrapper s-solid" id="card7">
-      <div class="card-content center">
-        <div class="ctitle" data-key="title"></div>
-        <div class="cdivider"></div>
-        <div class="csub" data-key="sub"></div>
-        <div class="cfooter" data-key="footer"></div>
-      </div>
-    </div>
+<!-- 7:纯色 -->
+<div class="card-wrap s7" id="c7"><div class="card-inner c-c"><div class="ct" data-k="t"></div><div class="cd"></div><div class="cs" data-k="s"></div><div class="cf" data-k="f"></div></div></div>
 
-    <!-- 8: 金句语录 -->
-    <div class="card-wrapper s-quote" id="card8">
-      <div class="card-content center">
-        <div class="ctitle" data-key="title"></div>
-        <div class="cdivider"></div>
-        <div class="csub" data-key="sub"></div>
-        <div class="cfooter" data-key="footer"></div>
-      </div>
-    </div>
+<!-- 8:金句 -->
+<div class="card-wrap s8" id="c8"><div class="card-inner c-c"><div class="ct" data-k="t"></div><div class="cd"></div><div class="cs" data-k="s"></div><div class="cf" data-k="f"></div></div></div>
 
-    <!-- 9: 毛玻璃 -->
-    <div class="card-wrapper s-glass" id="card9">
-      <div class="card-content center" style="align-items:center">
-        <div class="glass-panel" style="text-align:center">
-          <div class="ctitle" data-key="title"></div>
-          <div class="cdivider"></div>
-          <div class="csub" data-key="sub"></div>
-        </div>
-      </div>
-    </div>
+<!-- 9:毛玻璃 -->
+<div class="card-wrap s9" id="c9"><div class="card-inner c-c" style="align-items:center"><div class="gp" style="text-align:center"><div class="ct" data-k="t"></div><div class="cd"></div><div class="cs" data-k="s"></div></div></div></div>
 
-  </div>
-</div>
+<!-- 10:聊天截图 -->
+<div class="card-wrap s10" id="c10"><div class="card-inner c-t" style="padding-top:100px"><div class="chat-top"><div class="avatar">🧠</div><div class="name" data-k="f">深夜树洞</div></div><div class="time" data-k="d">今天 23:47</div><div class="bubbles"><div class="bubble other" data-k="bu1">有时候觉得好累，但又说不出哪里累。</div><div class="bubble me">那就不说。感受它，然后让它过去。</div><div class="bubble other" data-k="bu2">真的可以这样吗？</div><div class="bubble me" data-k="s">可以。你不必急着好起来。</div></div></div></div>
 
-<!-- ===== 编辑面板 ===== -->
-<div class="edit-panel" id="editPanel">
-  <h3>✏️ 内容编辑</h3>
+<!-- 11:好物清单 -->
+<div class="card-wrap s11" id="c11"><div class="header-strip"></div><div class="card-inner c-t" style="padding-top:140px"><div class="list-badge" data-k="tg">好物推荐</div><div class="ct" data-k="t" style="font-size:52px;color:#78350f;margin-bottom:50px">本月最爱的3件东西</div><div class="list-items"><div class="list-item"><div class="list-num">01</div><div><div class="list-text" data-k="li1">一款好用的AI写作工具</div><div class="list-sub">效率翻倍，每天多出2小时</div></div></div><div class="list-item"><div class="list-num">02</div><div><div class="list-text" data-k="li2">这本睡前读的书</div><div class="list-sub">读到第3页就停不下来</div></div></div><div class="list-item"><div class="list-num">03</div><div><div class="list-text" data-k="li3">改变我生活的小习惯</div><div class="list-sub">坚持了21天，真的有变化</div></div></div></div></div></div>
 
-  <label>标题（≤20字）</label>
-  <input type="text" id="ctrlTitle" value="你不必急着"好起来"" oninput="updateAll()">
+<!-- 12:评测打分 -->
+<div class="card-wrap s12" id="c12"><div class="card-inner c-c" style="padding-top:120px;padding-bottom:80px"><div class="ct" data-k="t" style="font-size:48px;margin-bottom:40px">产品评测</div><div class="score-circle"><div><span class="score-num" data-k="sc">8.5</span><span class="score-total">/10</span></div></div><div class="stars" data-k="st">⭐⭐⭐⭐</div><div class="cs" data-k="s">一句话总结：值得买，但有一个小缺点</div><div class="pros-cons"><div class="pc-col"><div class="pc-label good">👍 优点</div><div class="pc-item" data-k="pr1">• 颜值在线，拿出来有面子</div><div class="pc-item" data-k="pr2">• 续航比想象中好</div><div class="pc-item" data-k="pr3">• 价格在同档位很有竞争力</div></div><div class="pc-col"><div class="pc-label bad">👎 缺点</div><div class="pc-item" data-k="co1">• 重量稍微偏重</div><div class="pc-item" data-k="co2">• 充电速度一般</div></div></div></div></div>
 
-  <label>副标题 / 金句</label>
-  <input type="text" id="ctrlSub" value="休息够了，主场自然会来" oninput="updateAll()">
+<!-- 13:给自己的一封信 -->
+<div class="card-wrap s13" id="c13"><div class="paper-line"></div><div class="card-inner c-t" style="padding:140px 120px"><div class="dear">亲爱的自己，</div><div class="ct" data-k="t">谢谢你没有放弃</div><div class="cs" data-k="s">这一年你做了很多别人看不见的努力。失眠的夜晚、默默咽下去的委屈、强撑着说"没事"的时刻——我都看见了。你不必完美，你已经足够好了。</div><div class="sign" data-k="f">—— 来自未来的你</div></div></div>
 
-  <label>极简卡专属底部文字</label>
-  <input type="text" id="ctrlSub2" value="你现在的样子，已经是很多人咬牙也撑不到的程度了" oninput="updateAll()">
+<!-- 14:自愈清单 -->
+<div class="card-wrap s14" id="c14"><div class="card-inner c-t" style="padding:180px 120px 120px"><div class="check-header"><div class="ct" data-k="t">今天为自己做的5件小事</div><div class="cs" data-k="s">完成一项就打个勾 ✓</div></div><div class="checks"><div class="check-item"><div class="check-box done"></div><div class="check-text" data-k="ch1">喝了一大杯温水</div></div><div class="check-item"><div class="check-box"></div><div class="check-text" data-k="ch2">出门晒了10分钟太阳</div></div><div class="check-item"><div class="check-box"></div><div class="check-text" data-k="ch3">对镜子里的自己笑了一下</div></div><div class="check-item"><div class="check-box"></div><div class="check-text" data-k="ch4">给一个朋友发了消息</div></div><div class="check-item"><div class="check-box"></div><div class="check-text" data-k="ch5">睡前放下手机10分钟</div></div></div></div></div>
 
-  <div class="row">
-    <div>
-      <label>日期</label>
-      <input type="text" id="ctrlDate" value="5月31日 23:47" oninput="updateAll()">
-    </div>
-    <div>
-      <label>底部署名</label>
-      <input type="text" id="ctrlFooter" value="深夜树洞 · 第23夜" oninput="updateAll()">
-    </div>
-  </div>
+<!-- 15:左右对比 -->
+<div class="card-wrap s15" id="c15"><div class="card-inner c-c" style="padding:100px 80px"><div class="vs-title"><div class="ct" data-k="t">Before / After</div></div><div class="vs-row"><div class="vs-col vs-before"><div class="vs-label">BEFORE</div><div class="vs-point" data-k="bf1">😰 每天忙到没时间喝水</div><div class="vs-point" data-k="bf2">📱 睡前刷手机到凌晨</div><div class="vs-point" data-k="bf3">😞 总觉得什么都没做好</div></div><div class="vs-divider"><span>→</span></div><div class="vs-col vs-after"><div class="vs-label">AFTER</div><div class="vs-point" data-k="af1">💧 桌上永远有一杯水</div><div class="vs-point" data-k="af2">📖 睡前读10页书代替刷手机</div><div class="vs-point" data-k="af3">✨ 每天写下3件做完的事</div></div></div></div></div>
 
-  <label>知识卡标签 / 分类</label>
-  <input type="text" id="ctrlTag" value="自我成长" oninput="updateAll()">
+</div></div>
 
-  <label>备忘录正文（&lt;em&gt;标记金句）</label>
-  <textarea id="ctrlMemo" oninput="updateAll()" rows="3">伤口结痂之前，要先疼一阵子。
-真正的成长不是"迅速翻篇"，
-而是&lt;em&gt;这一次，我没有逃避自己的感受。&lt;/em&gt;</textarea>
+<!-- edit panel -->
+<div class="edit-panel" id="ep">
+<h3>✏️ 通用内容</h3>
+<label>标题（≤20字）</label><input id="et" value="你不必急着&quot;好起来&quot;" oninput="ua()">
+<label>副标题 / 描述</label><input id="es" value="休息够了，主场自然会来" oninput="ua()">
+<label>极简卡底部文字</label><input id="es2" value="你现在的样子，已经是很多人咬牙也撑不到的程度了" oninput="ua()">
+<div class="row"><div><label>日期</label><input id="ed" value="5月31日 23:47" oninput="ua()"></div><div><label>底部署名</label><input id="ef" value="深夜树洞 · 第23夜" oninput="ua()"></div></div>
+<label>分类标签（知识卡/清单）</label><input id="etg" value="自我成长" oninput="ua()">
 
-  <h3 style="margin-top:8px;">🎨 文字样式</h3>
-  <div class="row">
-    <div>
-      <label>字体</label>
-      <select id="ctrlFont" onchange="applyFont()">
-        <option value="sans">默认黑体</option>
-        <option value="serif">宋体/衬线</option>
-        <option value="hand">楷体/手写感</option>
-      </select>
-    </div>
-    <div>
-      <label>标题字重</label>
-      <select id="ctrlWeight" onchange="applyWeight()">
-        <option value="700">粗体</option>
-        <option value="400">常规</option>
-        <option value="300">细体</option>
-      </select>
-    </div>
-  </div>
+<h3 style="margin-top:8px">💬 聊天截图（风格10）</h3>
+<label>对方消息1</label><input id="ebu1" value="有时候觉得好累，但又说不出哪里累。" oninput="ua()">
+<label>对方消息2</label><input id="ebu2" value="真的可以这样吗？" oninput="ua()">
 
-  <h3 style="margin-top:8px;">🎯 纯色背景（风格7用）</h3>
-  <input type="color" id="ctrlBgColor" value="#2d2d44" oninput="applySolidBg()" style="height:36px;padding:2px;cursor:pointer;">
-  <div class="color-pick" id="colorPresets"></div>
+<h3 style="margin-top:8px">🛒 好物清单（风格11）</h3>
+<label>第1项 · 名称</label><input id="eli1" value="一款好用的AI写作工具" oninput="ua()">
+<label>第2项 · 名称</label><input id="eli2" value="这本睡前读的书" oninput="ua()">
+<label>第3项 · 名称</label><input id="eli3" value="改变我生活的小习惯" oninput="ua()">
 
-  <label>纯色卡文字颜色</label>
-  <select id="ctrlTextColor" onchange="applySolidBg()">
-    <option value="#ffffff">白色</option>
-    <option value="#1a1a2e">深色</option>
-    <option value="#f0ece4">暖白</option>
-    <option value="#ffd700">金色</option>
-  </select>
+<h3 style="margin-top:8px">⭐ 评测打分（风格12）</h3>
+<div class="row"><div><label>评分</label><input id="esc" value="8.5" oninput="ua()"></div><div><label>星级</label><input id="est" value="⭐⭐⭐⭐" oninput="ua()"></div></div>
+<label>优点（每行一个）</label><textarea id="epr" oninput="ua()" rows="2">颜值在线，拿出来有面子
+续航比想象中好
+价格在同档位很有竞争力</textarea>
+<label>缺点（每行一个）</label><textarea id="eco" oninput="ua()" rows="2">重量稍微偏重
+充电速度一般</textarea>
 
-  <div class="hint">💡 切换顶部风格标签预览效果<br>📸 点「截图模式」→ Win+Shift+S 截图<br>⌨️ 快捷键: 1-9数字键切风格, Ctrl+S截图, Esc退出</div>
+<h3 style="margin-top:8px">🏷️ 对比卡片（风格15）</h3>
+<label>Before（每行一个）</label><textarea id="ebf" oninput="ua()" rows="2">😰 每天忙到没时间喝水
+📱 睡前刷手机到凌晨
+😞 总觉得什么都没做好</textarea>
+<label>After（每行一个）</label><textarea id="eaf" oninput="ua()" rows="2">💧 桌上永远有一杯水
+📖 睡前读10页书代替刷手机
+✨ 每天写下3件做完的事</textarea>
+
+<h3 style="margin-top:8px">🎨 样式调节</h3>
+<div class="row"><div><label>字体</label><select id="efn" onchange="af()"><option value="sans">默认黑体</option><option value="serif">宋体/衬线</option><option value="hand">楷体/手写感</option></select></div><div><label>字重</label><select id="efw" onchange="aw()"><option value="700">粗体</option><option value="400">常规</option><option value="300">细体</option></select></div></div>
+<h3 style="margin-top:8px">🎯 纯色背景（风格7）</h3>
+<input type="color" id="ebg" value="#2d2d44" oninput="asb()" style="height:32px;padding:2px;cursor:pointer">
+<div class="color-pick" id="cp"></div>
+<label>文字颜色</label><select id="etc" onchange="asb()"><option value="#ffffff">白色</option><option value="#1a1a2e">深色</option><option value="#f0ece4">暖白</option><option value="#ffd700">金色</option></select>
+
+<div class="hint">💡 15款模板 · 点击顶部按钮切换<br>📸 截图模式→Win+Shift+S截图<br>⌨️ 1-9切风格0-9，Ctrl+S截图，Esc退出</div>
 </div>
 
 <script>
-  const PRESET_COLORS = [
-    '#2d2d44','#1a1a2e','#0f172a','#1e293b','#0a0a0a',
-    '#fef9f0','#fafaf9','#f0f7f0','#f5f0eb','#ffffff',
-    '#667eea','#e74c3c','#22c55e','#f59e0b','#ec4899',
-    '#4f46e5','#7c3aed','#0891b2','#059669','#dc2626'
-  ];
+const PC=['#2d2d44','#1a1a2e','#0f172a','#1e293b','#0a0a0a','#fef9f0','#fafaf9','#f0f7f0','#f5f0eb','#ffffff','#667eea','#e74c3c','#22c55e','#f59e0b','#ec4899','#4f46e5','#7c3aed','#0891b2','#059669','#dc2626'];
+let cur=0,sm=false;
 
-  let currentCard = 0;
-  let shotMode = false;
-
-  // ============ 初始化 ============
-  function init() {
-    // 星星
-    const c0 = document.getElementById('card0');
-    for (let i = 0; i < 50; i++) {
-      const s = document.createElement('div');
-      s.style.cssText = `position:absolute;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;background:#fff;border-radius:50%;opacity:${0.15+Math.random()*0.35};top:${Math.random()*65}%;left:${Math.random()*85}%`;
-      c0.appendChild(s);
-    }
-    // 金句火花
-    const c8 = document.getElementById('card8');
-    for (let i = 0; i < 20; i++) {
-      const s = document.createElement('div');
-      s.className = 'spark';
-      s.style.cssText = `width:${3+Math.random()*8}px;height:${3+Math.random()*8}px;top:${Math.random()*80}%;left:${Math.random()*90}%`;
-      c8.appendChild(s);
-    }
-    // 纯色预设
-    const container = document.getElementById('colorPresets');
-    PRESET_COLORS.forEach((c, i) => {
-      const d = document.createElement('div');
-      d.className = 'color-dot' + (c === '#2d2d44' ? ' active' : '');
-      d.style.background = c;
-      d.title = c;
-      d.onclick = () => {
-        document.getElementById('ctrlBgColor').value = c;
-        document.querySelectorAll('#colorPresets .color-dot').forEach(x => x.classList.remove('active'));
-        d.classList.add('active');
-        applySolidBg();
-      };
-      container.appendChild(d);
-    });
-
-    setScale(30);
-    updateAll();
-  }
-
-  // ============ 切换卡片 ============
-  function switchCard(n) {
-    currentCard = n;
-    document.querySelectorAll('.card-wrapper').forEach((c,i) => c.classList.toggle('active', i===n));
-    document.querySelectorAll('.btn-style').forEach((b,i) => b.classList.toggle('active', i===n));
-  }
-
-  // ============ 缩放 ============
-  function setScale(v) {
-    document.getElementById('cardStage').style.transform = 'scale(' + (v/100) + ')';
-    document.getElementById('scaleLabel').textContent = v + '%';
-    document.getElementById('scaleSlider').value = v;
-  }
-
-  function toggleShotMode() {
-    shotMode = !shotMode;
-    const btn = document.getElementById('shotBtn');
-    if (shotMode) {
-      setScale(100);
-      btn.textContent = '↩ 退出截图';
-      btn.classList.add('active');
-      document.getElementById('editPanel').style.display = 'none';
-      document.body.style.marginRight = '0';
-    } else {
-      setScale(30);
-      btn.textContent = '📸 截图模式';
-      btn.classList.remove('active');
-      document.getElementById('editPanel').style.display = 'flex';
-      document.body.style.marginRight = '360px';
-    }
-  }
-
-  // ============ 纯色背景 ============
-  function applySolidBg() {
-    const bg = document.getElementById('ctrlBgColor').value;
-    const tc = document.getElementById('ctrlTextColor').value;
-    const card = document.getElementById('card7');
-    card.style.background = bg;
-
-    // update color dots
-    document.querySelectorAll('#colorPresets .color-dot').forEach(d => d.classList.remove('active'));
-    const match = document.querySelector(`#colorPresets .color-dot[style*="${bg}"]`);
-    if (match) match.classList.add('active');
-
-    // adjust text/dividers based on brightness
-    const r = parseInt(bg.slice(1,3),16);
-    const g = parseInt(bg.slice(3,5),16);
-    const b = parseInt(bg.slice(5,7),16);
-    const bright = (r*299 + g*587 + b*114) / 1000;
-    const isDark = bright < 128;
-
-    if (tc === '#ffffff') {
-      // auto: use light text on dark bg
-    }
-    card.querySelector('.ctitle').style.color = isDark ? '#ffffff' : '#1a1a2e';
-    card.querySelector('.csub').style.color = isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)';
-    card.querySelector('.cfooter').style.color = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.35)';
-    card.querySelector('.cdivider').style.background = isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)';
-
-    // override with user selection
-    if (tc !== 'auto') {
-      card.querySelector('.ctitle').style.color = tc;
-      card.querySelector('.csub').style.color = tc.replace(')','').replace('rgb','rgba').replace('ffffff','255,255,255') + ',0.7)';
-      card.querySelector('.cfooter').style.color = tc.replace(')','').replace('rgb','rgba').replace('ffffff','255,255,255') + ',0.4)';
-    }
-  }
-
-  // ============ 字体/字重 ============
-  function applyFont() {
-    const v = document.getElementById('ctrlFont').value;
-    document.querySelectorAll('.card-wrapper').forEach(c => {
-      c.classList.remove('font-sans','font-serif','font-hand');
-      c.classList.add('font-' + v);
-    });
-  }
-
-  function applyWeight() {
-    const w = document.getElementById('ctrlWeight').value;
-    document.querySelectorAll('.ctitle').forEach(el => { el.style.fontWeight = w; });
-  }
-
-  // ============ 内容更新 ============
-  function updateAll() {
-    const vals = {
-      title: document.getElementById('ctrlTitle').value,
-      sub: document.getElementById('ctrlSub').value,
-      sub2: document.getElementById('ctrlSub2').value,
-      date: document.getElementById('ctrlDate').value,
-      footer: document.getElementById('ctrlFooter').value,
-      tag: document.getElementById('ctrlTag').value,
-      memo: document.getElementById('ctrlMemo').value.replace(/\n/g, '<br>')
-    };
-
-    document.querySelectorAll('[data-key]').forEach(el => {
-      const key = el.getAttribute('data-key');
-      let v = vals[key] || '';
-      if (key === 'title') v = v.replace(/\n/g, '<br>');
-      if (key === 'memo') v = vals.memo + '<span class="cursor"></span>';
-      if (key === 'date') v = vals.date;
-      el.innerHTML = v;
-    });
-
-    applySolidBg();
-  }
-
-  // ============ 键盘快捷键 ============
-  document.addEventListener('keydown', function(e) {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-    if (e.key === 's' && e.ctrlKey && !shotMode) { e.preventDefault(); toggleShotMode(); }
-    if (e.key === 'Escape' && shotMode) { toggleShotMode(); }
-    const n = parseInt(e.key);
-    if (n >= 0 && n <= 9 && !e.ctrlKey && !e.metaKey) { switchCard(n); }
+function init(){
+  for(let i=0;i<50;i++){let s=document.createElement('div');s.style.cssText=`position:absolute;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;background:#fff;border-radius:50%;opacity:${0.15+Math.random()*0.35};top:${Math.random()*65}%;left:${Math.random()*85}%`;c0.appendChild(s)}
+  for(let i=0;i<20;i++){let s=document.createElement('div');s.style.cssText=`position:absolute;border-radius:50%;background:rgba(255,215,0,.15);width:${3+Math.random()*8}px;height:${3+Math.random()*8}px;top:${Math.random()*80}%;left:${Math.random()*90}%`;c8.appendChild(s)}
+  let cp=document.getElementById('cp');
+  PC.forEach((c,i)=>{let d=document.createElement('div');d.className='color-dot'+(c==='#2d2d44'?' active':'');d.style.background=c;d.title=c;d.onclick=()=>{document.getElementById('ebg').value=c;cp.querySelectorAll('.color-dot').forEach(x=>x.classList.remove('active'));d.classList.add('active');asb()};cp.appendChild(d)});
+  zs(30);ua();
+}
+function sw(n){cur=n;document.querySelectorAll('.card-wrap').forEach((c,i)=>c.classList.toggle('active',i===n));document.querySelectorAll('.btn-style').forEach((b,i)=>b.classList.toggle('active',i===n))}
+function zs(v){document.getElementById('cs').style.transform='scale('+(v/100)+')';document.getElementById('sl').textContent=v+'%';document.getElementById('ss').value=v}
+function ts(){sm=!sm;let b=document.getElementById('sb');if(sm){zs(100);b.textContent='↩退出截图';b.classList.add('active');document.getElementById('ep').style.display='none';document.body.style.marginRight='0'}else{zs(30);b.textContent='📸截图模式';b.classList.remove('active');document.getElementById('ep').style.display='flex';document.body.style.marginRight='360px'}}
+function asb(){
+  let bg=document.getElementById('ebg').value, tc=document.getElementById('etc').value;
+  let c7=document.getElementById('c7');c7.style.background=bg;
+  document.querySelectorAll('#cp .color-dot').forEach(d=>d.classList.remove('active'));
+  let m=document.querySelector(`#cp .color-dot[style*="${bg}"]`);if(m)m.classList.add('active');
+  let r=parseInt(bg.slice(1,3),16),g=parseInt(bg.slice(3,5),16),b=parseInt(bg.slice(5,7),16);
+  let dark=(r*299+g*587+b*114)/1000<128;
+  c7.querySelector('.ct').style.color=dark?'#ffffff':'#1a1a2e';
+  c7.querySelector('.cs').style.color=dark?'rgba(255,255,255,.7)':'rgba(0,0,0,.6)';
+  c7.querySelector('.cf').style.color=dark?'rgba(255,255,255,.4)':'rgba(0,0,0,.35)';
+  c7.querySelector('.cd').style.background=dark?'rgba(255,255,255,.3)':'rgba(0,0,0,.2)';
+}
+function af(){let v=document.getElementById('efn').value;document.querySelectorAll('.card-wrap').forEach(c=>{c.classList.remove('font-sans','font-serif','font-hand');c.classList.add('font-'+v)})}
+function aw(){let w=document.getElementById('efw').value;document.querySelectorAll('.ct').forEach(el=>{el.style.fontWeight=w})}
+function ua(){
+  let v={
+    t:get('et'),s:get('es'),s2:get('es2'),d:get('ed'),f:get('ef'),tg:get('etg'),
+    bu1:get('ebu1'),bu2:get('ebu2'),
+    li1:get('eli1'),li2:get('eli2'),li3:get('eli3'),
+    sc:get('esc'),st:get('est'),mo:get('emo')?get('emo').replace(/\n/g,'<br>'):'伤口结痂之前，要先疼一阵子。<br>真正的成长不是"迅速翻篇"，<br>而是<em>这一次，我没有逃避自己的感受。</em>',
+    pr1:'• '+get('epr').split('\n')[0],pr2:'• '+(get('epr').split('\n')[1]||''),pr3:'• '+(get('epr').split('\n')[2]||''),
+    co1:'• '+get('eco').split('\n')[0],co2:'• '+(get('eco').split('\n')[1]||''),
+    bf1:get('ebf').split('\n')[0]||'😰 每天忙到没时间喝水',bf2:get('ebf').split('\n')[1]||'📱 睡前刷手机到凌晨',bf3:get('ebf').split('\n')[2]||'😞 总觉得什么都没做好',
+    af1:get('eaf').split('\n')[0]||'💧 桌上永远有一杯水',af2:get('eaf').split('\n')[1]||'📖 睡前读10页书代替刷手机',af3:get('eaf').split('\n')[2]||'✨ 每天写下3件做完的事',
+    ch1:'喝了一大杯温水',ch2:'出门晒了10分钟太阳',ch3:'对镜子里的自己笑了一下',ch4:'给一个朋友发了消息',ch5:'睡前放下手机10分钟'
+  };
+  document.querySelectorAll('[data-k]').forEach(el=>{
+    let k=el.getAttribute('data-k'),val=v[k]||'';
+    if(k==='t')val=val.replace(/\n/g,'<br>');
+    if(k==='mo')val=v.mo+'<span class="cur"></span>';
+    el.innerHTML=val;
   });
-
-  init();
+  asb();
+}
+function get(id){return document.getElementById(id).value}
+document.addEventListener('keydown',function(e){
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+  if(e.key==='s'&&e.ctrlKey&&!sm){e.preventDefault();ts()}
+  if(e.key==='Escape'&&sm){ts()}
+  let n=parseInt(e.key);if(n>=0&&n<=9&&!e.ctrlKey&&!e.metaKey){sw(n)}
+});
+init();
 </script>
 </body>
 </html>
