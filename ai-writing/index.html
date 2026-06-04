@@ -1,446 +1,463 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>AI写作免费试用 — WK文字服务</title>
-<style>
-:root {
-  --primary: #4f46e5;
-  --accent: #e74c3c;
-  --bg: #f5f5f7;
-  --card: #ffffff;
-  --text: #1a1a2e;
-  --text-secondary: #6b7280;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --border: #e5e7eb;
-  --radius: 12px;
-  --shadow: 0 2px 12px rgba(0,0,0,0.08);
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: var(--bg); color: var(--text); line-height: 1.6;
-  max-width: 500px; margin: 0 auto; min-height: 100vh;
-}
-header {
-  background: linear-gradient(135deg, var(--primary), #6366f1);
-  color: #fff; padding: 20px; text-align: center;
-}
-header h1 { font-size: 22px; font-weight: 700; }
-header p { font-size: 12px; opacity: 0.85; margin-top: 4px; }
-
-#app { padding: 16px; padding-bottom: 80px; }
-
-label.section-label {
-  display: block; font-size: 13px; font-weight: 600; margin: 16px 0 6px;
-  color: var(--text-secondary);
-}
-textarea {
-  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
-  font-size: 14px; font-family: inherit; transition: 0.2s;
-  min-height: 80px; resize: vertical; line-height: 1.6;
-}
-textarea:focus { outline: none; border-color: var(--primary); }
-
-.hint { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
-
-.btn {
-  display: inline-block; padding: 12px 28px; border: none; border-radius: 8px;
-  font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s;
-}
-.btn-primary { background: var(--primary); color: #fff; width: 100%; }
-.btn-primary:hover { background: #4338ca; }
-.btn-primary:disabled { background: #a5b4fc; cursor: not-allowed; }
-.btn-outline {
-  background: #fff; color: var(--primary); border: 2px solid var(--primary);
-}
-.btn-sm { padding: 8px 16px; font-size: 14px; }
-.btn-row { display: flex; gap: 10px; margin-top: 16px; }
-.btn-row .btn { flex: 1; }
-
-/* Type Grid */
-.type-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0;
-}
-.type-card {
-  border: 2px solid var(--border); border-radius: var(--radius);
-  padding: 20px 12px; text-align: center; cursor: pointer;
-  transition: 0.2s; user-select: none; background: var(--card);
-}
-.type-card:hover { border-color: var(--primary); box-shadow: var(--shadow); }
-.type-card.selected {
-  border-color: var(--primary); background: #eef2ff;
-  box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
-}
-.type-card .icon { font-size: 32px; display: block; margin-bottom: 8px; }
-.type-card .tname { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-.type-card .tdesc { font-size: 12px; color: var(--text-secondary); }
-
-/* Input Section */
-#inputSection { display: none; margin-top: 16px; }
-
-/* Generating Animation */
-#generating { display: none; text-align: center; padding: 40px 20px; }
-#generating .gen-text { font-size: 16px; color: var(--text-secondary); margin-bottom: 16px; }
-@keyframes blink { 0%,100%{opacity:0.2} 50%{opacity:1} }
-#generating .dots { display: inline-flex; gap: 6px; }
-#generating .dots span {
-  width: 10px; height: 10px; background: var(--primary);
-  border-radius: 50%; animation: blink 1.4s infinite;
-}
-#generating .dots span:nth-child(2) { animation-delay: 0.2s; }
-#generating .dots span:nth-child(3) { animation-delay: 0.4s; }
-
-/* Demo Output */
-#demoOutput { display: none; }
-.demo-card {
-  background: var(--card); border-radius: var(--radius);
-  padding: 24px; box-shadow: var(--shadow); margin-top: 16px;
-  border-left: 4px solid var(--primary);
-}
-.demo-card .demo-title { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 16px; }
-.demo-card .demo-body { font-size: 14px; line-height: 1.9; color: var(--text); }
-.demo-card .demo-body p { margin-bottom: 14px; }
-.demo-card .demo-body p:last-child { margin-bottom: 0; }
-.blinking-cursor {
-  display: inline-block; width: 2px; height: 1em; background: var(--primary);
-  animation: blink 0.8s infinite; vertical-align: text-bottom;
-}
-
-/* CTA */
-.cta-card {
-  background: linear-gradient(135deg, #eef2ff, #e0e7ff); border-radius: var(--radius);
-  padding: 20px; text-align: center; margin: 20px 0;
-  border: 2px solid var(--primary);
-}
-.cta-card h3 { font-size: 16px; color: var(--primary); margin-bottom: 6px; }
-.cta-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
-.btn-wechat { background: #07c160; color: #fff; width: 100%; }
-.btn-wechat:hover { background: #06ad56; }
-
-footer {
-  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 500px; background: #fff; border-top: 1px solid var(--border);
-  padding: 12px 16px; text-align: center; font-size: 11px; color: var(--text-secondary);
-}
-footer .footer-brand { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
-footer .footer-links { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
-footer .footer-links a { font-size: 11px; color: var(--text-secondary); text-decoration: none; }
-footer .footer-links a:hover { color: var(--primary); }
-footer .footer-contact { font-size: 11px; color: var(--text-secondary); }
-
-.toast {
-  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-  background: #1a1a2e; color: #fff; padding: 10px 24px; border-radius: 20px;
-  font-size: 14px; z-index: 2000; opacity: 0; transition: opacity 0.3s; white-space: pre-line;
-}
-.toast.show { opacity: 1; }
-</style>
-</head>
-<body>
-
-<header>
-  <h1>AI写作免费试用</h1>
-  <p>智能生成 · 人工精修 · 先试后买</p>
-</header>
-
-<div id="app">
-  <!-- Type Selection -->
-  <label class="section-label">选择写作类型</label>
-  <div class="type-grid" id="typeGrid">
-    <div class="type-card" data-type="resume" onclick="selectType('resume', this)">
-      <span class="icon">📄</span>
-      <div class="tname">简历优化</div>
-      <div class="tdesc">挖掘亮点，通过ATS筛选</div>
-    </div>
-    <div class="type-card" data-type="speech" onclick="selectType('speech', this)">
-      <span class="icon">🎤</span>
-      <div class="tname">演讲稿</div>
-      <div class="tdesc">有气场不空洞，打动听众</div>
-    </div>
-    <div class="type-card" data-type="bizplan" onclick="selectType('bizplan', this)">
-      <span class="icon">📊</span>
-      <div class="tname">商业计划书</div>
-      <div class="tdesc">逻辑清晰，投资人看得懂</div>
-    </div>
-    <div class="type-card" data-type="ppt" onclick="selectType('ppt', this)">
-      <span class="icon">📽️</span>
-      <div class="tname">PPT文案</div>
-      <div class="tdesc">结构+文案，你只管排版</div>
-    </div>
-  </div>
-
-  <!-- Input Section -->
-  <div id="inputSection">
-    <label class="section-label" id="inputHint"></label>
-    <textarea id="userInput" placeholder="请描述您的具体需求..."></textarea>
-    <button class="btn btn-primary" style="margin-top:12px" id="generateBtn" onclick="startGeneration()">✨ 生成 Demo</button>
-  </div>
-
-  <!-- Generating -->
-  <div id="generating">
-    <div class="gen-text">AI 正在生成中</div>
-    <div class="dots">
-      <span></span><span></span><span></span>
-    </div>
-  </div>
-
-  <!-- Demo Output -->
-  <div id="demoOutput">
-    <div class="demo-card">
-      <div class="demo-title" id="demoTitle"></div>
-      <div class="demo-body" id="demoBody"></div>
-    </div>
-
-    <div class="cta-card" id="ctaSection" style="display:none">
-      <h3>需要完整版吗？</h3>
-      <p>专业文案顾问一对一精修，覆盖你的行业和场景</p>
-      <button class="btn btn-wechat" onclick="copyWechat()">📱 复制微信号并打开微信</button>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-outline" onclick="tryAgain()">再试一次</button>
-      <button class="btn btn-primary" style="flex:2" id="copyDemoBtn" onclick="copyDemo()">📋 复制 Demo</button>
-    </div>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>AI写作免费试用 — WK文字服务</title>
+<style>
+:root {
+  --primary: #4f46e5;
+  --accent: #e74c3c;
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --text-secondary: #6b7280;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --border: #e5e7eb;
+  --radius: 12px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.6;
+  max-width: 500px; margin: 0 auto; min-height: 100vh;
+}
+header {
+  background: linear-gradient(135deg, var(--primary), #6366f1);
+  color: #fff; padding: 20px; text-align: center;
+}
+header h1 { font-size: 22px; font-weight: 700; }
+header p { font-size: 12px; opacity: 0.85; margin-top: 4px; }
+
+#app { padding: 16px; padding-bottom: 80px; }
+
+label.section-label {
+  display: block; font-size: 13px; font-weight: 600; margin: 16px 0 6px;
+  color: var(--text-secondary);
+}
+textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+  font-size: 14px; font-family: inherit; transition: 0.2s;
+  min-height: 80px; resize: vertical; line-height: 1.6;
+}
+textarea:focus { outline: none; border-color: var(--primary); }
+
+.hint { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+.btn {
+  display: inline-block; padding: 12px 28px; border: none; border-radius: 8px;
+  font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s;
+}
+.btn-primary { background: var(--primary); color: #fff; width: 100%; }
+.btn-primary:hover { background: #4338ca; }
+.btn-primary:disabled { background: #a5b4fc; cursor: not-allowed; }
+.btn-outline {
+  background: #fff; color: var(--primary); border: 2px solid var(--primary);
+}
+.btn-sm { padding: 8px 16px; font-size: 14px; }
+.btn-row { display: flex; gap: 10px; margin-top: 16px; }
+.btn-row .btn { flex: 1; }
+
+/* Type Grid */
+.type-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0;
+}
+.type-card {
+  border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 20px 12px; text-align: center; cursor: pointer;
+  transition: 0.2s; user-select: none; background: var(--card);
+}
+.type-card:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+.type-card.selected {
+  border-color: var(--primary); background: #eef2ff;
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+}
+.type-card .icon { font-size: 32px; display: block; margin-bottom: 8px; }
+.type-card .tname { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.type-card .tdesc { font-size: 12px; color: var(--text-secondary); }
+
+/* Input Section */
+#inputSection { display: none; margin-top: 16px; }
+
+/* Generating Animation */
+#generating { display: none; text-align: center; padding: 40px 20px; }
+#generating .gen-text { font-size: 16px; color: var(--text-secondary); margin-bottom: 16px; }
+@keyframes blink { 0%,100%{opacity:0.2} 50%{opacity:1} }
+#generating .dots { display: inline-flex; gap: 6px; }
+#generating .dots span {
+  width: 10px; height: 10px; background: var(--primary);
+  border-radius: 50%; animation: blink 1.4s infinite;
+}
+#generating .dots span:nth-child(2) { animation-delay: 0.2s; }
+#generating .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+/* Demo Output */
+#demoOutput { display: none; }
+.demo-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 24px; box-shadow: var(--shadow); margin-top: 16px;
+  border-left: 4px solid var(--primary);
+}
+.demo-card .demo-title { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 16px; }
+.demo-card .demo-body { font-size: 14px; line-height: 1.9; color: var(--text); }
+.demo-card .demo-body p { margin-bottom: 14px; }
+.demo-card .demo-body p:last-child { margin-bottom: 0; }
+.blinking-cursor {
+  display: inline-block; width: 2px; height: 1em; background: var(--primary);
+  animation: blink 0.8s infinite; vertical-align: text-bottom;
+}
+
+/* CTA */
+.cta-card {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff); border-radius: var(--radius);
+  padding: 20px; text-align: center; margin: 20px 0;
+  border: 2px solid var(--primary);
+}
+.cta-card h3 { font-size: 16px; color: var(--primary); margin-bottom: 6px; }
+.cta-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+.btn-wechat { background: #07c160; color: #fff; width: 100%; }
+.btn-wechat:hover { background: #06ad56; }
+
+footer {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 500px; background: #fff; border-top: 1px solid var(--border);
+  padding: 12px 16px; text-align: center; font-size: 11px; color: var(--text-secondary);
+}
+footer .footer-brand { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+footer .footer-links { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
+footer .footer-links a { font-size: 11px; color: var(--text-secondary); text-decoration: none; }
+footer .footer-links a:hover { color: var(--primary); }
+footer .footer-contact { font-size: 11px; color: var(--text-secondary); }
+
+.toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+  background: #1a1a2e; color: #fff; padding: 10px 24px; border-radius: 20px;
+  font-size: 14px; z-index: 2000; opacity: 0; transition: opacity 0.3s; white-space: pre-line;
+}
+.toast.show { opacity: 1; }
+.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100}.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}.cta-bar .cta-divider{color:#334155;margin:0 8px}
+</style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "G-XXXXXXXXXX");
+</script>
+</head>
+<body>
+
+<header>
+  <h1>AI写作免费试用</h1>
+  <p>智能生成 · 人工精修 · 先试后买</p>
+</header>
+
+<div id="app">
+  <!-- Type Selection -->
+  <label class="section-label">选择写作类型</label>
+  <div class="type-grid" id="typeGrid">
+    <div class="type-card" data-type="resume" onclick="selectType('resume', this)">
+      <span class="icon">📄</span>
+      <div class="tname">简历优化</div>
+      <div class="tdesc">挖掘亮点，通过ATS筛选</div>
+    </div>
+    <div class="type-card" data-type="speech" onclick="selectType('speech', this)">
+      <span class="icon">🎤</span>
+      <div class="tname">演讲稿</div>
+      <div class="tdesc">有气场不空洞，打动听众</div>
+    </div>
+    <div class="type-card" data-type="bizplan" onclick="selectType('bizplan', this)">
+      <span class="icon">📊</span>
+      <div class="tname">商业计划书</div>
+      <div class="tdesc">逻辑清晰，投资人看得懂</div>
+    </div>
+    <div class="type-card" data-type="ppt" onclick="selectType('ppt', this)">
+      <span class="icon">📽️</span>
+      <div class="tname">PPT文案</div>
+      <div class="tdesc">结构+文案，你只管排版</div>
+    </div>
+  </div>
+
+  <!-- Input Section -->
+  <div id="inputSection">
+    <label class="section-label" id="inputHint"></label>
+    <textarea id="userInput" placeholder="请描述您的具体需求..."></textarea>
+    <button class="btn btn-primary" style="margin-top:12px" id="generateBtn" onclick="startGeneration()">✨ 生成 Demo</button>
+  </div>
+
+  <!-- Generating -->
+  <div id="generating">
+    <div class="gen-text">AI 正在生成中</div>
+    <div class="dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <!-- Demo Output -->
+  <div id="demoOutput">
+    <div class="demo-card">
+      <div class="demo-title" id="demoTitle"></div>
+      <div class="demo-body" id="demoBody"></div>
+    </div>
+
+    <div class="cta-card" id="ctaSection" style="display:none">
+      <h3>需要完整版吗？</h3>
+      <p>专业文案顾问一对一精修，覆盖你的行业和场景</p>
+      <button class="btn btn-wechat" onclick="copyWechat()">📱 复制微信号并打开微信</button>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="tryAgain()">再试一次</button>
+      <button class="btn btn-primary" style="flex:2" id="copyDemoBtn" onclick="copyDemo()">📋 复制 Demo</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">WK 工具矩阵</div>
+  <div class="footer-links">
+    <a href="https://yhmy2025.github.io/services/">文字服务</a>
+    <a href="https://yhmy2025.github.io/resume-checker/">简历诊断</a>
+    <a href="https://yhmy2025.github.io/logo-brief/">Logo设计</a>
+    <a href="https://yhmy2025.github.io/ai-writing/">AI写作</a>
+  </div>
+  <div class="footer-contact">微信 Yhgc_2025</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var WRITING_TEMPLATES = {
+  resume: {
+    name: '简历优化',
+    icon: '📄',
+    hint: '请输入目标岗位和你的背景，如："应聘产品经理，3年B端经验"',
+    paragraphs: [
+      '针对「{topic}」岗位，我们为你梳理了以下核心优化思路：首先突出你在{keywords}方面的专业能力，将笼统的"参与项目"改为量化的"主导/设计/优化"等行动动词，确保HR在6秒内捕捉到有效信息。',
+      '工作经历部分采用"动作 + 成果 + 数据"三段式结构重构。例如将"负责产品开发"升级为"主导{keywords}产品从0到1开发，上线首月DAU突破5万"。每个bullet point必须有可量化的业务成果，而不是职责罗列。',
+      '技能部分补充行业热词如{keywords}，提升ATS系统匹配率。整体排版确保一页以内，关键信息前置，删除与目标岗位无关的冗余经历。简历不是人生履历——是销售文案。'
+    ]
+  },
+  speech: {
+    name: '演讲稿',
+    icon: '🎤',
+    hint: '请输入演讲主题和场合，如："公司年会，主题是团队凝聚力"',
+    paragraphs: [
+      '以「{topic}」为主题的演讲稿，开场使用"提问+数据"的钩子抓住观众注意力。例如——"{keywords}领域90%的团队都面临同一个困境。"用共情开场比空洞的"大家好，很高兴站在这里"有效10倍。',
+      '主体部分采用"痛点→方案→案例→升华"四段论结构，每个论点配有具体的{keywords}案例支撑。在演讲的黄金7分钟内确保每2分钟有一个记忆点——可引用的金句、可记住的数据、或可共鸣的故事。',
+      '结尾设计有力的行动号召，结合{keywords}行业的最新趋势，让听众带着一个清晰的行动指令离场。推荐"总结金句+拥抱未来+号召行动"三连击收尾，比"谢谢大家"有力得多。'
+    ]
+  },
+  bizplan: {
+    name: '商业计划书',
+    icon: '📊',
+    hint: '请输入项目方向和核心优势，如："AI智能客服，已签约3家银行客户"',
+    paragraphs: [
+      '关于「{topic}」的商业计划书，执行摘要需在200字内讲清三件事：市场规模有多大、为什么是现在、为什么是你。{keywords}领域存在明确的供需缺口，目标用户规模达到百万级，年复合增长率超过25%。',
+      '商业模式部分清晰展示价值主张——你的核心竞争壁垒基于{keywords}的技术优势、先发数据和渠道资源。用一页纸画出收入模型：谁付钱、付多少、为什么持续付。投资人最怕的不是项目风险大，而是说不清怎么赚钱。',
+      '财务预测采用保守-基准-乐观三档情景分析，特别关注{keywords}行业的回本周期和盈亏平衡点。投资人真正关心的三个数字：TAM(市场总规模)、CAC(获客成本)、LTV(用户生命周期价值)。确保这三个数字相互印证，而不是自说自话。'
+    ]
+  },
+  ppt: {
+    name: 'PPT文案',
+    icon: '📽️',
+    hint: '请输入PPT主题和使用场景，如："Q2季度汇报，面向管理层"',
+    paragraphs: [
+      '关于「{topic}」的PPT文案，采用"封面→问题→方案→优势→案例→行动"六页核心结构，每页控制在3个要点以内。记住：十页以上的PPT，听众只会记住前三页和最后一页。',
+      '视觉建议：主色调选用与{keywords}领域相关的行业色系，数据页使用信息图表替代文字列表，核心数字放大至字号48pt以上。每页遵循"标题即结论"原则——标题直接写断言，而非描述性短语。',
+      '每页排版逻辑为"标题断言 + 3个支撑点"。例如标题直接写"实施{keywords}方案后效率提升40%"，而非"效率提升方案介绍"。最后一页的行动清单必须具体到"什么时候、谁、做什么"，避免"继续努力"这样的空话。'
+    ]
+  }
+};
+
+var STORAGE_KEY = 'ai_writing_last';
+var selectedType = null;
+var typewriterTimer = null;
+var demoText = '';
+
+function $(id) { return document.getElementById(id); }
+
+function selectType(type, el) {
+  selectedType = type;
+  var cards = document.querySelectorAll('.type-card');
+  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
+  el.classList.add('selected');
+
+  var tmpl = WRITING_TEMPLATES[type];
+  $('inputHint').textContent = tmpl.hint;
+  $('userInput').value = '';
+  $('inputSection').style.display = 'block';
+  $('demoOutput').style.display = 'none';
+  $('generating').style.display = 'none';
+  $('ctaSection').style.display = 'none';
+
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ type: type, ts: Date.now() })); } catch(e) {}
+  window.scrollTo({ top: $('inputSection').offsetTop - 20, behavior: 'smooth' });
+}
+
+function extractKeywords(input) {
+  var parts = input.split(/[,，、\s]+/).filter(function(w) {
+    return w.length >= 2 && w.length <= 10;
+  });
+  var stopwords = ['请输入','我的','一个','这个','需要','希望','想要','应聘','面向','用于','帮我','一个的'];
+  parts = parts.filter(function(w) { return stopwords.indexOf(w) === -1; });
+  var unique = [];
+  for (var i = 0; i < parts.length; i++) {
+    if (unique.indexOf(parts[i]) === -1) unique.push(parts[i]);
+  }
+  return unique.slice(0, 4).join('、') || '相关领域';
+}
+
+function startGeneration() {
+  var input = $('userInput').value.trim();
+  if (!input || input.length < 4) {
+    showToast('请输入至少4个字的需求描述');
+    return;
+  }
+
+  var tmpl = WRITING_TEMPLATES[selectedType];
+  var keywords = extractKeywords(input);
+  var topic = input.length > 50 ? input.slice(0, 50) + '...' : input;
+
+  // Build demo text
+  var parts = [];
+  for (var i = 0; i < tmpl.paragraphs.length; i++) {
+    parts.push(tmpl.paragraphs[i]
+      .replace(/\{topic\}/g, topic)
+      .replace(/\{keywords\}/g, keywords));
+  }
+  demoText = parts.join('\n\n');
+
+  $('inputSection').style.display = 'none';
+  $('demoOutput').style.display = 'none';
+  $('generating').style.display = 'block';
+  $('generateBtn').disabled = true;
+
+  setTimeout(function() {
+    $('generating').style.display = 'none';
+    $('demoOutput').style.display = 'block';
+    $('demoTitle').textContent = tmpl.icon + ' ' + tmpl.name + ' Demo';
+    $('demoBody').innerHTML = '';
+    $('ctaSection').style.display = 'none';
+    startTypewriter();
+  }, 2500);
+}
+
+function startTypewriter() {
+  if (typewriterTimer) clearTimeout(typewriterTimer);
+
+  var fullText = demoText;
+  var paragraphs = fullText.split('\n\n');
+  var charIndex = 0;
+  var paraIndex = 0;
+  var html = '';
+
+  function type() {
+    if (typewriterTimer) clearTimeout(typewriterTimer);
+
+    if (paraIndex < paragraphs.length) {
+      var para = paragraphs[paraIndex];
+      if (charIndex < para.length) {
+        charIndex++;
+        var displayed = para.slice(0, charIndex);
+        var cursor = '<span class="blinking-cursor">|</span>';
+        var paraHtml = '';
+        for (var p = 0; p < paraIndex; p++) {
+          paraHtml += '<p>' + paragraphs[p] + '</p>';
+        }
+        paraHtml += '<p>' + displayed + cursor + '</p>';
+        $('demoBody').innerHTML = paraHtml;
+        typewriterTimer = setTimeout(type, 30 + Math.random() * 25);
+      } else {
+        paraIndex++;
+        charIndex = 0;
+        typewriterTimer = setTimeout(type, 120);
+      }
+    } else {
+      // Done — show full text without cursor
+      var finalHtml = '';
+      for (var p = 0; p < paragraphs.length; p++) {
+        finalHtml += '<p>' + paragraphs[p] + '</p>';
+      }
+      $('demoBody').innerHTML = finalHtml;
+      $('ctaSection').style.display = 'block';
+      typewriterTimer = null;
+    }
+  }
+
+  type();
+}
+
+function copyDemo() {
+  var text = $('demoTitle').textContent + '\n\n' + demoText;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function() {
+      showToast('✅ Demo 已复制，可粘贴查看完整内容');
+    });
+  } else {
+    showToast('📋 请手动选择文字复制');
+  }
+}
+
+function copyWechat() {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText('Yhgc_2025').then(function() {
+      showToast('✅ 微信号已复制：Yhgc_2025\n打开微信添加好友即可');
+    });
+  } else {
+    showToast('📱 微信：Yhgc_2025');
+  }
+}
+
+function tryAgain() {
+  if (typewriterTimer) clearTimeout(typewriterTimer);
+  typewriterTimer = null;
+
+  selectedType = null;
+  demoText = '';
+  $('inputSection').style.display = 'none';
+  $('generating').style.display = 'none';
+  $('demoOutput').style.display = 'none';
+  $('generateBtn').disabled = false;
+  $('userInput').value = '';
+
+  var cards = document.querySelectorAll('.type-card');
+  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showToast(msg) {
+  var t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+// Restore last type selection
+try {
+  var saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  if (saved && saved.type && saved.ts && (Date.now() - saved.ts < 86400000)) {
+    // Don't auto-select, just highlight if available
+  }
+} catch(e) {}
+</script>
+<div class="cta-bar">
+  <div class="cta-text">需要更专业的定制服务？</div>
+  <div class="cta-links">
+    <span>闲鱼搜 YHmy</span>
+    <span class="cta-divider">|</span>
+    <span>微信 Yhgc_2025</span>
   </div>
 </div>
-
-<footer>
-  <div class="footer-brand">WK 工具矩阵</div>
-  <div class="footer-links">
-    <a href="https://yhmy2025.github.io/services/">文字服务</a>
-    <a href="https://yhmy2025.github.io/resume-checker/">简历诊断</a>
-    <a href="https://yhmy2025.github.io/logo-brief/">Logo设计</a>
-    <a href="https://yhmy2025.github.io/ai-writing/">AI写作</a>
-  </div>
-  <div class="footer-contact">微信 Yhgc_2025</div>
-</footer>
-
-<div class="toast" id="toast"></div>
-
-<script>
-var WRITING_TEMPLATES = {
-  resume: {
-    name: '简历优化',
-    icon: '📄',
-    hint: '请输入目标岗位和你的背景，如："应聘产品经理，3年B端经验"',
-    paragraphs: [
-      '针对「{topic}」岗位，我们为你梳理了以下核心优化思路：首先突出你在{keywords}方面的专业能力，将笼统的"参与项目"改为量化的"主导/设计/优化"等行动动词，确保HR在6秒内捕捉到有效信息。',
-      '工作经历部分采用"动作 + 成果 + 数据"三段式结构重构。例如将"负责产品开发"升级为"主导{keywords}产品从0到1开发，上线首月DAU突破5万"。每个bullet point必须有可量化的业务成果，而不是职责罗列。',
-      '技能部分补充行业热词如{keywords}，提升ATS系统匹配率。整体排版确保一页以内，关键信息前置，删除与目标岗位无关的冗余经历。简历不是人生履历——是销售文案。'
-    ]
-  },
-  speech: {
-    name: '演讲稿',
-    icon: '🎤',
-    hint: '请输入演讲主题和场合，如："公司年会，主题是团队凝聚力"',
-    paragraphs: [
-      '以「{topic}」为主题的演讲稿，开场使用"提问+数据"的钩子抓住观众注意力。例如——"{keywords}领域90%的团队都面临同一个困境。"用共情开场比空洞的"大家好，很高兴站在这里"有效10倍。',
-      '主体部分采用"痛点→方案→案例→升华"四段论结构，每个论点配有具体的{keywords}案例支撑。在演讲的黄金7分钟内确保每2分钟有一个记忆点——可引用的金句、可记住的数据、或可共鸣的故事。',
-      '结尾设计有力的行动号召，结合{keywords}行业的最新趋势，让听众带着一个清晰的行动指令离场。推荐"总结金句+拥抱未来+号召行动"三连击收尾，比"谢谢大家"有力得多。'
-    ]
-  },
-  bizplan: {
-    name: '商业计划书',
-    icon: '📊',
-    hint: '请输入项目方向和核心优势，如："AI智能客服，已签约3家银行客户"',
-    paragraphs: [
-      '关于「{topic}」的商业计划书，执行摘要需在200字内讲清三件事：市场规模有多大、为什么是现在、为什么是你。{keywords}领域存在明确的供需缺口，目标用户规模达到百万级，年复合增长率超过25%。',
-      '商业模式部分清晰展示价值主张——你的核心竞争壁垒基于{keywords}的技术优势、先发数据和渠道资源。用一页纸画出收入模型：谁付钱、付多少、为什么持续付。投资人最怕的不是项目风险大，而是说不清怎么赚钱。',
-      '财务预测采用保守-基准-乐观三档情景分析，特别关注{keywords}行业的回本周期和盈亏平衡点。投资人真正关心的三个数字：TAM(市场总规模)、CAC(获客成本)、LTV(用户生命周期价值)。确保这三个数字相互印证，而不是自说自话。'
-    ]
-  },
-  ppt: {
-    name: 'PPT文案',
-    icon: '📽️',
-    hint: '请输入PPT主题和使用场景，如："Q2季度汇报，面向管理层"',
-    paragraphs: [
-      '关于「{topic}」的PPT文案，采用"封面→问题→方案→优势→案例→行动"六页核心结构，每页控制在3个要点以内。记住：十页以上的PPT，听众只会记住前三页和最后一页。',
-      '视觉建议：主色调选用与{keywords}领域相关的行业色系，数据页使用信息图表替代文字列表，核心数字放大至字号48pt以上。每页遵循"标题即结论"原则——标题直接写断言，而非描述性短语。',
-      '每页排版逻辑为"标题断言 + 3个支撑点"。例如标题直接写"实施{keywords}方案后效率提升40%"，而非"效率提升方案介绍"。最后一页的行动清单必须具体到"什么时候、谁、做什么"，避免"继续努力"这样的空话。'
-    ]
-  }
-};
-
-var STORAGE_KEY = 'ai_writing_last';
-var selectedType = null;
-var typewriterTimer = null;
-var demoText = '';
-
-function $(id) { return document.getElementById(id); }
-
-function selectType(type, el) {
-  selectedType = type;
-  var cards = document.querySelectorAll('.type-card');
-  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
-  el.classList.add('selected');
-
-  var tmpl = WRITING_TEMPLATES[type];
-  $('inputHint').textContent = tmpl.hint;
-  $('userInput').value = '';
-  $('inputSection').style.display = 'block';
-  $('demoOutput').style.display = 'none';
-  $('generating').style.display = 'none';
-  $('ctaSection').style.display = 'none';
-
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ type: type, ts: Date.now() })); } catch(e) {}
-  window.scrollTo({ top: $('inputSection').offsetTop - 20, behavior: 'smooth' });
-}
-
-function extractKeywords(input) {
-  var parts = input.split(/[,，、\s]+/).filter(function(w) {
-    return w.length >= 2 && w.length <= 10;
-  });
-  var stopwords = ['请输入','我的','一个','这个','需要','希望','想要','应聘','面向','用于','帮我','一个的'];
-  parts = parts.filter(function(w) { return stopwords.indexOf(w) === -1; });
-  var unique = [];
-  for (var i = 0; i < parts.length; i++) {
-    if (unique.indexOf(parts[i]) === -1) unique.push(parts[i]);
-  }
-  return unique.slice(0, 4).join('、') || '相关领域';
-}
-
-function startGeneration() {
-  var input = $('userInput').value.trim();
-  if (!input || input.length < 4) {
-    showToast('请输入至少4个字的需求描述');
-    return;
-  }
-
-  var tmpl = WRITING_TEMPLATES[selectedType];
-  var keywords = extractKeywords(input);
-  var topic = input.length > 50 ? input.slice(0, 50) + '...' : input;
-
-  // Build demo text
-  var parts = [];
-  for (var i = 0; i < tmpl.paragraphs.length; i++) {
-    parts.push(tmpl.paragraphs[i]
-      .replace(/\{topic\}/g, topic)
-      .replace(/\{keywords\}/g, keywords));
-  }
-  demoText = parts.join('\n\n');
-
-  $('inputSection').style.display = 'none';
-  $('demoOutput').style.display = 'none';
-  $('generating').style.display = 'block';
-  $('generateBtn').disabled = true;
-
-  setTimeout(function() {
-    $('generating').style.display = 'none';
-    $('demoOutput').style.display = 'block';
-    $('demoTitle').textContent = tmpl.icon + ' ' + tmpl.name + ' Demo';
-    $('demoBody').innerHTML = '';
-    $('ctaSection').style.display = 'none';
-    startTypewriter();
-  }, 2500);
-}
-
-function startTypewriter() {
-  if (typewriterTimer) clearTimeout(typewriterTimer);
-
-  var fullText = demoText;
-  var paragraphs = fullText.split('\n\n');
-  var charIndex = 0;
-  var paraIndex = 0;
-  var html = '';
-
-  function type() {
-    if (typewriterTimer) clearTimeout(typewriterTimer);
-
-    if (paraIndex < paragraphs.length) {
-      var para = paragraphs[paraIndex];
-      if (charIndex < para.length) {
-        charIndex++;
-        var displayed = para.slice(0, charIndex);
-        var cursor = '<span class="blinking-cursor">|</span>';
-        var paraHtml = '';
-        for (var p = 0; p < paraIndex; p++) {
-          paraHtml += '<p>' + paragraphs[p] + '</p>';
-        }
-        paraHtml += '<p>' + displayed + cursor + '</p>';
-        $('demoBody').innerHTML = paraHtml;
-        typewriterTimer = setTimeout(type, 30 + Math.random() * 25);
-      } else {
-        paraIndex++;
-        charIndex = 0;
-        typewriterTimer = setTimeout(type, 120);
-      }
-    } else {
-      // Done — show full text without cursor
-      var finalHtml = '';
-      for (var p = 0; p < paragraphs.length; p++) {
-        finalHtml += '<p>' + paragraphs[p] + '</p>';
-      }
-      $('demoBody').innerHTML = finalHtml;
-      $('ctaSection').style.display = 'block';
-      typewriterTimer = null;
-    }
-  }
-
-  type();
-}
-
-function copyDemo() {
-  var text = $('demoTitle').textContent + '\n\n' + demoText;
-
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(function() {
-      showToast('✅ Demo 已复制，可粘贴查看完整内容');
-    });
-  } else {
-    showToast('📋 请手动选择文字复制');
-  }
-}
-
-function copyWechat() {
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText('Yhgc_2025').then(function() {
-      showToast('✅ 微信号已复制：Yhgc_2025\n打开微信添加好友即可');
-    });
-  } else {
-    showToast('📱 微信：Yhgc_2025');
-  }
-}
-
-function tryAgain() {
-  if (typewriterTimer) clearTimeout(typewriterTimer);
-  typewriterTimer = null;
-
-  selectedType = null;
-  demoText = '';
-  $('inputSection').style.display = 'none';
-  $('generating').style.display = 'none';
-  $('demoOutput').style.display = 'none';
-  $('generateBtn').disabled = false;
-  $('userInput').value = '';
-
-  var cards = document.querySelectorAll('.type-card');
-  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function showToast(msg) {
-  var t = $('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._tid);
-  t._tid = setTimeout(function() { t.classList.remove('show'); }, 2500);
-}
-
-// Restore last type selection
-try {
-  var saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-  if (saved && saved.type && saved.ts && (Date.now() - saved.ts < 86400000)) {
-    // Don't auto-select, just highlight if available
-  }
-} catch(e) {}
-</script>
-</body>
-</html>
+</body>
+</html>
