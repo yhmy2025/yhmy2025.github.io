@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>合同风险扫描器</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:#0f172a;min-height:100vh;max-width:680px;margin:0 auto;color:#e2e8f0;padding:24px 16px 80px}
+.header{text-align:center;padding:20px 0 24px}
+.header .icon{font-size:40px;margin-bottom:8px}
+.header h1{font-size:22px;font-weight:700}
+.header p{font-size:13px;color:#64748b;margin-top:4px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:16px}
+.card h3{font-size:15px;margin-bottom:12px;font-weight:600}
+textarea{width:100%;height:240px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;padding:14px;font-size:13px;resize:vertical;line-height:1.7;font-family:"SF Mono","Cascadia Code",monospace}
+textarea:focus{outline:none;border-color:#3b82f6}
+textarea::placeholder{color:#475569}
+.checks{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.check{padding:6px 12px;background:#1e293b;border:1px solid #334155;border-radius:20px;font-size:12px;color:#94a3b8;cursor:pointer;user-select:none;transition:.15s}
+.check.on{background:#1e3a5f;border-color:#3b82f6;color:#60a5fa}
+.btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer}
+.btn:hover{opacity:.9}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.score-ring{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:32px;font-weight:800}
+.score-good{border:4px solid #34d399;color:#34d399}
+.score-ok{border:4px solid #fbbf24;color:#fbbf24}
+.score-bad{border:4px solid #f87171;color:#f87171}
+.risk-item{padding:14px;border-radius:8px;margin-bottom:10px;border-left:4px solid #334155}
+.risk-high{border-left-color:#f87171;background:#1f1315}
+.risk-medium{border-left-color:#fbbf24;background:#1a1813}
+.risk-low{border-left-color:#34d399;background:#13211a}
+.risk-item .title{font-size:14px;font-weight:600;margin-bottom:4px}
+.risk-item .clause{font-size:12px;color:#94a3b8;margin-bottom:4px;font-style:italic}
+.risk-item .detail{font-size:13px;color:#cbd5e1;margin-bottom:4px}
+.risk-item .suggest{font-size:13px;color:#93c5fd;margin-top:6px;padding-top:6px;border-top:1px solid #334155}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;margin-right:6px}
+.badge-high{background:#7f1d1d;color:#f87171}
+.badge-medium{background:#78350f;color:#fbbf24}
+.badge-low{background:#065f46;color:#34d399}
+#result{display:none}
+#loading{display:none;text-align:center;padding:40px}
+.spinner{width:40px;height:40px;border:3px solid #334155;border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite;margin:16px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.footer{text-align:center;padding:20px;font-size:11px;color:#475569}
+.footer a{color:#64748b;text-decoration:none}
+.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100;margin:0 -16px;width:calc(100% + 32px)}
+.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}
+.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}
+.cta-bar .cta-divider{color:#334155;margin:0 8px}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-XXXXXXXXXX")</script>
+</head>
+<body>
+<div class="header">
+  <div class="icon">🛡️</div>
+  <h1>合同风险扫描器</h1>
+  <p>AI驱动的智能合同审查 · 秒级识别潜在风险条款</p>
+</div>
+<div id="input-section">
+  <div class="card">
+    <h3>📄 粘贴合同文本</h3>
+    <textarea id="contract" placeholder="请将合同条款粘贴到这里...&#10;&#10;支持中文合同&#10;建议粘贴完整条款以获得准确分析"></textarea>
+    <div class="checks" id="checks">
+      <span class="check on" data-key="赔偿条款">赔偿条款</span>
+      <span class="check on" data-key="解约条款">解约条款</span>
+      <span class="check on" data-key="保密条款">保密条款</span>
+      <span class="check on" data-key="知识产权">知识产权</span>
+      <span class="check on" data-key="竞业限制">竞业限制</span>
+      <span class="check on" data-key="付款条款">付款条款</span>
+      <span class="check on" data-key="违约责任">违约责任</span>
+      <span class="check on" data-key="管辖权">管辖权</span>
+    </div>
+    <button class="btn" onclick="review()">🔍 开始审查</button>
+  </div>
+</div>
+<div id="loading"><h3>🤖 AI正在审查合同...</h3><div class="spinner"></div><p style="font-size:13px;color:#64748b">逐条分析风险条款，约15-30秒</p></div>
+<div id="result">
+  <div id="result-content"></div>
+  <button class="btn" onclick="reset()" style="background:#475569;margin-top:12px">🔄 重新审查</button>
+</div>
+<div class="footer">
+  <a href="/">← 返回工具箱首页</a>
+  <p style="margin-top:8px">AI分析结果仅供参考，不构成法律意见。重要合同请咨询专业律师。</p>
+</div>
+<div class="cta-bar">
+  <div class="cta-text">需要更专业的定制服务？</div>
+  <div class="cta-links">
+    <span>闲鱼搜 YHmy</span>
+    <span class="cta-divider">|</span>
+    <span>微信 Yhgc_2025</span>
+  </div>
+</div>
+<script>
+document.getElementById('checks').addEventListener('click', function(e) { if (e.target.classList.contains('check')) { e.target.classList.toggle('on') } })
+async function review() {
+  var text = document.getElementById('contract').value.trim()
+  if (text.length < 100) { alert('合同文本太短，请至少粘贴100字'); return }
+  var checks = Array.from(document.querySelectorAll('.check.on')).map(function(c) { return c.dataset.key }).join(',')
+  document.getElementById('input-section').style.display = 'none'
+  document.getElementById('loading').style.display = 'block'
+  document.getElementById('result').style.display = 'none'
+  try {
+    var resp = await fetch('/api/contract-review', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: 'contract_text=' + encodeURIComponent(text) + '&checks=' + encodeURIComponent(checks) })
+    var data = await resp.json()
+    document.getElementById('loading').style.display = 'none'
+    document.getElementById('result').style.display = 'block'
+    if (!data.success) { document.getElementById('result-content').innerHTML = '<div class="card"><p style="color:#f87171">' + data.error + '</p></div>'; return }
+    render(data)
+  } catch(e) { document.getElementById('loading').style.display = 'none'; document.getElementById('result').style.display = 'block'; document.getElementById('result-content').innerHTML = '<div class="card"><p style="color:#f87171">网络错误，请稍后重试</p></div>' }
+}
+function render(d) {
+  var cls = d.score >= 80 ? 'score-good' : d.score >= 60 ? 'score-ok' : 'score-bad'
+  var risks = d.risks || []
+  var high = risks.filter(function(r) { return r.level === 'high' })
+  var medium = risks.filter(function(r) { return r.level === 'medium' })
+  var low = risks.filter(function(r) { return r.level === 'low' })
+  var riskHTML = ''
+  for (var i = 0; i < risks.length; i++) {
+    var r = risks[i]
+    var cls2 = r.level === 'high' ? 'risk-high' : r.level === 'medium' ? 'risk-medium' : 'risk-low'
+    var badge = r.level === 'high' ? '<span class="badge badge-high">高风险</span>' : r.level === 'medium' ? '<span class="badge badge-medium">中风险</span>' : '<span class="badge badge-low">低风险</span>'
+    riskHTML += '<div class="risk-item ' + cls2 + '"><div class="title">' + badge + (r.title || '') + '</div><div class="clause">📌 ' + (r.clause || '') + '</div><div class="detail">' + (r.detail || '') + '</div><div class="suggest">💡 建议：' + (r.suggestion || '') + '</div></div>'
+  }
+  document.getElementById('result-content').innerHTML = '<div class="card" style="text-align:center"><h3>📊 综合评分</h3><div class="score-ring ' + cls + '">' + d.score + '</div><div class="summary">' + (d.summary || '') + '</div><div style="font-size:13px;color:#64748b;margin-top:8px">高风险 ' + high.length + ' · 中风险 ' + medium.length + ' · 低风险 ' + low.length + '</div></div>' + (risks.length ? '<div class="card"><h3>🔍 风险详情</h3>' + riskHTML + '</div>' : '') + '<div class="card" style="text-align:center;background:linear-gradient(135deg,#1e3a5f,#312e81);border-color:#3b82f6"><p style="font-size:13px;color:#93c5fd;margin-bottom:8px">⚠️ AI分析结果仅供参考，不构成法律意见</p><p style="font-size:14px;font-weight:600">需要律师深度审查？ 闲鱼搜 <b>YHmy</b> 或 微信 <b>Yhgc_2025</b></p></div>'
+}
+function reset() { document.getElementById('input-section').style.display = ''; document.getElementById('loading').style.display = 'none'; document.getElementById('result').style.display = 'none'; window.scrollTo({top:0,behavior:'smooth'}) }
+</script>
+</body>
+</html>
