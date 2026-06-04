@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>跨境选品利润计算器</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:24px 16px 80px}
+.header{text-align:center;padding:20px 0 24px}
+.header .icon{font-size:40px;margin-bottom:8px}
+.header h1{font-size:22px;font-weight:700}
+.header p{font-size:13px;color:#64748b;margin-top:4px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:16px}
+.card h3{font-size:15px;margin-bottom:14px;font-weight:600}
+.row{display:flex;gap:12px;margin-bottom:12px}
+.field{flex:1;min-width:0}
+.field label{display:block;font-size:12px;color:#94a3b8;margin-bottom:4px;font-weight:600}
+.field input,.field select{width:100%;padding:10px 12px;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:14px}
+.field input:focus,.field select:focus{outline:none;border-color:#3b82f6}
+.toggle{display:flex;background:#0f172a;border-radius:8px;overflow:hidden;margin-bottom:16px}
+.toggle span{flex:1;text-align:center;padding:10px;font-size:13px;cursor:pointer;color:#64748b;transition:.15s}
+.toggle span.on{background:#2563eb;color:#fff;font-weight:600}
+.btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#059669,#2563eb);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer}
+.btn:hover{opacity:.9}
+.big-number{font-size:42px;font-weight:800;text-align:center;margin:8px 0}
+.profit-good{color:#34d399}.profit-ok{color:#fbbf24}.profit-bad{color:#f87171}
+.breakdown{font-size:13px;line-height:2;color:#94a3b8;margin-top:12px;padding-top:12px;border-top:1px solid #334155}
+.verdict{padding:14px;border-radius:8px;text-align:center;font-size:14px;font-weight:600;margin-top:12px}
+.verdict-good{background:#065f46;color:#34d399}.verdict-ok{background:#78350f;color:#fbbf24}.verdict-bad{background:#7f1d1d;color:#f87171}
+#result{display:none}
+.footer{text-align:center;padding:20px;font-size:11px;color:#475569}
+.footer a{color:#64748b;text-decoration:none}
+.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100;margin:0 -16px;width:calc(100% + 32px)}
+.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}
+.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}
+.cta-bar .cta-divider{color:#334155;margin:0 8px}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-XXXXXXXXXX")</script>
+</head>
+<body>
+<div class="header">
+  <div class="icon">🛒</div>
+  <h1>跨境选品利润计算器</h1>
+  <p>Amazon FBA/FBM 利润一键测算</p>
+</div>
+
+<div id="input-section">
+  <div class="card">
+    <h3>📦 输入成本数据</h3>
+    <div class="toggle" id="mode-toggle">
+      <span class="on" data-mode="fba">FBA 亚马逊物流</span>
+      <span data-mode="fbm">FBM 自发货</span>
+    </div>
+    <div class="row">
+      <div class="field"><label>采购单价 (¥)</label><input id="cost" type="number" placeholder="例如 25" step="0.01"></div>
+      <div class="field"><label>产品重量 (g)</label><input id="weight" type="number" placeholder="例如 200"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>目标售价 ($)</label><input id="price" type="number" placeholder="例如 19.99" step="0.01"></div>
+      <div class="field"><label>头程运费 (¥/kg)</label><input id="shipping" type="number" value="25" placeholder="海运约25"></div>
+    </div>
+    <button class="btn" onclick="calculate()">🛒_BTN 计算利润</button>
+  </div>
+</div>
+
+<div id="result">
+  <div class="card" id="result-card"></div>
+  <button class="btn" onclick="reset()" style="background:#475569;margin-top:12px">🔄 重新计算</button>
+</div>
+
+<div class="footer">
+  <a href="/">← 返回工具箱首页</a>
+  <p style="margin-top:8px">数据仅供参考，实际费用以亚马逊账单为准</p>
+</div>
+
+<div class="cta-bar">
+  <div class="cta-text">需要选品代运营/Listing优化？</div>
+  <div class="cta-links">
+    <span>闲鱼搜 YHmy</span>
+    <span class="cta-divider">|</span>
+    <span>微信 Yhgc_2025</span>
+  </div>
+</div>
+
+<script>
+document.getElementById('mode-toggle').addEventListener('click', function(e) {
+  if (e.target.tagName === 'SPAN') {
+    this.querySelectorAll('span').forEach(function(s) { s.classList.remove('on') })
+    e.target.classList.add('on')
+  }
+})
+
+function calculate() {
+  var cost = parseFloat(document.getElementById('cost').value)
+  var weight = parseFloat(document.getElementById('weight').value)
+  var price = parseFloat(document.getElementById('price').value)
+  var shippingRate = parseFloat(document.getElementById('shipping').value)
+  var mode = document.querySelector('#mode-toggle .on').dataset.mode
+
+  if (!cost || !weight || !price) { alert('请填写采购单价、重量和售价'); return }
+  if (cost <= 0 || weight <= 0 || price <= 0) { alert('所有数值必须大于0'); return }
+
+  var rate = 7.2
+  var costUSD = cost / rate
+  var freightCNY = weight / 1000 * shippingRate
+  var freightUSD = freightCNY / rate
+  var commission = price * 0.15
+  var adCost = price * 0.10
+
+  var fbaFee = 0, storageFee = 0, fulfillment = ''
+  if (mode === 'fba') {
+    fbaFee = weight <= 113 ? 3.22 : weight <= 453 ? 4.24 : weight <= 907 ? 5.14 : 6.25
+    storageFee = 0.02
+    fulfillment = 'FBA配送'
+  } else {
+    fbaFee = weight <= 100 ? 4 : weight <= 500 ? 6 : 8
+    storageFee = 0
+    fulfillment = '国际小包'
+  }
+
+  var totalCost = costUSD + freightUSD + fbaFee + storageFee + commission + adCost
+  var profit = price - totalCost
+  var margin = profit / price * 100
+
+  var cls = margin >= 25 ? 'profit-good' : margin >= 15 ? 'profit-ok' : 'profit-bad'
+  var vCls = margin >= 25 ? 'verdict-good' : margin >= 15 ? 'verdict-ok' : 'verdict-bad'
+  var verdict = margin >= 25 ? '✅ 这个品可以做！利润率健康，建议推进' : margin >= 15 ? '⚠️ 利润率一般，建议优化采购成本或提高售价后再评估' : '🔴 利润率偏低，不建议此定价方案。尝试降低采购价或提高售价'
+
+  document.getElementById('result-card').innerHTML =
+    '<h3>📊 利润分析</h3>' +
+    '<div class="big-number ' + cls + '">$' + profit.toFixed(2) + '</div>' +
+    '<div style="text-align:center;font-size:14px;color:#94a3b8">≈ ¥' + (profit * rate).toFixed(2) + ' | 净利润率 <span class="' + cls + '">' + margin.toFixed(1) + '%</span></div>' +
+    '<div class="breakdown">' +
+    '<div>采购成本: $' + costUSD.toFixed(2) + ' (¥' + cost.toFixed(2) + ')</div>' +
+    '<div>头程运费: $' + freightUSD.toFixed(2) + ' (¥' + freightCNY.toFixed(2) + ')</div>' +
+    '<div>' + fulfillment + ': $' + fbaFee.toFixed(2) + '</div>' +
+    '<div>Amazon佣金(15%): $' + commission.toFixed(2) + '</div>' +
+    '<div>广告预留(10%): $' + adCost.toFixed(2) + '</div>' +
+    '<div style="font-weight:700;color:#e2e8f0;margin-top:4px">总成本: $' + totalCost.toFixed(2) + '</div>' +
+    '</div>' +
+    '<div class="verdict ' + vCls + '">' + verdict + '</div>'
+
+  document.getElementById('input-section').style.display = 'none'
+  document.getElementById('result').style.display = 'block'
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+
+function reset() {
+  document.getElementById('input-section').style.display = ''
+  document.getElementById('result').style.display = 'none'
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+</script>
+</body>
+</html>
