@@ -1,20 +1,32 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>简易记账</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:40px 32px;text-align:center;max-width:360px}
-.card .icon{font-size:48px;margin-bottom:16px}
-.card h1{font-size:20px;font-weight:700;margin-bottom:8px}
-.card p{font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:20px}
-.card .btn{display:inline-block;padding:10px 20px;background:#3b82f6;color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600}
-.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100}.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}.cta-bar .cta-divider{color:#334155;margin:0 8px}
-</style>
-<!-- Google Analytics -->
+<!DOCTYPE html><html lang=zh-CN><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"><title>简易记账</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,sans-serif}
+body{background:#f5f5f5;padding-bottom:76px;max-width:500px;margin:0 auto}
+.pg{display:none;padding:12px}.pg.on{display:block}
+.nt{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #eee;display:flex;max-width:500px;margin:0 auto}
+.nt .tb{flex:1;text-align:center;padding:8px 2px;font-size:10px;color:#999;cursor:pointer}
+.nt .tb.on{color:#4f46e5}.nt .tb .ic{font-size:20px}
+.btn{display:inline-block;border:none;border-radius:8px;cursor:pointer;text-align:center;padding:8px 12px;font-size:12px}
+.btn-p{background:#4f46e5;color:#fff;width:100%}.btn-o{background:#f0f0f0;color:#333}
+.cd{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;font-size:13px}
+.sr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.sc{padding:8px;border-radius:8px;background:#fafafa}.sc .a{font-size:11px;color:#999}.sc .b{font-size:18px;font-weight:700}
+.rec{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.rec .if{flex:1}.rec .c{font-size:13px;font-weight:500}.rec .d{font-size:11px;color:#999}.rec .am{font-size:15px;font-weight:700;min-width:80px;text-align:right}
+.tt{display:flex;background:#f0f0f0;border-radius:8px;overflow:hidden}
+.tt .o{flex:1;text-align:center;padding:8px;font-size:13px;cursor:pointer}
+.tt .o.on{background:#4f46e5;color:#fff;border-radius:8px}
+.fg{margin:8px 0}.fg label{font-size:12px;color:#666;display:block;margin-bottom:2px}
+.fg input,.fg select{width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none}
+.qa{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
+.ci{display:inline-block;width:48%;padding:8px;border-radius:8px;text-align:center;font-size:12px;cursor:pointer;border:2px solid transparent;margin:1%}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#fafafa;padding:6px;border-bottom:2px solid #eee;color:#666}
+td{padding:6px;border-bottom:1px solid #f0f0f0}
+.tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600}
+.tag.i{background:#dcfce7;color:#16a34a}.tag.e{background:#fef2f2;color:#dc2626}
+#ts{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+#ts.sh{opacity:1}.gc{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.ci{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 6px;border-radius:10px;background:#fafafa;border:2px solid transparent;cursor:pointer;transition:all .15s}.ci.sl{background:#eef2ff;border-color:#4f46e5}.ci .ci-icon{font-size:20px;margin-bottom:4px}.ci .ci-text{font-size:12px;white-space:nowrap}.ci:hover{background:#f0f0f0}
+.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100;margin:0 -16px;width:calc(100% + 32px)}.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}.cta-bar .cta-divider{color:#334155;margin:0 8px}
+</style><!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -22,15 +34,93 @@ function gtag(){dataLayer.push(arguments);}
 gtag("js", new Date());
 gtag("config", "G-XXXXXXXXXX");
 </script>
-</head>
-<body>
-<div class="card">
-  <div class="icon">💰</div>
-  <h1>简易记账</h1>
-  <p>小微企业/个人记账 · 流水报告一键生成<br><br>功能开发中，如需使用请直接联系：<br>闲鱼搜 <b>YHmy</b> 或 微信 <b>Yhgc_2025</b></p>
-  <a class="btn" href="/">← 返回工具箱首页</a>
-</div>
-<div class="cta-bar">
+</head><body><div id=ts></div><div id=p-home class="pg on"></div><div id=p-add class=pg></div><div id=p-list class=pg></div><div id=p-rpt class=pg></div><div id=p-set class=pg></div><div class=nt><div class="tb on" onclick=gt("home",this)><div class=ic>🏠</div>首页</div><div class=tb onclick=gt("add",this)><div class=ic>✏️</div>记账</div><div class=tb onclick=gt("list",this)><div class=ic>📋</div>流水</div><div class=tb onclick=gt("rpt",this)><div class=ic>📊</div>报告</div><div class=tb onclick=gt("set",this)><div class=ic>⚙️</div>设置</div></div><script>const SK='av5';let d={r:[],s:{}};
+const cs={i:[{n:'销售收入',e:'💰'},{n:'服务收入',e:'💼'},{n:'回款',e:'💳'},{n:'工资收入',e:'💵'},{n:'投资收益',e:'📈'},{n:'兼职收入',e:'💻'},{n:'租金收入',e:'🏘️'},{n:'其他收入',e:'📥'}],e:[{n:'进货/原料',e:'📦'},{n:'人工工资',e:'👥'},{n:'房租',e:'🏠'},{n:'水电',e:'💡'},{n:'营销',e:'📢'},{n:'交通',e:'🚚'},{n:'招待',e:'🍽️'},{n:'办公',e:'📎'},{n:'通讯',e:'📱'},{n:'税费',e:'📋'},{n:'保险',e:'🛡️'},{n:'维修',e:'🔧'},{n:'其他支出',e:'📤'}]};
+const BM={'餐饮':{n:'餐饮业',r:{食材:{t:35,w:42},人工:{t:30,w:38},租金:{t:15,w:22}},g:{t:60,w:50},ts:['食材超40%要优化','翻台率是生命线','每周盘点减浪费']},'零售':{n:'零售业',r:{进货:{t:60,w:70},人工:{t:15,w:22},租金:{t:10,w:18}},g:{t:40,w:30},ts:['库存周转<30天','关注滞销品','进货波动>5%调价']},'服务':{n:'服务业',r:{人工:{t:35,w:45},租金:{t:10,w:18},营销:{t:10,w:20}},g:{t:50,w:40},ts:['人效比是核心','获客成本高做复购','项目制核算']},'制造':{n:'制造业',r:{原料:{t:45,w:55},人工:{t:20,w:30},能耗:{t:8,w:12}},g:{t:35,w:25},ts:['开工率<60%需关注','能耗上升检查设备','原料提前锁价']},'电商':{n:'电商',r:{进货:{t:40,w:55},推广:{t:15,w:25},人工:{t:10,w:18},物流:{t:8,w:12}},g:{t:45,w:30},ts:['ROI<1:3暂停推广','退货>15%检查品质','复购率比转化重要']},'农业':{n:'农业',r:{种子农药:{t:20,w:30},人工:{t:25,w:35},设备:{t:10,w:15},运输:{t:8,w:12}},g:{t:40,w:30},ts:['受天气和季节影响大','关注农业补贴政策','建议多元化种植']},'建筑':{n:'建筑业',r:{材料:{t:35,w:45},人工:{t:30,w:40},设备:{t:10,w:15}},g:{t:30,w:20},ts:['垫资压力大注意现金流','项目结算周期长','按项目单独核算']},'教育':{n:'教育培训',r:{场地:{t:20,w:28},师资:{t:35,w:45},营销:{t:10,w:18}},g:{t:50,w:40},ts:['寒暑假是旺季','续费率和口碑是关键','关注双减政策影响']},'医疗':{n:'医疗健康',r:{药品:{t:25,w:35},器械:{t:15,w:22},人力:{t:30,w:40}},g:{t:50,w:40},ts:['资质合规是底线','设备折旧成本高','重点客户关系维护']},'物流':{n:'物流仓储',r:{运输:{t:35,w:45},仓储:{t:15,w:22},人力:{t:20,w:28}},g:{t:25,w:15},ts:['关注油价波动','旺季运力调配','人车比控制是关键']},'IT':{n:'IT/互联网',r:{人力:{t:40,w:55},服务器:{t:8,w:12},营销:{t:10,w:18}},g:{t:55,w:40},ts:['核心技术人员留存','项目制vs产品化','研发投入比例要关注']},'装修':{n:'装修装饰',r:{材料:{t:40,w:50},人工:{t:25,w:35},设计:{t:5,w:10}},g:{t:25,w:15},ts:['严格按进度收款','材料损耗要控制','售后维修预算留足']}};
+function ld(){try{var a=localStorage.getItem(SK);if(a)d=JSON.parse(a)}catch(e){}if(!d.r)d.r=[];if(!d.s)d.s={}}
+function sv(){localStorage.setItem(SK,JSON.stringify(d))}
+function $(i){return document.getElementById(i)}
+function ts(m){var t=$('ts');if(!t)return;t.textContent=m;t.classList.add('sh');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('sh')},1800)}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+function fm(v){return '¥'+(v/100).toFixed(2)}
+function mr(ym){return d.r.filter(function(r){return r.d.startsWith(ym)}).sort(function(a,b){return b.d.localeCompare(a.d)})}
+function ms(ym){var ti=0,te=0;mr(ym).forEach(function(r){r.t==='i'?ti+=r.a:te+=r.a});return{ti:ti,te:te,p:ti-te,rc:mr(ym).length}}
+function gt(id,el){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});
+  var pg=$('p-'+id);pg&&pg.classList.add('on');
+  document.querySelectorAll('.nt .tb').forEach(function(t){t.classList.remove('on')});
+  el&&el.classList.add('on');
+  if(id==='home')rh()
+  if(id==='add')ia()
+  if(id==='list')rl()
+  if(id==='rpt'){var n=new Date();$('rm')||($('p-rpt').innerHTML=getReportShell());$('rm')&&!$('rm').value&&setTimeout(function(){var m=$('rm');m&&!m.value&&(m.value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0'))},50)}
+  if(id==='set')lset()
+}
+function rh(){
+  ld();var n=new Date(),ym=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0'),s=ms(ym);
+  var h='<div style="background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:14px 16px;border-radius:12px;margin-bottom:10px;text-align:center"><div style=font-size:18px;font-weight:700>📊 简易记账小助手</div><div style=font-size:11px;opacity:.8;margin-top:4px>免费 · 安全 · 数据存于本地</div></div><div class=sr><div class=sc><div class=a>当月收入</div><div class=b id=mi style=color:#22c55e>'+fm(s.ti)+'</div></div><div class=sc><div class=a>当月支出</div><div class=b id=me style=color:#ef4444>'+fm(s.te)+'</div></div><div class=sc><div class=a>当月利润</div><div class=b id=mp style=color:'+(s.p>=0?'#22c55e':'#ef4444')+'>'+fm(s.p)+'</div></div><div class=sc><div class=a>笔数</div><div class=b id=mc>'+s.rc+'笔</div></div></div>';
+  var rs=mr(ym).slice(0,5);
+  h+='<div class=cd><div class=cti>最近流水</div>';
+  if(rs.length===0){h+='<div style=text-align:center;padding:20px;color:#999>暂无记录</div>'}else{for(var i=0;i<rs.length;i++){var r=rs[i];h+='<div class=rec><div class=ic>'+(r.t==='i'?'📥':'📤')+'</div><div class=if><div class=c>'+r.c+'</div><div class=d>'+r.d.slice(5)+(r.n?' '+r.n:'')+'</div></div><div class=am style=color:'+(r.t==='i'?'#22c55e':'#ef4444')+'>'+(r.t==='i'?'+':'-')+(r.a/100).toFixed(2)+'</div></div>'}}
+  h+='</div><button class="btn btn-p" onclick=gt("add") style=font-size:14px;padding:10px;margin-bottom:8px>✏️ 记一笔</button><div style=display:flex;gap:6px><button class="btn btn-o" onclick=gt("list") style=flex:1>📋 查看流水</button><button class="btn btn-o" onclick=gt("rpt") style=flex:1>📊 查看报告</button></div><div style=margin-top:12px;background:#f0f4ff;border-radius:8px;padding:10px;text-align:center;font-size:10px;color:#666;line-height:1.8>📝 简历·演讲稿·商业计划书·述职报告·PPT<br>🎨 Logo设计 · 📱 小红书运营 · 🌏 跨境电商<br>👉 闲鱼搜 <b style=color:#4f46e5>YHmy</b> 或 微信 <b style=color:#4f46e5>Yhgc_2025</b></div>';
+  $('p-home').innerHTML=h;
+}
+var cur='i',sc='';
+function sa(t){cur=t;var els=$('at').querySelectorAll('.o');for(var i=0;i<els.length;i++){els[i].style.background='#f0f0f0';els[i].style.color='#333';els[i].style.borderRadius='8px'}var idx=t==='i'?0:1;els[idx].style.background='#4f46e5';els[idx].style.color='#fff';rc();rq()}
+function rq(){var a=cur==='i'?[100,500,1e3,5e3,1e4]:[10,50,100,500,1e3,5e3];var h='';for(var i=0;i<a.length;i++){h+='<span class="btn btn-o" onclick=setAmount('+a[i]+') style=margin:2px>¥'+a[i].toLocaleString()+'</span>'}$('aq').innerHTML=h}
+function setAmount(v){var el=$('aa');if(el)el.value=v}
+function rc(){var l=cs[cur];var h='';for(var i=0;i<l.length;i++){var c=l[i];h+='<div class="ci'+(sc===c.n?' sl':'')+'" onclick=selCat("'+c.n+'") style=width:calc(50% - 6px);padding:8px;border-radius:8px;background:'+(sc===c.n?'#eef2ff':'#fafafa')+';text-align:center;font-size:12px;cursor:pointer;border:2px solid '+(sc===c.n?'#4f46e5':'transparent')+'><div style=font-size:18px;margin-bottom:2px>'+c.e+'</div>'+c.n+'</div>'}$('ac').innerHTML=h}
+function selCat(n){sc=n;rc()}
+function ia(){var d=new Date().toISOString().slice(0,10);var h='<div class=tt id=at><div class="o on" onclick=sa("i") style=flex:1;text-align:center;padding:8px;font-size:14px;cursor:pointer;background:#4f46e5;color:#fff;border-radius:8px>💰 收入</div><div class=o onclick=sa("e") style=flex:1;text-align:center;padding:8px;font-size:14px;cursor:pointer>💸 支出</div></div><div class=fg><label>日期</label><input id=ad type=date value="'+d+'"></div><div class=fg><label>金额(元)</label><input id=aa type=number step=0.01 placeholder="输入金额"></div><div class=qa id=aq></div><div class=gc id=ac></div><div class=fg><label>备注</label><input id=an placeholder="选填"></div><button class="btn btn-p" onclick=sr() style=margin-top:8px>💾 保存</button>';$('p-add').innerHTML=h;sc='';cur='i';rc();rq()}
+function sr(){var a=Math.round(parseFloat($('aa').value)*100);if(!a||a<=0){ts('请输入金额');return}if(!sc){ts('请选择类别');return}ld();d.r.push({id:id(),d:$('ad').value,t:cur,c:sc,a:a,n:$('an').value.trim()||'',src:'手动',ts:Date.now()});sv();ts('✅ 已保存');setTimeout(function(){gt('home')},400)}
+function sd(id){ld();var rec=null;for(var i=0;i<d.r.length;i++){if(d.r[i].id===id){rec=d.r[i];break}}if(!rec)return;var ov=document.createElement('div');ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px';ov.onclick=function(e){e.target===this&&closeOverlay()};ov.innerHTML='<div style=background:#fff;border-radius:12px;padding:20px;max-width:360px;width:100%><div style=text-align:right;font-size:18px;cursor:pointer;color:#999 onclick=closeOverlay()>✕</div><div style=text-align:center;font-size:32px;margin-bottom:8px>'+(rec.t==='i'?'📥':'📤')+'</div><div style=text-align:center;font-size:24px;font-weight:600;color:'+(rec.t==='i'?'#22c55e':'#ef4444')+'>'+(rec.t==='i'?'+':'-')+' '+(rec.a/100).toFixed(2)+'</div><table style=width:100%;margin-top:12px;font-size:13px><tr><td style=color:#999;padding:6px 0>类型</td><td>'+(rec.t==='i'?'收入':'支出')+'</td></tr><tr><td style=color:#999;padding:6px 0>日期</td><td>'+rec.d+'</td></tr><tr><td style=color:#999;padding:6px 0>类别</td><td>'+rec.c+'</td></tr><tr><td style=color:#999;padding:6px 0>金额</td><td style=font-weight:600>'+(rec.a/100).toFixed(2)+'</td></tr><tr><td style=color:#999;padding:6px 0>备注</td><td>'+(rec.n||'-')+'</td></tr></table><div style=display:flex;gap:8px;margin-top:12px><button class="btn btn-o" onclick=editRec("'+rec.id+'") style=flex:1>✏️ 修改</button><button class="btn btn-o" onclick=drFromDetail("'+rec.id+'") style=flex:1;background:#fef2f2;color:#ef4444>🗑️ 删除</button></div></div>';ov.id='detailOv';document.body.appendChild(ov)}
+function closeOverlay(){var el=$('detailOv');el&&el.parentNode.removeChild(el)}
+function drFromDetail(id){closeOverlay();dr(id)}
+function editRec(id){closeOverlay();ld();var rec=null;for(var i=0;i<d.r.length;i++){if(d.r[i].id===id){rec=d.r[i];break}}if(!rec)return;cur=rec.t;sc=rec.c;ia();setTimeout(function(){$('ad').value=rec.d;$('aa').value=(rec.a/100).toFixed(2);$('an').value=rec.n||''},50);d.r=d.r.filter(function(r){return r.id!==id});sv()}
+function dr(id){if(!confirm('确定删除？'))return;ld();d.r=d.r.filter(function(r){return r.id!==id});sv();rl();ts('已删除')}
+function ex(){ld();var mi=$('lm');if(!mi||!mi.value)return;var recs=mr(mi.value);if(recs.length===0)return;var c='日期,类型,类别,金额,备注,来源\n';for(var i=0;i<recs.length;i++){var r=recs[i];c+=r.d+','+(r.t==='i'?'收入':'支出')+','+r.c+','+(r.t==='i'?'':'-')+(r.a/100).toFixed(2)+','+(r.n||'')+','+(r.src||'手动')+'\n'}var b=new Blob(['\ufeff'+c],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='流水_'+mi.value+'.csv';a.click();URL.revokeObjectURL(a.href);ts('已导出')}
+function getReportShell(){var n=new Date();return '<h2 style=font-size:16px;margin-bottom:10px>📊 经营报告</h2><div style=display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap><input type=month id=rm style=flex:1;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:12px><button class="btn btn-p" onclick=geReport()>⚡生成报告</button><button class="btn btn-o" onclick=repCSV()>📄导出Excel</button><button class="btn btn-o" onclick=repTXT()>📝导出文字</button></div><div id=repContent></div><div style=margin-top:12px;background:#f0f4ff;border-radius:8px;padding:10px;text-align:center;font-size:10px;color:#666;line-height:1.8>📝 简历·演讲稿·商业计划书·述职报告·PPT<br>🎨 Logo设计 · 📱 小红书运营 · 🌏 跨境电商<br>👉 闲鱼搜 <b style=color:#4f46e5>YHmy</b> 或 微信 <b style=color:#4f46e5>Yhgc_2025</b></div>'}
+function updateRM(){var n=new Date(),rm=$('rm');if(rm&&!rm.value)rm.value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')}
+function geReport(){
+  var m=$('rm').value;if(!m)return;ld();var ind=d.s.industry||'',bm=BM[ind];
+  if(!bm){$('repContent').innerHTML='<div style=text-align:center;padding:20px>请先设置行业</div>';return}
+  var s=ms(m),exp={},inc={},gpm=s.ti>0?(s.ti-(exp['进货/原料']||0))/s.ti*100:null;
+  mr(m).forEach(function(r){r.t==='e'?exp[r.c]=(exp[r.c]||0)+r.a:inc[r.c]=(inc[r.c]||0)+r.a});
+  gpm=s.ti>0?(s.ti-(exp['进货/原料']||0))/s.ti*100:null;
+  var score=70;if(s.ti>0){var npr=s.p/s.ti*100;score+=npr>20?15:npr>10?10:5}else score=60;if(gpm!==null&&gpm>50)score+=10;else if(gpm!==null&&gpm<20)score-=10;score=Math.max(0,Math.min(100,Math.round(score)));
+  var sc=score>=70?'g':score>=40?'w':'d',sc2=score>=70?'✅ 良好':score>=40?'⚠️ 关注':'🚨 预警';
+  var parts=m.split('-'),y=parts[0],mm=parts[1],pm=mm==='01'?(parseInt(y)-1)+'-12':y+'-'+String(parseInt(mm)-1).padStart(2,'0'),ps=ms(pm);
+  var vp=ps.p!==0&&ps.rc>0?((s.p-ps.p)/Math.abs(ps.p)*100).toFixed(1):null;
+  var html='<div style=text-align:center><div style=display:inline-flex;width:64px;height:64px;border-radius:50%;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#fff;background:'+(score>=70?'#22c55e':score>=40?'#f59e0b':'#ef4444')+'>'+score+'</div><div style=margin-top:6px;font-weight:600>'+sc2+'</div></div>';
+  html+='<div class=cd><div class=sr><div class=sc><div class=a>收入</div><div class=b style=color:#22c55e>'+fm(s.ti)+'</div></div><div class=sc><div class=a>支出</div><div class=b style=color:#ef4444>'+fm(s.te)+'</div></div><div class=sc><div class=a>利润</div><div class=b style=color:'+(s.p>=0?'#22c55e':'#ef4444')+'>'+fm(s.p)+'</div></div><div class=sc><div class=a>净利率</div><div class=b>'+(s.ti>0?Math.round(s.p/s.ti*100):0)+'%</div></div></div></div>';
+  var ik=Object.keys(inc);html+='<div class=cd><div class=cti>收入</div>';for(var i=0;i<ik.length;i++){html+='<div style=display:flex;justify-content:space-between;padding:4px 0><span>'+ik[i]+'</span><span style=color:#22c55e>'+fm(inc[ik[i]])+'</span></div>'}
+  var ek=Object.keys(exp);html+='</div><div class=cd><div class=cti>支出</div>';for(var i=0;i<ek.length;i++){html+='<div style=display:flex;justify-content:space-between;padding:4px 0><span>'+ek[i]+'</span><span><span style=color:#ef4444>'+fm(exp[ek[i]])+'</span><span style=color:#999;margin-left:6px>'+(s.ti>0?Math.round(exp[ek[i]]/s.ti*100):0)+'%</span></span></div>'}
+  html+='</div>';var sgs=bm.ts.slice(0,3);html+='<div class=cd><div class=cti>建议（'+bm.n+'）</div>';for(var i=0;i<sgs.length;i++){html+='<div style=padding:6px 0;font-size:12px>💡 '+sgs[i]+'</div>'}html+='</div>';$('repContent').innerHTML=html;
+}
+function repCSV(){var m=$('rm').value;if(!m)return;ld();var s=ms(m);var lines=['经营报告,'+m,'企业,'+(d.s.name||''),'行业,'+(d.s.industry||''),'日期,类型,类别,金额,备注'];var recs=mr(m);for(var i=0;i<recs.length;i++){var r=recs[i];lines.push(r.d+','+(r.t==='i'?'收入':'支出')+','+r.c+','+(r.t==='i'?'':'-')+(r.a/100).toFixed(2)+','+(r.n||''))}lines.push('合计收入,,'+(s.ti/100).toFixed(2));lines.push('合计支出,,'+(s.te/100).toFixed(2));lines.push('利润,,'+(s.p/100).toFixed(2));var csv=lines.join('\n');var b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='报告_'+m+'.csv';a.click();URL.revokeObjectURL(a.href);ts('已导出')}
+function repTXT(){var m=$('rm').value;if(!m)return;ld();var s=ms(m),set=d.s;var txt='经营报告 - '+m+'\n';txt+='企业: '+(set.name||'')+' 行业: '+(set.industry||'')+'\n';txt+='收入: '+fm(s.ti)+' 支出: '+fm(s.te)+' 利润: '+fm(s.p)+' 笔数: '+s.rc+'\n';var inc={},exp={};mr(m).forEach(function(r){r.t==='i'?inc[r.c]=(inc[r.c]||0)+r.a:exp[r.c]=(exp[r.c]||0)+r.a});txt+='\n[收入]\n';var ik=Object.keys(inc);for(var i=0;i<ik.length;i++){txt+='  '+ik[i]+': '+fm(inc[ik[i]])+'\n'}txt+='\n[支出]\n';var ek=Object.keys(exp);for(var i=0;i<ek.length;i++){txt+='  '+ek[i]+': '+fm(exp[ek[i]])+'\n'}txt+='\n[流水]\n';var recs=mr(m);for(var i=0;i<recs.length;i++){var r=recs[i];txt+=r.d+' '+(r.t==='i'?'[收入]':'[支出]')+' '+r.c+' '+(r.t==='i'?'+':'-')+(r.a/100).toFixed(2)+(r.n?' '+r.n:'')+'\n'}var b=new Blob([txt],{type:'text/plain;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='报告TXT_'+m+'.txt';a.click();URL.revokeObjectURL(a.href);ts('已导出')}
+function setImgType(t){imgType=t;$('it').value=t==='i'?'收入':'支出';$('ip').style.display='block'}
+function doF(files){var f=files[0];if(!f)return;if(f.type.startsWith('image/')){doImg(files);return}var ext=f.name.split('.').pop().toLowerCase();if(ext==='json'){handleImportFile(f);return}if(ext==='csv'){handleImportFile(f);return}else ts('不支持格式: '+ext)}
+function doImg(files){var f=files[0];if(!f)return;var r=new FileReader();r.onload=function(e){$('imgs').src=e.target.result;$('ip').style.display='block';$('ia').focus()};r.readAsDataURL(f)}
+function sfi(){var a=Math.round(parseFloat($('ia').value)*100);if(!a||a<=0){ts('请输入金额');return}var note=$('iin').value.trim();if(note)note='[图片]'+note;else note='[图片]';var sel=$('icat');var cat=sel?sel.value:'其他';ld();d.r.push({id:id(),d:new Date().toISOString().slice(0,10),t:imgType,c:cat,a:a,n:note,src:'图片',ts:Date.now()});sv();ts('✅ 已保存');$('ia').value='';$('iin').value='';$('ip').style.display='none';gt('home')}
+function lset(){ld();var sn=d.s.name||'';var si=d.s.industry||'';var h='<h2 style=font-size:16px;margin-bottom:10px>⚙️ 设置</h2><div class=fg><label>企业名称</label><input id=sn value="'+sn+'"></div><div class=fg><label>行业</label><select id=si onchange=testInd()><option value="">未选择</option><option value="餐饮"'+(si==='餐饮'?' selected':'')+'>餐饮业</option><option value="零售"'+(si==='零售'?' selected':'')+'>零售业</option><option value="服务"'+(si==='服务'?' selected':'')+'>服务业</option><option value="制造"'+(si==='制造'?' selected':'')+'>制造业</option><option value="电商"'+(si==='电商'?' selected':'')+'>电商</option><option value="农业"'+(si==='农业'?' selected':'')+'>农业</option><option value="建筑"'+(si==='建筑'?' selected':'')+'>建筑业</option><option value="教育"'+(si==='教育'?' selected':'')+'>教育培训</option><option value="医疗"'+(si==='医疗'?' selected':'')+'>医疗健康</option><option value="物流"'+(si==='物流'?' selected':'')+'>物流仓储</option><option value="IT"'+(si==='IT'?' selected':'')+'>IT/互联网</option><option value="装修"'+(si==='装修'?' selected':'')+'>装修装饰</option></select></div><button class="btn btn-p" onclick=svset()>💾 保存</button><hr><div style=margin-bottom:8px><button class="btn btn-o" onclick=expAll()>📤下载备份(JSON)</button></div><div style=margin-bottom:8px><button class="btn btn-o" onclick=expAllCSV()>📊下载Excel(CSV)</button></div><div style=margin-bottom:8px><button class="btn btn-o" onclick=showImport()>📥导入数据</button></div><button class="btn btn-o" onclick=clr() style=background:#fef2f2;color:#ef4444>🗑️清除数据</button><div style=margin-top:16px;background:#f0f4ff;border-radius:8px;padding:10px;text-align:center;font-size:10px;color:#666;line-height:1.8>📝 简历·演讲稿·商业计划书·述职报告·PPT<br>🎨 Logo设计 · 📱 小红书运营 · 🌏 跨境电商<br>👉 闲鱼搜 <b style=color:#4f46e5>YHmy</b> 或 微信 <b style=color:#4f46e5>Yhgc_2025</b></div>';$('p-set').innerHTML=h}
+function svset(){ld();d.s.name=$('sn').value;d.s.industry=$('si').value;sv();ts('✅ 已保存')}
+function testInd(){console.log('选中:', $('si').value)}
+function expAll(){ld();var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='记账备份_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(u);ts('✅ 已导出')}
+function clr(){if(!confirm('清除所有数据？不可恢复！'))return;localStorage.removeItem(SK);d={r:[],s:{}};ts('已清除');gt('home')}
+var curT='i',curC='';
+function rl(){ld();var n=new Date(),ym=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0');var h='<h2 style=font-size:16px;margin-bottom:10px>📋 流水明细</h2><div style=display:flex;gap:6px><input type=month id=lm value="'+ym+'" style=flex:1;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:12px onchange=rl()><input type=text id=lq placeholder=🔍搜索 style=flex:1;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:12px oninput=rl()></div>';var mi=$('lm'),lm=mi?mi.value:ym,recs=mr(lm);var q=$('lq')?$('lq').value.toLowerCase():'';if(q)recs=recs.filter(function(r){return(r.c||'').toLowerCase().includes(q)||(r.n||'').toLowerCase().includes(q)});if(recs.length===0){h+='<div style=text-align:center;padding:30px><div style=font-size:40px;margin-bottom:8px>📋</div><div style=color:#999>暂无记录</div></div>'}else{h+='<table><tr><th>日期<th>类型<th>类别<th>金额<th></tr>';for(var i=0;i<recs.length;i++){var r=recs[i];h+='<tr onclick=sd("'+r.id+'")><td>'+r.d.slice(5)+'</td><td><span class=tag '+r.t+'>'+(r.t==='i'?'收入':'支出')+'</span></td><td>'+r.c+'</td><td style=color:'+(r.t==='i'?'#22c55e':'#ef4444')+';font-weight:600>'+(r.t==='i'?'+':'-')+(r.a/100).toFixed(2)+'</td><td>📋</td></tr>'}h+='</table>'}$('p-list').innerHTML=h}
+function li(){var c=$('p-imp');if(!c)return;c.innerHTML='<div style=padding:16px><h3>📥 导入数据</h3><div style=border:2px dashed #ccc;border-radius:12px;padding:40px;text-align:center;margin:16px 0;cursor:pointer onclick="document.getElementById(\'fimp\').click()" ondragover="event.preventDefault();this.style.borderColor=\'#4A90D9\'" ondrop="event.preventDefault();var f=event.dataTransfer.files[0];if(f)handleImportFile(f)"><div style=font-size:48px;margin-bottom:8px>📂</div><div style=color:#666;font-size:15px>点击选择文件或拖拽文件到此处</div><div style=color:#999;font-size:12px;margin-top:4px>支持 .json(备份) / .csv(流水) 格式</div></div><input type=file id=fimp accept=.json,.csv style=display:none onchange="if(this.files[0])handleImportFile(this.files[0])"><div id=importStatus style=margin:12px 0;color:#666;font-size:14px></div></div>'}
+
+function showImport(){var el=document.createElement('input');el.type='file';el.accept='.json,.csv';el.style.display='none';el.onchange=function(){if(this.files[0])handleImportFile(this.files[0]);this.remove()};document.body.appendChild(el);el.click()}
+function handleImportFile(f){var rd=new FileReader();var ext=f.name.split('.').pop().toLowerCase();rd.onload=function(e){try{if(ext==='json'){var d2=JSON.parse(e.target.result);if(!d2.r){ts('格式错误');return}ld();var ok=0,sk=0;var ids={};for(var i=0;i<d.r.length;i++)ids[d.r[i].id]=1;for(var i=0;i<d2.r.length;i++){if(!ids[d2.r[i].id]){d.r.push(d2.r[i]);ok++}else sk++}if(d2.s)for(var k in d2.s)d.s[k]=d2.s[k];sv();ts('✅ JSON导入'+ok+'条'+(sk?' 跳过'+sk:''));gt('home')}else if(ext==='csv'){ld();var lines=e.target.result.replace(/\r/g,'').split('\n');var ok=0;for(var i=1;i<lines.length;i++){var p=lines[i].trim();if(!p)continue;var cols=parseCSV(p);if(cols.length<4)continue;var tp=cols[1];if(tp==='收入')tp='i';else if(tp==='支出')tp='e';else continue;var am=parseFloat(cols[3].replace(/[^0-9.\-]/g,''));if(isNaN(am)||am===0)continue;d.r.push({id:id(),d:cols[0],t:tp,c:cols[2],a:Math.round(Math.abs(am)*100),n:cols[4]||'',src:cols[5]||'导入',ts:Date.now()});ok++}sv();ts('✅ CSV导入'+ok+'条');rl()}}catch(err){ts('导入失败:'+err.message)}};rd.readAsText(f)}
+function parseCSV(line){var r=[],cur='',q=false;for(var i=0;i<line.length;i++){var ch=line[i];if(q){if(ch==='"'){if(i+1<line.length&&line[i+1]==='"'){cur+='"';i++}else q=false}else cur+=ch}else{if(ch==='"')q=true;else if(ch===','){r.push(cur);cur=''}else cur+=ch}}r.push(cur);return r}
+function expAllCSV(){ld();var lines=['日期,类型,类别,金额,备注,来源'];var rs=d.r.sort(function(a,b){return b.d.localeCompare(a.d)});for(var i=0;i<rs.length;i++){var r=rs[i];lines.push(r.d+','+(r.t==='i'?'收入':'支出')+','+r.c+','+(r.t==='i'?'':'-')+(r.a/100).toFixed(2)+','+(r.n||'')+','+(r.src||'手动'))}var b=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='记账数据_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);ts('✅ 已导出')}
+function wk(){if(localStorage.getItem('_wk'))return;setTimeout(function(){var ov=document.createElement('div');ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px';ov.onclick=function(e){e.target===this&&closeWk()};ov.innerHTML='<div style=background:#fff;border-radius:12px;padding:20px;max-width:340px;width:100%;text-align:center><div style=font-size:40px;margin-bottom:10px>👋</div><div style=font-size:16px;font-weight:600;margin-bottom:6px>欢迎使用简易记账</div><div style=color:#666;font-size:12px;margin-bottom:10px;line-height:1.7>数据存在你手机里，安全不泄露</div><div style=color:#666;font-size:11px;margin-bottom:10px;line-height:1.8;text-align:left>我目前做这些，或许能帮到你：<br>📝 <b>代写</b> 简历·演讲稿·商业计划书·述职报告·PPT<br>🎨 <b>设计</b> Logo/品牌设计<br>📱 <b>运营</b> 小红书自媒体代运营<br>🌏 <b>跨境</b> 跨境电商数据监控</div><div style=color:#666;font-size:12px;margin-bottom:10px>有任何需要，加微信聊聊 ↓</div><div style=background:#f5f5f5;border-radius:8px;padding:10px;margin-bottom:10px><div style=font-size:10px;color:#999;margin-bottom:4px>加微信聊聊</div><div style=font-size:16px;font-weight:700;color:#4f46e5;letter-spacing:.5px id=wxT>Yhgc_2025</div></div><button class="btn btn-p" onclick=navigator.clipboard.writeText("Yhgc_2025");ts("已复制微信号") style=margin-bottom:6px>📋 复制微信号</button><button class="btn btn-o" onclick=closeWk() style=width:100%>开始使用</button></div>';ov.id='wkOv';document.body.appendChild(ov)},800)}
+function closeWk(){var el=$('wkOv');el&&el.parentNode.removeChild(el);localStorage.setItem('_wk','1')}
+// Auto-init
+rh();wk();
+</script><div class="cta-bar">
   <div class="cta-text">需要更专业的定制服务？</div>
   <div class="cta-links">
     <span>闲鱼搜 YHmy</span>
@@ -38,5 +128,4 @@ gtag("config", "G-XXXXXXXXXX");
     <span>微信 Yhgc_2025</span>
   </div>
 </div>
-</body>
-</html>
+</body></html>
