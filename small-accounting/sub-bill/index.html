@@ -2,17 +2,43 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>订阅账单汇总</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>订阅账单汇总 - 看看你每月自动扣了多少钱</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:40px 32px;text-align:center;max-width:360px}
-.card .icon{font-size:48px;margin-bottom:16px}
-.card h1{font-size:20px;font-weight:700;margin-bottom:8px}
-.card p{font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:20px}
-.card .btn{display:inline-block;padding:10px 20px;background:#3b82f6;color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600}
-.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100}.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}.cta-bar .cta-divider{color:#334155;margin:0 8px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5;color:#333;max-width:500px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;padding:24px 20px;text-align:center}
+.header h1{font-size:22px;margin-bottom:6px}
+.header p{font-size:13px;opacity:0.85}
+.total-bar{background:#fff;margin:16px;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);text-align:center}
+.total-bar .label{font-size:13px;color:#999;margin-bottom:4px}
+.total-bar .amount{font-size:36px;font-weight:700;color:#e74c3c}
+.total-bar .breakdown{font-size:12px;color:#999;margin-top:6px;display:flex;justify-content:center;gap:20px}
+.total-bar .breakdown span{font-weight:600;color:#333}
+.shock{background:#fff3cd;margin:0 16px 12px;border-radius:10px;padding:12px 16px;font-size:13px;color:#856404;display:none}
+.shock.show{display:block}
+.category{margin:12px 16px}
+.cat-header{font-size:14px;font-weight:600;color:#666;padding:8px 4px;display:flex;justify-content:space-between}
+.cat-header .cat-total{color:#e74c3c;font-size:13px}
+.item{background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,0.04);cursor:pointer;transition:all 0.15s}
+.item.active{border:2px solid #e74c3c;background:#fff5f5}
+.item .icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.item .info{flex:1;min-width:0}
+.item .name{font-size:15px;font-weight:500}
+.item .price{font-size:12px;color:#999;margin-top:2px}
+.item .check{width:24px;height:24px;border-radius:50%;border:2px solid #ddd;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.item.active .check{background:#e74c3c;border-color:#e74c3c}
+.item.active .check::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
+.actions{margin:16px;display:flex;gap:10px}
+.actions button{flex:1;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-clear{background:#eee;color:#666}
+.btn-clear:hover{background:#ddd}
+.btn-share{background:#e74c3c;color:#fff}
+.btn-share:hover{background:#c0392b}
+.footer{text-align:center;padding:24px 20px;color:#bbb;font-size:12px}
+.bottom-banner{position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;background:linear-gradient(135deg,#2c3e50,#34495e);color:#fff;padding:10px 16px;font-size:12px;text-align:center;z-index:100}
+.bottom-banner a{color:#f39c12;text-decoration:none;font-weight:600}
+.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100;margin:0 -16px;width:calc(100% + 32px)}.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}.cta-bar .cta-divider{color:#334155;margin:0 8px}
 </style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -24,12 +50,194 @@ gtag("config", "G-XXXXXXXXXX");
 </script>
 </head>
 <body>
-<div class="card">
-  <div class="icon">🔔</div>
-  <h1>订阅账单汇总</h1>
-  <p>统计每月自动扣款 · 看看一年被扣了多少钱<br><br>功能开发中，如需使用请直接联系：<br>闲鱼搜 <b>YHmy</b> 或 微信 <b>Yhgc_2025</b></p>
-  <a class="btn" href="/">← 返回工具箱首页</a>
+<div class="header">
+  <h1>📊 订阅账单汇总</h1>
+  <p>勾选你在用的订阅，看看每月自动扣了多少钱</p>
 </div>
+<div class="total-bar">
+  <div class="label">💰 每月自动扣款</div>
+  <div class="amount" id="monthly">¥0</div>
+  <div class="breakdown">
+    <div>📅 月均 <span id="mTotal">¥0</span></div>
+    <div>📆 年均 <span id="yTotal">¥0</span></div>
+  </div>
+</div>
+<div class="shock" id="shock">
+  ⚡ 一年下来相当于 <strong id="shockText"></strong>
+</div>
+<div id="categories"></div>
+<div class="actions">
+  <button class="btn-clear" onclick="clearAll()">清空重选</button>
+  <button class="btn-share" onclick="shareResult()">📤 分享结果</button>
+</div>
+<div class="footer">数据仅存储在本地 · 不会上传任何信息</div>
+
+<div class="bottom-banner">
+  💡 更多实用工具? <a href="https://yhmy2025.github.io/small-accounting/">记账小助手</a> · 闲鱼搜 <strong>YHmy</strong> · 微信 <strong>Yhgc_2025</strong>
+</div>
+
+<script>
+var SERVICES = [
+  {cat:'📺 视频娱乐',icon:'🎬',color:'#e8f4fd',items:[
+    {name:'腾讯视频',price:25,period:'月',note:'VIP连续包月'},
+    {name:'爱奇艺',price:25,period:'月',note:'黄金VIP连续包月'},
+    {name:'优酷',price:25,period:'月',note:'VIP连续包月'},
+    {name:'哔哩哔哩',price:25,period:'月',note:'大会员连续包月'},
+    {name:'芒果TV',price:22,period:'月',note:'VIP连续包月'},
+    {name:'Netflix',price:65,period:'月',note:'基础方案（约）'},
+    {name:'Disney+',price:35,period:'月',note:'标准方案（约）'},
+  ]},
+  {cat:'🎵 音乐',icon:'🎵',color:'#e8faf0',items:[
+    {name:'QQ音乐',price:15,period:'月',note:'绿钻豪华连续包月'},
+    {name:'网易云音乐',price:15,period:'月',note:'黑胶VIP连续包月'},
+    {name:'Apple Music',price:11,period:'月',note:'个人方案'},
+    {name:'Spotify',price:38,period:'月',note:'Premium个人'},
+  ]},
+  {cat:'☁️ 云存储',icon:'☁️',color:'#f0f0ff',items:[
+    {name:'iCloud 50GB',price:6,period:'月',note:'苹果云存储'},
+    {name:'iCloud 200GB',price:21,period:'月',note:'苹果云存储'},
+    {name:'百度网盘SVIP',price:25,period:'月',note:'连续包月'},
+    {name:'百度网盘普通',price:10,period:'月',note:'普通会员'},
+    {name:'夸克网盘',price:12,period:'月',note:'VIP连续包月'},
+    {name:'阿里云盘',price:18,period:'月',note:'VIP连续包月'},
+  ]},
+  {cat:'💼 办公效率',icon:'💼',color:'#fff5e8',items:[
+    {name:'WPS超级会员',price:28,period:'月',note:'连续包月'},
+    {name:'WPS Pro(含AI)',price:42,period:'月',note:'含AI功能'},
+    {name:'Microsoft 365',price:39,period:'月',note:'个人版'},
+    {name:'Notion',price:75,period:'月',note:'Plus方案（约）'},
+    {name:'滴答清单',price:13.9,period:'月',note:'高级会员'},
+    {name:'有道云笔记',price:18,period:'月',note:'VIP'},
+    {name:'飞书',price:25,period:'月',note:'企业版/人'},
+  ]},
+  {cat:'🛒 生活服务',icon:'🛒',color:'#fff0f0',items:[
+    {name:'京东PLUS',price:8.25,period:'月',note:'年卡99/12'},
+    {name:'淘宝88VIP',price:7.3,period:'月',note:'年卡88/12'},
+    {name:'山姆会员',price:21.6,period:'月',note:'年卡260/12'},
+    {name:'Costco',price:24.9,period:'月',note:'年卡299/12'},
+    {name:'美团会员',price:15,period:'月',note:'外卖会员'},
+    {name:'饿了么',price:10,period:'月',note:'超级吃货卡'},
+    {name:'顺丰会员',price:12,period:'月',note:'SVIP'},
+  ]},
+  {cat:'📖 阅读学习',icon:'📖',color:'#f5f0ff',items:[
+    {name:'微信读书',price:19,period:'月',note:'付费无限卡'},
+    {name:'得到',price:35,period:'月',note:'电子书+课程'},
+    {name:'知乎盐选',price:19,period:'月',note:'盐选会员'},
+    {name:'樊登读书',price:30.3,period:'月',note:'年卡365/12'},
+    {name:'喜马拉雅',price:25,period:'月',note:'VIP连续包月'},
+  ]},
+  {cat:'📦 其他',icon:'📦',color:'#f0f8e8',items:[
+    {name:'ChatGPT Plus',price:145,period:'月',note:'$20（约）'},
+    {name:'Midjourney',price:72,period:'月',note:'$10基础（约）'},
+    {name:'剪映专业版',price:38,period:'月',note:'VIP'},
+    {name:'Canva Pro',price:28,period:'月',note:'设计工具'},
+    {name:'迅雷超级会员',price:25,period:'月',note:'下载加速'},
+    {name:'Keep',price:19,period:'月',note:'健身会员'},
+  ]},
+];
+
+var selected = JSON.parse(localStorage.getItem('sub_selected')||'{}');
+
+function render(){
+  var catDiv = document.getElementById('categories');
+  var html = '';
+  var monthlyTotal = 0;
+  
+  SERVICES.forEach(function(cat, ci){
+    var catTotal = 0;
+    var itemHtml = '';
+    cat.items.forEach(function(item, ii){
+      var key = ci+'_'+ii;
+      var active = selected[key];
+      if(active) catTotal += item.price;
+      itemHtml += '<div class="item'+(active?' active':'')+'" onclick="toggle('+ci+','+ii+')">'+
+        '<div class="icon" style="background:'+cat.color+'">'+cat.icon+'</div>'+
+        '<div class="info"><div class="name">'+item.name+'</div>'+
+        '<div class="price">¥'+item.price+'/'+item.period+' · '+item.note+'</div></div>'+
+        '<div class="check"></div></div>';
+    });
+    monthlyTotal += catTotal;
+    html += '<div class="category"><div class="cat-header"><span>'+cat.cat+'</span>'+
+      '<span class="cat-total">'+(catTotal>0?'¥'+catTotal+'/月':'')+'</span></div>'+itemHtml+'</div>';
+  });
+  
+  catDiv.innerHTML = html;
+  document.getElementById('monthly').textContent = '¥'+monthlyTotal.toFixed(0);
+  document.getElementById('mTotal').textContent = '¥'+monthlyTotal.toFixed(0);
+  document.getElementById('yTotal').textContent = '¥'+(monthlyTotal*12).toFixed(0);
+  
+  var shock = document.getElementById('shock');
+  var shockText = document.getElementById('shockText');
+  if(monthlyTotal > 0){
+    shock.classList.add('show');
+    var y = (monthlyTotal*12).toFixed(0);
+    var comps = [
+      {v:300, t:'一张高铁票（广州→北京）'},
+      {v:500, t:'一顿不错的双人晚餐'},
+      {v:800, t:'一件优衣库羽绒服'},
+      {v:1000, t:'一双AJ球鞋'},
+      {v:1500, t:'一晚不错的酒店'},
+      {v:2000, t:'一台入门级显示器'},
+      {v:3000, t:'一套SK-II护肤品'},
+      {v:4000, t:'一台Switch+两个游戏'},
+      {v:5000, t:'一张淡季三亚往返机票+酒店'},
+      {v:8000, t:'一台iPhone'},
+      {v:10000, t:'一次东南亚自由行'},
+      {v:15000, t:'一次日本深度游'},
+      {v:20000, t:'一台MacBook Air'},
+    ];
+    var comp = comps.filter(function(c){return c.v<=y}).pop() || comps[0];
+    shockText.textContent = '够'+comp.t;
+  } else {
+    shock.classList.remove('show');
+  }
+}
+
+function toggle(ci, ii){
+  var key = ci+'_'+ii;
+  if(selected[key]){ delete selected[key]; }
+  else { selected[key] = true; }
+  localStorage.setItem('sub_selected', JSON.stringify(selected));
+  render();
+}
+
+function clearAll(){
+  if(confirm('确定清空所有已选订阅？')){
+    selected = {};
+    localStorage.removeItem('sub_selected');
+    render();
+  }
+}
+
+function shareResult(){
+  var monthly = parseFloat(document.getElementById('monthly').textContent.replace('¥',''));
+  if(monthly === 0){ alert('还没选订阅呢，先勾选吧~'); return; }
+  var text = '📊 我的订阅账单汇总\n\n';
+  var total = 0;
+  SERVICES.forEach(function(cat, ci){
+    var catHas = false;
+    cat.items.forEach(function(item, ii){
+      if(selected[ci+'_'+ii]){
+        if(!catHas){ text += cat.cat + '\n'; catHas = true; }
+        text += '  '+item.name+' ¥'+item.price+'/月\n';
+        total += item.price;
+      }
+    });
+  });
+  text += '\n💰 每月 ¥'+total.toFixed(0);
+  text += '\n📆 每年 ¥'+(total*12).toFixed(0);
+  text += '\n\n🔗 你也来算算：https://yhmy2025.github.io/small-accounting/sub-bill/';
+  
+  if(navigator.share){ navigator.share({text:text}).catch(function(){}); }
+  else {
+    navigator.clipboard.writeText(text).then(function(){
+      alert('已复制到剪贴板，去转发吧！');
+    });
+  }
+}
+
+render();
+</script>
 <div class="cta-bar">
   <div class="cta-text">需要更专业的定制服务？</div>
   <div class="cta-links">

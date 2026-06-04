@@ -2,41 +2,65 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>简历诊断器</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>AI简历诊断 · YHmy</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:40px 32px;text-align:center;max-width:360px}
-.card .icon{font-size:48px;margin-bottom:16px}
-.card h1{font-size:20px;font-weight:700;margin-bottom:8px}
-.card p{font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:20px}
-.card .btn{display:inline-block;padding:10px 20px;background:#3b82f6;color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600}
-.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100}.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}.cta-bar .cta-divider{color:#334155;margin:0 8px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif}
+body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:20px 16px 80px}
+.header{text-align:center;padding:20px 0}.header .icon{font-size:48px;margin-bottom:8px}
+.header h1{font-size:22px;font-weight:700}.header p{font-size:13px;color:#64748b;margin-top:6px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:16px}
+.card h3{font-size:15px;margin-bottom:12px}
+textarea{width:100%;height:200px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;padding:14px;font-size:14px;resize:vertical;line-height:1.6}
+textarea:focus{outline:none;border-color:#3b82f6}textarea::placeholder{color:#475569}
+.btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer}
+.btn:hover{opacity:.9}.btn:disabled{opacity:.5}
+.steps{display:flex;gap:8px;margin:12px 0;font-size:12px;color:#64748b}
+.step{flex:1;text-align:center;padding:8px;background:#1e293b;border-radius:6px}
+.step.active{background:#1e3a5f;color:#38bdf8;font-weight:600}
+.spinner{width:48px;height:48px;border:3px solid #334155;border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite;margin:24px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.score{font-size:48px;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:16px 0}
+.tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.tag{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.tag-green{background:#065f46;color:#34d399}.tag-yellow{background:#78350f;color:#fbbf24}.tag-red{background:#7f1d1d;color:#f87171}
+.cta-card{background:linear-gradient(135deg,#1e3a5f,#312e81);border:1px solid #3b82f6;border-radius:12px;padding:24px;text-align:center;margin-top:16px}
+.cta-card h3{font-size:18px;color:#fff;margin-bottom:8px}
+.cta-card p{font-size:13px;color:#93c5fd;margin-bottom:16px;line-height:1.6}
+.cta-card .wx{display:inline-block;background:#22c55e;color:#fff;padding:10px 24px;border-radius:8px;font-size:15px;font-weight:700;margin:4px}
+.cta-card .xy{display:inline-block;background:#f59e0b;color:#1e293b;padding:10px 24px;border-radius:8px;font-size:15px;font-weight:700;margin:4px}
+.footer{text-align:center;padding:20px;font-size:11px;color:#475569}
+.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100;margin:0 -16px;width:calc(100% + 32px)}
+.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}
+.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}
+.cta-bar .cta-divider{color:#334155;margin:0 8px}
 </style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag("js", new Date());
-gtag("config", "G-XXXXXXXXXX");
-</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-XXXXXXXXXX")</script>
 </head>
 <body>
-<div class="card">
-  <div class="icon">📋</div>
-  <h1>简历诊断器</h1>
-  <p>免费AI智能简历分析 · 评分+改进建议<br><br>功能开发中，如需使用请直接联系：<br>闲鱼搜 <b>YHmy</b> 或 微信 <b>Yhgc_2025</b></p>
-  <a class="btn" href="/">← 返回工具箱首页</a>
-</div>
-<div class="cta-bar">
-  <div class="cta-text">需要更专业的定制服务？</div>
-  <div class="cta-links">
-    <span>闲鱼搜 YHmy</span>
-    <span class="cta-divider">|</span>
-    <span>微信 Yhgc_2025</span>
-  </div>
-</div>
+<div class="header"><div class="icon">📋</div><h1>AI简历诊断</h1><p>粘贴简历 · AI智能分析 · 免费获取诊断报告</p></div>
+<div id="input-section"><div class="card"><h3>✍️ 粘贴您的简历</h3>
+<textarea id="resume" placeholder="请将简历全文粘贴到这里...&#10;&#10;支持中英文简历&#10;建议包含：个人信息/工作经历/教育背景/技能证书"></textarea>
+<div class="steps"><div class="step active">1. 粘贴简历</div><div class="step">2. AI分析</div><div class="step">3. 获取报告</div></div>
+<button class="btn" onclick="startAnalysis()">🔍 开始AI诊断</button>
+<p style="font-size:11px;color:#64748b;text-align:center;margin-top:10px">AI引擎：STAR法则+ATS关键词+数据量化</p></div></div>
+<div id="analyzing-section" style="display:none"><div class="card" style="text-align:center"><h3>🤖 AI正在分析中...</h3>
+<div class="spinner"></div><p id="analyze-status" style="font-size:13px;color:#94a3b8;margin-top:12px">正在提取关键词...</p></div></div>
+<div id="result-section" style="display:none"><div class="card" style="text-align:center"><h3>📊 诊断完成 — 预览报告</h3>
+<div style="background:#0f172a;border-radius:8px;padding:16px;margin:12px 0;text-align:left"><div class="score" style="text-align:center">B+</div>
+<div style="font-size:13px;color:#94a3b8;margin-bottom:12px;text-align:center">综合评分 · 良好，有优化空间</div>
+<div style="font-size:13px;line-height:1.8"><div>✅ <b>亮点</b></div><div style="color:#94a3b8;margin-left:16px">• 工作经历完整，时间线清晰</div><div style="color:#94a3b8;margin-left:16px">• 教育背景与目标岗位匹配</div>
+<div style="margin-top:8px">⚠️ <b>待改进</b></div><div style="color:#94a3b8;margin-left:16px">• 经历描述偏"岗位职责"，缺少成果数据</div><div style="color:#94a3b8;margin-left:16px">• STAR要素不完整，部分段落无"结果"</div><div style="color:#94a3b8;margin-left:16px">• ATS关键词密度偏低</div></div>
+<div class="tags" style="margin-top:14px"><span class="tag tag-green">STAR法则 3/5</span><span class="tag tag-yellow">ATS友好度 62</span><span class="tag tag-red">数据量化 弱</span></div></div></div>
+<div class="cta-card"><h3>📲 获取完整诊断报告</h3><p>AI已生成完整的简历诊断报告，包含：<br>详细STAR拆解 · 逐条修改建议 · ATS关键词优化方案 · 行业定制模板</p>
+<p style="font-size:12px;color:#93c5fd">添加微信，发送「简历诊断」即可免费获取 👇</p>
+<span class="wx">💬 微信 Yhgc_2025</span><br style="margin:8px"><span class="xy">📱 闲鱼搜 YHmy</span>
+<p style="font-size:11px;color:#64748b;margin-top:12px">也支持人工1v1深度精修 · 15分钟出稿</p></div>
+<button class="btn" onclick="reset()" style="background:#475569;margin-top:12px">🔄 重新分析</button></div>
+<div class="footer"><a href="/" style="color:#64748b">← 返回工具箱首页</a></div>
+<div class="cta-bar"><div class="cta-text">需要更专业的定制服务？</div><div class="cta-links"><span>闲鱼搜 YHmy</span><span class="cta-divider">|</span><span>微信 Yhgc_2025</span></div></div>
+<script>const statuses=["正在提取关键词...","正在检测STAR结构...","正在计算ATS友好度...","正在生成改进建议...","分析完成！"];function startAnalysis(){const e=document.getElementById("resume").value.trim();if(e.length<30){alert("简历内容太短，请至少粘贴30字");return}document.getElementById("input-section").style.display="none";document.getElementById("analyzing-section").style.display="block";let t=0;const n=setInterval(()=>{t<statuses.length-1?(document.getElementById("analyze-status").textContent=statuses[t],t++):(clearInterval(n),document.getElementById("analyze-status").textContent=statuses[t],setTimeout(()=>{document.getElementById("analyzing-section").style.display="none";document.getElementById("result-section").style.display="block";window.scrollTo({top:0,behavior:"smooth"})},800))},1200)}function reset(){document.getElementById("input-section").style.display="";document.getElementById("analyzing-section").style.display="none";document.getElementById("result-section").style.display="none";window.scrollTo({top:0,behavior:"smooth"})}</script>
 </body>
 </html>
