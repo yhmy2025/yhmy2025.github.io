@@ -1,152 +1,300 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>Logo设计需求收集 — WK设计服务</title>
-<style>
-:root {
-  --primary: #4f46e5;
-  --accent: #e74c3c;
-  --bg: #f5f5f7;
-  --card: #ffffff;
-  --text: #1a1a2e;
-  --text-secondary: #6b7280;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --border: #e5e7eb;
-  --radius: 12px;
-  --shadow: 0 2px 12px rgba(0,0,0,0.08);
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: var(--bg); color: var(--text); line-height: 1.6;
-  max-width: 500px; margin: 0 auto; min-height: 100vh;
-}
-header {
-  background: linear-gradient(135deg, var(--primary), #6366f1);
-  color: #fff; padding: 20px; text-align: center;
-}
-header h1 { font-size: 22px; font-weight: 700; }
-header p { font-size: 12px; opacity: 0.85; margin-top: 4px; }
-
-#app { padding: 16px; padding-bottom: 80px; }
-
-label.section-label {
-  display: block; font-size: 13px; font-weight: 600; margin: 16px 0 6px;
-  color: var(--text-secondary);
-}
-select, textarea, input[type=text], input[type=color] {
-  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
-  font-size: 14px; font-family: inherit; transition: 0.2s;
-}
-select:focus, textarea:focus, input:focus { outline: none; border-color: var(--primary); }
-textarea { min-height: 80px; resize: vertical; line-height: 1.6; }
-input[type=color] { width: 100%; height: 40px; padding: 4px 8px; cursor: pointer; }
-
-.btn {
-  display: inline-block; padding: 12px 28px; border: none; border-radius: 8px;
-  font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s;
-}
-.btn-primary { background: var(--primary); color: #fff; width: 100%; }
-.btn-primary:hover { background: #4338ca; }
-.btn-outline {
-  background: #fff; color: var(--primary); border: 2px solid var(--primary);
-}
-.btn-sm { padding: 8px 16px; font-size: 14px; }
-.btn-row { display: flex; gap: 10px; margin-top: 16px; }
-.btn-row .btn { flex: 1; }
-
-/* Style Grid */
-.style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.style-chip {
-  text-align: center; padding: 14px 8px; border: 2px solid var(--border);
-  border-radius: var(--radius); cursor: pointer; transition: 0.2s;
-  font-size: 12px; user-select: none; background: var(--card);
-}
-.style-chip .emoji { font-size: 26px; display: block; margin-bottom: 4px; }
-.style-chip .name { font-weight: 600; font-size: 13px; }
-.style-chip.checked { border-color: var(--primary); background: #eef2ff; }
-
-/* Palette Cards */
-.palette-options { display: flex; gap: 10px; flex-wrap: wrap; }
-.palette-card {
-  flex: 1; min-width: 90px; border: 2px solid var(--border);
-  border-radius: var(--radius); padding: 12px 8px; cursor: pointer;
-  text-align: center; transition: 0.2s; background: var(--card);
-}
-.palette-card .palette-name { font-size: 12px; font-weight: 600; margin-bottom: 6px; }
-.palette-swatches { display: flex; gap: 3px; justify-content: center; }
-.palette-swatch { width: 16px; height: 16px; border-radius: 50%; border: 1px solid #ddd; }
-.palette-card.selected { border-color: var(--primary); background: #eef2ff; }
-.custom-color-wrap { margin-top: 8px; }
-
-/* Budget Cards */
-.budget-options { display: flex; gap: 10px; }
-.budget-card {
-  flex: 1; border: 2px solid var(--border); border-radius: var(--radius);
-  padding: 16px 10px; text-align: center; cursor: pointer; transition: 0.2s; background: var(--card);
-}
-.budget-card .tier { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-.budget-card .price { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
-.budget-card .features { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
-.budget-card.selected { border-color: var(--primary); background: #eef2ff; }
-
-/* Radio group */
-.radio-group { display: flex; gap: 12px; }
-.radio-chip {
-  flex: 1; text-align: center; padding: 10px; border: 2px solid var(--border);
-  border-radius: var(--radius); cursor: pointer; font-size: 14px; transition: 0.2s; background: var(--card);
-}
-.radio-chip.selected { border-color: var(--primary); background: #eef2ff; font-weight: 600; }
-
-/* Brief Output */
-#briefOutput { display: none; }
-.brief-card {
-  background: var(--card); border-radius: var(--radius); padding: 24px;
-  box-shadow: var(--shadow); margin-top: 16px;
-}
-.brief-card h2 { font-size: 18px; color: var(--primary); text-align: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--primary); }
-.brief-section { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-.brief-section:last-child { border-bottom: none; margin-bottom: 0; }
-.brief-label { font-size: 11px; color: var(--text-secondary); letter-spacing: 2px; margin-bottom: 4px; }
-.brief-value { font-size: 15px; color: var(--text); line-height: 1.7; }
-.brief-palette-row { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
-.brief-swatch { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; display: inline-block; }
-
-.empty-hint { font-size: 13px; color: var(--danger); margin-top: 4px; }
-
-footer {
-  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 500px; background: #fff; border-top: 1px solid var(--border);
-  padding: 12px 16px; text-align: center; font-size: 11px; color: var(--text-secondary);
-}
-footer .footer-brand { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
-footer .footer-links { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
-footer .footer-links a { font-size: 11px; color: var(--text-secondary); text-decoration: none; }
-footer .footer-links a:hover { color: var(--primary); }
-footer .footer-contact { font-size: 11px; color: var(--text-secondary); }
-
-.toast {
-  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-  background: #1a1a2e; color: #fff; padding: 10px 24px; border-radius: 20px;
-  font-size: 14px; z-index: 2000; opacity: 0; transition: opacity 0.3s; white-space: pre-line;
-}
-.toast.show { opacity: 1; }
-
-@media print {
-  body { background: #fff; }
-  header, footer, .btn-row, .toast, #inputForm { display: none !important; }
-  #briefOutput { display: block !important; }
-  .brief-card { box-shadow: none; border: none; padding: 0; }
-}
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+
+<meta http-equiv="Pragma" content="no-cache">
+
+<meta http-equiv="Expires" content="0">
+
+<title>Logo设计需求收集 — WK设计服务</title>
+
+<style>
+
+:root {
+
+  --primary: #4f46e5;
+
+  --accent: #e74c3c;
+
+  --bg: #f5f5f7;
+
+  --card: #ffffff;
+
+  --text: #1a1a2e;
+
+  --text-secondary: #6b7280;
+
+  --success: #10b981;
+
+  --warning: #f59e0b;
+
+  --danger: #ef4444;
+
+  --border: #e5e7eb;
+
+  --radius: 12px;
+
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+
+  background: var(--bg); color: var(--text); line-height: 1.6;
+
+  max-width: 500px; margin: 0 auto; min-height: 100vh;
+
+}
+
+header {
+
+  background: linear-gradient(135deg, var(--primary), #6366f1);
+
+  color: #fff; padding: 20px; text-align: center;
+
+}
+
+header h1 { font-size: 22px; font-weight: 700; }
+
+header p { font-size: 12px; opacity: 0.85; margin-top: 4px; }
+
+
+
+#app { padding: 16px; padding-bottom: 80px; }
+
+
+
+label.section-label {
+
+  display: block; font-size: 13px; font-weight: 600; margin: 16px 0 6px;
+
+  color: var(--text-secondary);
+
+}
+
+select, textarea, input[type=text], input[type=color] {
+
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+
+  font-size: 14px; font-family: inherit; transition: 0.2s;
+
+}
+
+select:focus, textarea:focus, input:focus { outline: none; border-color: var(--primary); }
+
+textarea { min-height: 80px; resize: vertical; line-height: 1.6; }
+
+input[type=color] { width: 100%; height: 40px; padding: 4px 8px; cursor: pointer; }
+
+
+
+.btn {
+
+  display: inline-block; padding: 12px 28px; border: none; border-radius: 8px;
+
+  font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s;
+
+}
+
+.btn-primary { background: var(--primary); color: #fff; width: 100%; }
+
+.btn-primary:hover { background: #4338ca; }
+
+.btn-outline {
+
+  background: #fff; color: var(--primary); border: 2px solid var(--primary);
+
+}
+
+.btn-sm { padding: 8px 16px; font-size: 14px; }
+
+.btn-row { display: flex; gap: 10px; margin-top: 16px; }
+
+.btn-row .btn { flex: 1; }
+
+
+
+/* Style Grid */
+
+.style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+.style-chip {
+
+  text-align: center; padding: 14px 8px; border: 2px solid var(--border);
+
+  border-radius: var(--radius); cursor: pointer; transition: 0.2s;
+
+  font-size: 12px; user-select: none; background: var(--card);
+
+}
+
+.style-chip .emoji { font-size: 26px; display: block; margin-bottom: 4px; }
+
+.style-chip .name { font-weight: 600; font-size: 13px; }
+
+.style-chip.checked { border-color: var(--primary); background: #eef2ff; }
+
+
+
+/* Palette Cards */
+
+.palette-options { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.palette-card {
+
+  flex: 1; min-width: 90px; border: 2px solid var(--border);
+
+  border-radius: var(--radius); padding: 12px 8px; cursor: pointer;
+
+  text-align: center; transition: 0.2s; background: var(--card);
+
+}
+
+.palette-card .palette-name { font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+
+.palette-swatches { display: flex; gap: 3px; justify-content: center; }
+
+.palette-swatch { width: 16px; height: 16px; border-radius: 50%; border: 1px solid #ddd; }
+
+.palette-card.selected { border-color: var(--primary); background: #eef2ff; }
+
+.custom-color-wrap { margin-top: 8px; }
+
+
+
+/* Budget Cards */
+
+.budget-options { display: flex; gap: 10px; }
+
+.budget-card {
+
+  flex: 1; border: 2px solid var(--border); border-radius: var(--radius);
+
+  padding: 16px 10px; text-align: center; cursor: pointer; transition: 0.2s; background: var(--card);
+
+}
+
+.budget-card .tier { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+
+.budget-card .price { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+
+.budget-card .features { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+
+.budget-card.selected { border-color: var(--primary); background: #eef2ff; }
+
+
+
+/* Radio group */
+
+.radio-group { display: flex; gap: 12px; }
+
+.radio-chip {
+
+  flex: 1; text-align: center; padding: 10px; border: 2px solid var(--border);
+
+  border-radius: var(--radius); cursor: pointer; font-size: 14px; transition: 0.2s; background: var(--card);
+
+}
+
+.radio-chip.selected { border-color: var(--primary); background: #eef2ff; font-weight: 600; }
+
+
+
+/* Brief Output */
+
+#briefOutput { display: none; }
+
+.brief-card {
+
+  background: var(--card); border-radius: var(--radius); padding: 24px;
+
+  box-shadow: var(--shadow); margin-top: 16px;
+
+}
+
+.brief-card h2 { font-size: 18px; color: var(--primary); text-align: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--primary); }
+
+.brief-section { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+
+.brief-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+.brief-label { font-size: 11px; color: var(--text-secondary); letter-spacing: 2px; margin-bottom: 4px; }
+
+.brief-value { font-size: 15px; color: var(--text); line-height: 1.7; }
+
+.brief-palette-row { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+
+.brief-swatch { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; display: inline-block; }
+
+
+
+.empty-hint { font-size: 13px; color: var(--danger); margin-top: 4px; }
+
+
+
+footer {
+
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+
+  width: 100%; max-width: 500px; background: #fff; border-top: 1px solid var(--border);
+
+  padding: 12px 16px; text-align: center; font-size: 11px; color: var(--text-secondary);
+
+}
+
+footer .footer-brand { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+
+footer .footer-links { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
+
+footer .footer-links a { font-size: 11px; color: var(--text-secondary); text-decoration: none; }
+
+footer .footer-links a:hover { color: var(--primary); }
+
+footer .footer-contact { font-size: 11px; color: var(--text-secondary); }
+
+
+
+.toast {
+
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+
+  background: #1a1a2e; color: #fff; padding: 10px 24px; border-radius: 20px;
+
+  font-size: 14px; z-index: 2000; opacity: 0; transition: opacity 0.3s; white-space: pre-line;
+
+}
+
+.toast.show { opacity: 1; }
+
+
+
+@media print {
+
+  body { background: #fff; }
+
+  header, footer, .btn-row, .toast, #inputForm { display: none !important; }
+
+  #briefOutput { display: block !important; }
+
+  .brief-card { box-shadow: none; border: none; padding: 0; }
+
+}
+
 .cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100}.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}.cta-bar .cta-divider{color:#334155;margin:0 8px}
-</style>
+</style>
+
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
@@ -155,417 +303,831 @@ function gtag(){dataLayer.push(arguments);}
 gtag("js", new Date());
 gtag("config", "G-XXXXXXXXXX");
 </script>
-</head>
-<body>
-
-<header>
-  <h1>Logo设计需求收集</h1>
-  <p>填写需求 → 生成Brief → 精准沟通</p>
-</header>
-
-<div id="app">
-  <!-- Input Form -->
-  <div id="inputForm">
-    <label class="section-label">品牌名称</label>
-    <input type="text" id="brandName" placeholder="输入品牌或项目名称">
-
-    <label class="section-label">行业类型</label>
-    <select id="industry">
-      <option value="">请选择</option>
-      <option value="餐饮">餐饮</option><option value="科技">科技</option>
-      <option value="教育">教育</option><option value="电商">电商</option>
-      <option value="美妆">美妆</option><option value="医疗">医疗</option>
-      <option value="金融">金融</option><option value="其他">其他</option>
-    </select>
-
-    <label class="section-label">Logo风格（可多选）</label>
-    <div class="style-grid" id="styleGrid">
-      <div class="style-chip" data-style="极简" onclick="toggleStyle(this)">
-        <span class="emoji">◯</span><span class="name">极简</span>细线几何·留白
-      </div>
-      <div class="style-chip" data-style="手绘" onclick="toggleStyle(this)">
-        <span class="emoji">✏️</span><span class="name">手绘</span>温暖笔触·自然
-      </div>
-      <div class="style-chip" data-style="几何" onclick="toggleStyle(this)">
-        <span class="emoji">🔷</span><span class="name">几何</span>对称图形·专业
-      </div>
-      <div class="style-chip" data-style="复古" onclick="toggleStyle(this)">
-        <span class="emoji">🏛️</span><span class="name">复古</span>徽章衬线·古典
-      </div>
-      <div class="style-chip" data-style="渐变" onclick="toggleStyle(this)">
-        <span class="emoji">🌈</span><span class="name">渐变</span>色彩过渡·现代
-      </div>
-      <div class="style-chip" data-style="科技" onclick="toggleStyle(this)">
-        <span class="emoji">⚡</span><span class="name">科技</span>电路像素·未来
-      </div>
-    </div>
-
-    <label class="section-label">颜色偏好</label>
-    <div class="palette-options" id="paletteOptions">
-      <div class="palette-card" data-palette="palette1" onclick="selectPalette('palette1', this)">
-        <div class="palette-name">经典蓝橙</div>
-        <div class="palette-swatches">
-          <span class="palette-swatch" style="background:#1e40af"></span>
-          <span class="palette-swatch" style="background:#f97316"></span>
-          <span class="palette-swatch" style="background:#ffffff"></span>
-          <span class="palette-swatch" style="background:#1f2937"></span>
-        </div>
-      </div>
-      <div class="palette-card" data-palette="palette2" onclick="selectPalette('palette2', this)">
-        <div class="palette-name">自然绿棕</div>
-        <div class="palette-swatches">
-          <span class="palette-swatch" style="background:#166534"></span>
-          <span class="palette-swatch" style="background:#92400e"></span>
-          <span class="palette-swatch" style="background:#fef3c7"></span>
-          <span class="palette-swatch" style="background:#1f2937"></span>
-        </div>
-      </div>
-      <div class="palette-card" data-palette="palette3" onclick="selectPalette('palette3', this)">
-        <div class="palette-name">现代粉紫</div>
-        <div class="palette-swatches">
-          <span class="palette-swatch" style="background:#be185d"></span>
-          <span class="palette-swatch" style="background:#7c3aed"></span>
-          <span class="palette-swatch" style="background:#fdf2f8"></span>
-          <span class="palette-swatch" style="background:#1f2937"></span>
-        </div>
-      </div>
-      <div class="palette-card" data-palette="custom" onclick="selectPalette('custom', this)">
-        <div class="palette-name">自定义</div>
-        <div class="palette-swatches">
-          <span class="palette-swatch" style="background:repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 50% / 8px 8px"></span>
-        </div>
-      </div>
-    </div>
-    <div class="custom-color-wrap hidden" id="customColorWrap">
-      <label class="section-label" style="margin-top:4px">选择主色调</label>
-      <input type="color" id="customColor" value="#4f46e5">
-    </div>
-
-    <label class="section-label">用途场景</label>
-    <select id="usageScenario">
-      <option value="">请选择</option>
-      <option value="闲鱼店铺">闲鱼店铺</option>
-      <option value="小红书">小红书</option>
-      <option value="微信公众号">微信公众号</option>
-      <option value="网站">网站</option>
-      <option value="名片">名片</option>
-      <option value="其他">其他</option>
-    </select>
-
-    <label class="section-label">语言需求</label>
-    <div class="radio-group" id="langGroup">
-      <div class="radio-chip selected" data-lang="仅中文" onclick="selectLang('仅中文', this)">仅中文</div>
-      <div class="radio-chip" data-lang="中英双语" onclick="selectLang('中英双语', this)">中英双语</div>
-      <div class="radio-chip" data-lang="仅英文" onclick="selectLang('仅英文', this)">仅英文</div>
-    </div>
-
-    <label class="section-label">预算范围</label>
-    <div class="budget-options" id="budgetOptions">
-      <div class="budget-card" data-budget="basic" onclick="selectBudget('basic', this)">
-        <div class="tier">基础款</div>
-        <div class="price">¥69</div>
-        <div class="features">2版方案<br>3次修改<br>源文件交付</div>
-      </div>
-      <div class="budget-card" data-budget="standard" onclick="selectBudget('standard', this)">
-        <div class="tier">标准款</div>
-        <div class="price">¥129</div>
-        <div class="features">3版方案<br>无限修改<br>源文件+名片设计</div>
-      </div>
-      <div class="budget-card" data-budget="premium" onclick="selectBudget('premium', this)">
-        <div class="tier">高级款</div>
-        <div class="price">¥299</div>
-        <div class="features">5版方案<br>无限修改<br>全套品牌视觉规范</div>
-      </div>
-    </div>
-
-    <label class="section-label">参考风格描述</label>
-    <textarea id="referenceText" placeholder="描述你想要的风格感觉、参考品牌、或任何特殊要求..."></textarea>
-
-    <label class="section-label">联系方式（选填）</label>
-    <input type="text" id="wechat" placeholder="微信号或手机号">
-
-    <div class="btn-row">
-      <button class="btn btn-outline" onclick="resetForm()">重置</button>
-      <button class="btn btn-primary" style="flex:2" onclick="generateBrief()">生成 Brief</button>
-    </div>
-  </div>
-
-  <!-- Brief Output -->
-  <div id="briefOutput">
-    <div class="brief-card" id="briefCard"></div>
-    <div class="btn-row">
-      <button class="btn btn-outline" onclick="editForm()">重新填写</button>
-      <button class="btn btn-primary" style="flex:2" onclick="copyBrief()">📋 复制 Brief</button>
-    </div>
-  </div>
-</div>
-
-<footer>
-  <div class="footer-brand">WK 工具矩阵</div>
-  <div class="footer-links">
-    <a href="https://yhmy2025.github.io/services/">文字服务</a>
-    <a href="https://yhmy2025.github.io/resume-checker/">简历诊断</a>
-    <a href="https://yhmy2025.github.io/logo-brief/">Logo设计</a>
-    <a href="https://yhmy2025.github.io/ai-writing/">AI写作</a>
-  </div>
-  <div class="footer-contact">微信 Yhgc_2025</div>
-</footer>
-
-<div class="toast" id="toast"></div>
-
-<script>
-var PALETTES = {
-  palette1: { name: '经典蓝橙', colors: ['#1e40af', '#f97316', '#ffffff', '#1f2937'] },
-  palette2: { name: '自然绿棕', colors: ['#166534', '#92400e', '#fef3c7', '#1f2937'] },
-  palette3: { name: '现代粉紫', colors: ['#be185d', '#7c3aed', '#fdf2f8', '#1f2937'] }
-};
-
-var STYLE_NAMES = ['极简','手绘','几何','复古','渐变','科技'];
-var STORAGE_KEY = 'logo_brief_state';
-
-var state = {
-  brandName: '', industry: '', logoStyles: [], colorPreference: '',
-  customColor: '#4f46e5', usageScenario: '', language: '仅中文',
-  budget: '', referenceText: '', wechat: ''
-};
-
-function $(id) { return document.getElementById(id); }
-
-// Style toggle
-function toggleStyle(el) {
-  var name = el.dataset.style;
-  el.classList.toggle('checked');
-  var idx = state.logoStyles.indexOf(name);
-  if (idx > -1) state.logoStyles.splice(idx, 1);
-  else state.logoStyles.push(name);
-  saveState();
-}
-
-// Palette select
-function selectPalette(id, el) {
-  var cards = document.querySelectorAll('.palette-card');
-  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
-  el.classList.add('selected');
-  state.colorPreference = id;
-  $('customColorWrap').classList.toggle('hidden', id !== 'custom');
-  saveState();
-}
-
-// Language radio
-function selectLang(lang, el) {
-  var chips = document.querySelectorAll('#langGroup .radio-chip');
-  for (var i = 0; i < chips.length; i++) chips[i].classList.remove('selected');
-  el.classList.add('selected');
-  state.language = lang;
-  saveState();
-}
-
-// Budget select
-function selectBudget(tier, el) {
-  var cards = document.querySelectorAll('.budget-card');
-  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
-  el.classList.add('selected');
-  state.budget = tier;
-  saveState();
-}
-
-// Collect form state
-function collectState() {
-  state.brandName = $('brandName').value.trim();
-  state.industry = $('industry').value;
-  state.customColor = $('customColor').value;
-  state.usageScenario = $('usageScenario').value;
-  state.referenceText = $('referenceText').value.trim();
-  state.wechat = $('wechat').value.trim();
-}
-
-// Generate brief
-function generateBrief() {
-  collectState();
-
-  if (!state.brandName && !state.industry && state.logoStyles.length === 0) {
-    showToast('请至少填写品牌名称、行业类型或选择Logo风格');
-    return;
-  }
-
-  // Palette display
-  var paletteHtml = '';
-  if (state.colorPreference === 'custom') {
-    paletteHtml = '<span class="brief-swatch" style="background:' + state.customColor + '"></span> 自定义颜色 ' + state.customColor;
-  } else if (state.colorPreference && PALETTES[state.colorPreference]) {
-    var pal = PALETTES[state.colorPreference];
-    var swatches = '';
-    for (var i = 0; i < pal.colors.length; i++) {
-      swatches += '<span class="brief-swatch" style="background:' + pal.colors[i] + '"></span>';
-    }
-    paletteHtml = '<div class="brief-palette-row">' + swatches + '<span style="margin-left:4px">' + pal.name + '</span></div>';
-  }
-
-  // Budget display
-  var budgetNames = { basic: '¥69 基础款 · 2版方案+3次修改+源文件', standard: '¥129 标准款 · 3版方案+无限修改+名片设计', premium: '¥299 高级款 · 5版方案+全套品牌视觉规范' };
-
-  var html = '<h2>Logo设计需求 Brief</h2>';
-
-  html += '<div class="brief-section"><div class="brief-label">品牌信息</div>';
-  html += '<div class="brief-value">品牌名称：' + (state.brandName || '<span class="empty-hint">未填写</span>') + '</div>';
-  html += '<div class="brief-value">行业类型：' + (state.industry || '<span class="empty-hint">未选择</span>') + '</div></div>';
-
-  html += '<div class="brief-section"><div class="brief-label">设计方向</div>';
-  html += '<div class="brief-value">Logo风格：' + (state.logoStyles.length > 0 ? state.logoStyles.join(' · ') : '<span class="empty-hint">未选择</span>') + '</div>';
-  html += '<div class="brief-value">颜色偏好：' + (paletteHtml || '<span class="empty-hint">未选择</span>') + '</div>';
-  html += '<div class="brief-value">语言需求：' + state.language + '</div>';
-  html += '<div class="brief-value">参考描述：' + (state.referenceText || '<span class="empty-hint">未填写</span>') + '</div></div>';
-
-  html += '<div class="brief-section"><div class="brief-label">预算与用途</div>';
-  html += '<div class="brief-value">预算范围：' + (budgetNames[state.budget] || '<span class="empty-hint">未选择</span>') + '</div>';
-  html += '<div class="brief-value">用途场景：' + (state.usageScenario || '<span class="empty-hint">未选择</span>') + '</div></div>';
-
-  html += '<div class="brief-section"><div class="brief-label">联系方式</div>';
-  html += '<div class="brief-value">' + (state.wechat || '<span class="empty-hint">未填写</span>') + '</div></div>';
-
-  $('briefCard').innerHTML = html;
-  $('inputForm').style.display = 'none';
-  $('briefOutput').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  saveState();
-}
-
-// Copy brief as text
-function copyBrief() {
-  var budgetNames = { basic: '¥69 基础款 · 2版方案+3次修改+源文件', standard: '¥129 标准款 · 3版方案+无限修改+名片设计', premium: '¥299 高级款 · 5版方案+全套品牌视觉规范' };
-  var paletteText = '';
-  if (state.colorPreference === 'custom') {
-    paletteText = '自定义颜色 ' + state.customColor;
-  } else if (state.colorPreference && PALETTES[state.colorPreference]) {
-    paletteText = PALETTES[state.colorPreference].name + ' (' + PALETTES[state.colorPreference].colors.join(', ') + ')';
-  }
-
-  var text = '【Logo设计需求 Brief】\n\n';
-  text += '━━━ 品牌信息 ━━━\n';
-  text += '品牌名称：' + (state.brandName || '未填写') + '\n';
-  text += '行业类型：' + (state.industry || '未选择') + '\n\n';
-  text += '━━━ 设计方向 ━━━\n';
-  text += 'Logo风格：' + (state.logoStyles.length > 0 ? state.logoStyles.join(' · ') : '未选择') + '\n';
-  text += '颜色偏好：' + (paletteText || '未选择') + '\n';
-  text += '语言需求：' + state.language + '\n';
-  text += '参考描述：' + (state.referenceText || '未填写') + '\n\n';
-  text += '━━━ 预算与用途 ━━━\n';
-  text += '预算范围：' + (budgetNames[state.budget] || '未选择') + '\n';
-  text += '用途场景：' + (state.usageScenario || '未选择') + '\n\n';
-  text += '━━━ 联系方式 ━━━\n';
-  text += (state.wechat || '未填写') + '\n\n';
-  text += '—— 由 WK 设计服务生成';
-
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(function() {
-      showToast('✅ Brief 已复制，可粘贴发送给设计师');
-    });
-  } else {
-    showToast('📋 请手动选择文字复制');
-  }
-}
-
-// Edit form
-function editForm() {
-  $('briefOutput').style.display = 'none';
-  $('inputForm').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Reset
-function resetForm() {
-  $('brandName').value = '';
-  $('industry').value = '';
-  $('usageScenario').value = '';
-  $('referenceText').value = '';
-  $('wechat').value = '';
-  $('customColorWrap').classList.add('hidden');
-
-  var chips = document.querySelectorAll('.style-chip');
-  for (var i = 0; i < chips.length; i++) chips[i].classList.remove('checked');
-
-  var pcards = document.querySelectorAll('.palette-card');
-  for (var i = 0; i < pcards.length; i++) pcards[i].classList.remove('selected');
-
-  var langChips = document.querySelectorAll('#langGroup .radio-chip');
-  for (var i = 0; i < langChips.length; i++) langChips[i].classList.remove('selected');
-  langChips[0].classList.add('selected');
-
-  var bcards = document.querySelectorAll('.budget-card');
-  for (var i = 0; i < bcards.length; i++) bcards[i].classList.remove('selected');
-
-  state = { brandName: '', industry: '', logoStyles: [], colorPreference: '', customColor: '#4f46e5', usageScenario: '', language: '仅中文', budget: '', referenceText: '', wechat: '' };
-  saveState();
-  showToast('已重置所有字段');
-}
-
-// Toast
-function showToast(msg) {
-  var t = $('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._tid);
-  t._tid = setTimeout(function() { t.classList.remove('show'); }, 2500);
-}
-
-// State persistence
-function saveState() {
-  collectState();
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
-}
-
-function restoreState() {
-  try {
-    var saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!saved) return;
-    state = saved;
-
-    if (state.brandName) $('brandName').value = state.brandName;
-    if (state.industry) $('industry').value = state.industry;
-    if (state.usageScenario) $('usageScenario').value = state.usageScenario;
-    if (state.referenceText) $('referenceText').value = state.referenceText;
-    if (state.wechat) $('wechat').value = state.wechat;
-
-    // Restore styles
-    for (var i = 0; i < state.logoStyles.length; i++) {
-      var chip = document.querySelector('.style-chip[data-style="' + state.logoStyles[i] + '"]');
-      if (chip) chip.classList.add('checked');
-    }
-
-    // Restore palette
-    if (state.colorPreference) {
-      var pcard = document.querySelector('.palette-card[data-palette="' + state.colorPreference + '"]');
-      if (pcard) pcard.classList.add('selected');
-      $('customColorWrap').classList.toggle('hidden', state.colorPreference !== 'custom');
-      if (state.customColor) $('customColor').value = state.customColor;
-    }
-
-    // Restore language
-    var lchip = document.querySelector('#langGroup .radio-chip[data-lang="' + state.language + '"]');
-    if (lchip) {
-      var langChips = document.querySelectorAll('#langGroup .radio-chip');
-      for (var i = 0; i < langChips.length; i++) langChips[i].classList.remove('selected');
-      lchip.classList.add('selected');
-    }
-
-    // Restore budget
-    if (state.budget) {
-      var bcard = document.querySelector('.budget-card[data-budget="' + state.budget + '"]');
-      if (bcard) bcard.classList.add('selected');
-    }
-  } catch(e) {}
-}
-
-// Init
-restoreState();
-
-// Auto-save on input change
-var inputs = document.querySelectorAll('input, select, textarea');
-for (var i = 0; i < inputs.length; i++) {
-  inputs[i].addEventListener('change', saveState);
-  inputs[i].addEventListener('input', saveState);
-}
-</script>
+</head>
+
+<body><div style="background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;text-align:center;padding:10px 16px;font-size:13px;font-weight:600">
+  🎨 先在线体验AI生成效果 → <a href="http://100.64.146.127:8000/logo-generate/" style="color:#fbbf24;text-decoration:underline">AI Logo设计引擎（免费试用）</a>
+</div>
+
+
+
+
+<header>
+
+  <h1>Logo设计需求收集</h1>
+
+  <p>填写需求 → 生成Brief → 精准沟通</p>
+
+</header>
+
+
+
+<div id="app">
+
+  <!-- Input Form -->
+
+  <div id="inputForm">
+
+    <label class="section-label">品牌名称</label>
+
+    <input type="text" id="brandName" placeholder="输入品牌或项目名称">
+
+
+
+    <label class="section-label">行业类型</label>
+
+    <select id="industry">
+
+      <option value="">请选择</option>
+
+      <option value="餐饮">餐饮</option><option value="科技">科技</option>
+
+      <option value="教育">教育</option><option value="电商">电商</option>
+
+      <option value="美妆">美妆</option><option value="医疗">医疗</option>
+
+      <option value="金融">金融</option><option value="其他">其他</option>
+
+    </select>
+
+
+
+    <label class="section-label">Logo风格（可多选）</label>
+
+    <div class="style-grid" id="styleGrid">
+
+      <div class="style-chip" data-style="极简" onclick="toggleStyle(this)">
+
+        <span class="emoji">◯</span><span class="name">极简</span>细线几何·留白
+
+      </div>
+
+      <div class="style-chip" data-style="手绘" onclick="toggleStyle(this)">
+
+        <span class="emoji">✏️</span><span class="name">手绘</span>温暖笔触·自然
+
+      </div>
+
+      <div class="style-chip" data-style="几何" onclick="toggleStyle(this)">
+
+        <span class="emoji">🔷</span><span class="name">几何</span>对称图形·专业
+
+      </div>
+
+      <div class="style-chip" data-style="复古" onclick="toggleStyle(this)">
+
+        <span class="emoji">🏛️</span><span class="name">复古</span>徽章衬线·古典
+
+      </div>
+
+      <div class="style-chip" data-style="渐变" onclick="toggleStyle(this)">
+
+        <span class="emoji">🌈</span><span class="name">渐变</span>色彩过渡·现代
+
+      </div>
+
+      <div class="style-chip" data-style="科技" onclick="toggleStyle(this)">
+
+        <span class="emoji">⚡</span><span class="name">科技</span>电路像素·未来
+
+      </div>
+
+    </div>
+
+
+
+    <label class="section-label">颜色偏好</label>
+
+    <div class="palette-options" id="paletteOptions">
+
+      <div class="palette-card" data-palette="palette1" onclick="selectPalette('palette1', this)">
+
+        <div class="palette-name">经典蓝橙</div>
+
+        <div class="palette-swatches">
+
+          <span class="palette-swatch" style="background:#1e40af"></span>
+
+          <span class="palette-swatch" style="background:#f97316"></span>
+
+          <span class="palette-swatch" style="background:#ffffff"></span>
+
+          <span class="palette-swatch" style="background:#1f2937"></span>
+
+        </div>
+
+      </div>
+
+      <div class="palette-card" data-palette="palette2" onclick="selectPalette('palette2', this)">
+
+        <div class="palette-name">自然绿棕</div>
+
+        <div class="palette-swatches">
+
+          <span class="palette-swatch" style="background:#166534"></span>
+
+          <span class="palette-swatch" style="background:#92400e"></span>
+
+          <span class="palette-swatch" style="background:#fef3c7"></span>
+
+          <span class="palette-swatch" style="background:#1f2937"></span>
+
+        </div>
+
+      </div>
+
+      <div class="palette-card" data-palette="palette3" onclick="selectPalette('palette3', this)">
+
+        <div class="palette-name">现代粉紫</div>
+
+        <div class="palette-swatches">
+
+          <span class="palette-swatch" style="background:#be185d"></span>
+
+          <span class="palette-swatch" style="background:#7c3aed"></span>
+
+          <span class="palette-swatch" style="background:#fdf2f8"></span>
+
+          <span class="palette-swatch" style="background:#1f2937"></span>
+
+        </div>
+
+      </div>
+
+      <div class="palette-card" data-palette="custom" onclick="selectPalette('custom', this)">
+
+        <div class="palette-name">自定义</div>
+
+        <div class="palette-swatches">
+
+          <span class="palette-swatch" style="background:repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 50% / 8px 8px"></span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="custom-color-wrap hidden" id="customColorWrap">
+
+      <label class="section-label" style="margin-top:4px">选择主色调</label>
+
+      <input type="color" id="customColor" value="#4f46e5">
+
+    </div>
+
+
+
+    <label class="section-label">用途场景</label>
+
+    <select id="usageScenario">
+
+      <option value="">请选择</option>
+
+      <option value="闲鱼店铺">闲鱼店铺</option>
+
+      <option value="小红书">小红书</option>
+
+      <option value="微信公众号">微信公众号</option>
+
+      <option value="网站">网站</option>
+
+      <option value="名片">名片</option>
+
+      <option value="其他">其他</option>
+
+    </select>
+
+
+
+    <label class="section-label">语言需求</label>
+
+    <div class="radio-group" id="langGroup">
+
+      <div class="radio-chip selected" data-lang="仅中文" onclick="selectLang('仅中文', this)">仅中文</div>
+
+      <div class="radio-chip" data-lang="中英双语" onclick="selectLang('中英双语', this)">中英双语</div>
+
+      <div class="radio-chip" data-lang="仅英文" onclick="selectLang('仅英文', this)">仅英文</div>
+
+    </div>
+
+
+
+    <label class="section-label">预算范围</label>
+
+    <div class="budget-options" id="budgetOptions">
+
+      <div class="budget-card" data-budget="basic" onclick="selectBudget('basic', this)">
+
+        <div class="tier">基础款</div>
+
+        <div class="price">¥69</div>
+
+        <div class="features">2版方案<br>3次修改<br>源文件交付</div>
+
+      </div>
+
+      <div class="budget-card" data-budget="standard" onclick="selectBudget('standard', this)">
+
+        <div class="tier">标准款</div>
+
+        <div class="price">¥129</div>
+
+        <div class="features">3版方案<br>无限修改<br>源文件+名片设计</div>
+
+      </div>
+
+      <div class="budget-card" data-budget="premium" onclick="selectBudget('premium', this)">
+
+        <div class="tier">高级款</div>
+
+        <div class="price">¥299</div>
+
+        <div class="features">5版方案<br>无限修改<br>全套品牌视觉规范</div>
+
+      </div>
+
+    </div>
+
+
+
+    <label class="section-label">参考风格描述</label>
+
+    <textarea id="referenceText" placeholder="描述你想要的风格感觉、参考品牌、或任何特殊要求..."></textarea>
+
+
+
+    <label class="section-label">联系方式（选填）</label>
+
+    <input type="text" id="wechat" placeholder="微信号或手机号">
+
+
+
+    <div class="btn-row">
+
+      <button class="btn btn-outline" onclick="resetForm()">重置</button>
+
+      <button class="btn btn-primary" style="flex:2" onclick="generateBrief()">生成 Brief</button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- Brief Output -->
+
+  <div id="briefOutput">
+
+    <div class="brief-card" id="briefCard"></div>
+
+    <div class="btn-row">
+
+      <button class="btn btn-outline" onclick="editForm()">重新填写</button>
+
+      <button class="btn btn-primary" style="flex:2" onclick="copyBrief()">📋 复制 Brief</button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<footer>
+
+  <div class="footer-brand">WK 工具矩阵</div>
+
+  <div class="footer-links">
+
+    <a href="https://yhmy2025.github.io/services/">文字服务</a>
+
+    <a href="https://yhmy2025.github.io/resume-checker/">简历诊断</a>
+
+    <a href="https://yhmy2025.github.io/logo-brief/">Logo设计</a>
+
+    <a href="https://yhmy2025.github.io/ai-writing/">AI写作</a>
+
+  </div>
+
+  <div class="footer-contact">微信 Yhgc_2025</div>
+
+</footer>
+
+
+
+<div class="toast" id="toast"></div>
+
+
+
+<script>
+
+var PALETTES = {
+
+  palette1: { name: '经典蓝橙', colors: ['#1e40af', '#f97316', '#ffffff', '#1f2937'] },
+
+  palette2: { name: '自然绿棕', colors: ['#166534', '#92400e', '#fef3c7', '#1f2937'] },
+
+  palette3: { name: '现代粉紫', colors: ['#be185d', '#7c3aed', '#fdf2f8', '#1f2937'] }
+
+};
+
+
+
+var STYLE_NAMES = ['极简','手绘','几何','复古','渐变','科技'];
+
+var STORAGE_KEY = 'logo_brief_state';
+
+
+
+var state = {
+
+  brandName: '', industry: '', logoStyles: [], colorPreference: '',
+
+  customColor: '#4f46e5', usageScenario: '', language: '仅中文',
+
+  budget: '', referenceText: '', wechat: ''
+
+};
+
+
+
+function $(id) { return document.getElementById(id); }
+
+
+
+// Style toggle
+
+function toggleStyle(el) {
+
+  var name = el.dataset.style;
+
+  el.classList.toggle('checked');
+
+  var idx = state.logoStyles.indexOf(name);
+
+  if (idx > -1) state.logoStyles.splice(idx, 1);
+
+  else state.logoStyles.push(name);
+
+  saveState();
+
+}
+
+
+
+// Palette select
+
+function selectPalette(id, el) {
+
+  var cards = document.querySelectorAll('.palette-card');
+
+  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
+
+  el.classList.add('selected');
+
+  state.colorPreference = id;
+
+  $('customColorWrap').classList.toggle('hidden', id !== 'custom');
+
+  saveState();
+
+}
+
+
+
+// Language radio
+
+function selectLang(lang, el) {
+
+  var chips = document.querySelectorAll('#langGroup .radio-chip');
+
+  for (var i = 0; i < chips.length; i++) chips[i].classList.remove('selected');
+
+  el.classList.add('selected');
+
+  state.language = lang;
+
+  saveState();
+
+}
+
+
+
+// Budget select
+
+function selectBudget(tier, el) {
+
+  var cards = document.querySelectorAll('.budget-card');
+
+  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
+
+  el.classList.add('selected');
+
+  state.budget = tier;
+
+  saveState();
+
+}
+
+
+
+// Collect form state
+
+function collectState() {
+
+  state.brandName = $('brandName').value.trim();
+
+  state.industry = $('industry').value;
+
+  state.customColor = $('customColor').value;
+
+  state.usageScenario = $('usageScenario').value;
+
+  state.referenceText = $('referenceText').value.trim();
+
+  state.wechat = $('wechat').value.trim();
+
+}
+
+
+
+// Generate brief
+
+function generateBrief() {
+
+  collectState();
+
+
+
+  if (!state.brandName && !state.industry && state.logoStyles.length === 0) {
+
+    showToast('请至少填写品牌名称、行业类型或选择Logo风格');
+
+    return;
+
+  }
+
+
+
+  // Palette display
+
+  var paletteHtml = '';
+
+  if (state.colorPreference === 'custom') {
+
+    paletteHtml = '<span class="brief-swatch" style="background:' + state.customColor + '"></span> 自定义颜色 ' + state.customColor;
+
+  } else if (state.colorPreference && PALETTES[state.colorPreference]) {
+
+    var pal = PALETTES[state.colorPreference];
+
+    var swatches = '';
+
+    for (var i = 0; i < pal.colors.length; i++) {
+
+      swatches += '<span class="brief-swatch" style="background:' + pal.colors[i] + '"></span>';
+
+    }
+
+    paletteHtml = '<div class="brief-palette-row">' + swatches + '<span style="margin-left:4px">' + pal.name + '</span></div>';
+
+  }
+
+
+
+  // Budget display
+
+  var budgetNames = { basic: '¥69 基础款 · 2版方案+3次修改+源文件', standard: '¥129 标准款 · 3版方案+无限修改+名片设计', premium: '¥299 高级款 · 5版方案+全套品牌视觉规范' };
+
+
+
+  var html = '<h2>Logo设计需求 Brief</h2>';
+
+
+
+  html += '<div class="brief-section"><div class="brief-label">品牌信息</div>';
+
+  html += '<div class="brief-value">品牌名称：' + (state.brandName || '<span class="empty-hint">未填写</span>') + '</div>';
+
+  html += '<div class="brief-value">行业类型：' + (state.industry || '<span class="empty-hint">未选择</span>') + '</div></div>';
+
+
+
+  html += '<div class="brief-section"><div class="brief-label">设计方向</div>';
+
+  html += '<div class="brief-value">Logo风格：' + (state.logoStyles.length > 0 ? state.logoStyles.join(' · ') : '<span class="empty-hint">未选择</span>') + '</div>';
+
+  html += '<div class="brief-value">颜色偏好：' + (paletteHtml || '<span class="empty-hint">未选择</span>') + '</div>';
+
+  html += '<div class="brief-value">语言需求：' + state.language + '</div>';
+
+  html += '<div class="brief-value">参考描述：' + (state.referenceText || '<span class="empty-hint">未填写</span>') + '</div></div>';
+
+
+
+  html += '<div class="brief-section"><div class="brief-label">预算与用途</div>';
+
+  html += '<div class="brief-value">预算范围：' + (budgetNames[state.budget] || '<span class="empty-hint">未选择</span>') + '</div>';
+
+  html += '<div class="brief-value">用途场景：' + (state.usageScenario || '<span class="empty-hint">未选择</span>') + '</div></div>';
+
+
+
+  html += '<div class="brief-section"><div class="brief-label">联系方式</div>';
+
+  html += '<div class="brief-value">' + (state.wechat || '<span class="empty-hint">未填写</span>') + '</div></div>';
+
+
+
+  $('briefCard').innerHTML = html;
+
+  $('inputForm').style.display = 'none';
+
+  $('briefOutput').style.display = 'block';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  saveState();
+
+}
+
+
+
+// Copy brief as text
+
+function copyBrief() {
+
+  var budgetNames = { basic: '¥69 基础款 · 2版方案+3次修改+源文件', standard: '¥129 标准款 · 3版方案+无限修改+名片设计', premium: '¥299 高级款 · 5版方案+全套品牌视觉规范' };
+
+  var paletteText = '';
+
+  if (state.colorPreference === 'custom') {
+
+    paletteText = '自定义颜色 ' + state.customColor;
+
+  } else if (state.colorPreference && PALETTES[state.colorPreference]) {
+
+    paletteText = PALETTES[state.colorPreference].name + ' (' + PALETTES[state.colorPreference].colors.join(', ') + ')';
+
+  }
+
+
+
+  var text = '【Logo设计需求 Brief】\n\n';
+
+  text += '━━━ 品牌信息 ━━━\n';
+
+  text += '品牌名称：' + (state.brandName || '未填写') + '\n';
+
+  text += '行业类型：' + (state.industry || '未选择') + '\n\n';
+
+  text += '━━━ 设计方向 ━━━\n';
+
+  text += 'Logo风格：' + (state.logoStyles.length > 0 ? state.logoStyles.join(' · ') : '未选择') + '\n';
+
+  text += '颜色偏好：' + (paletteText || '未选择') + '\n';
+
+  text += '语言需求：' + state.language + '\n';
+
+  text += '参考描述：' + (state.referenceText || '未填写') + '\n\n';
+
+  text += '━━━ 预算与用途 ━━━\n';
+
+  text += '预算范围：' + (budgetNames[state.budget] || '未选择') + '\n';
+
+  text += '用途场景：' + (state.usageScenario || '未选择') + '\n\n';
+
+  text += '━━━ 联系方式 ━━━\n';
+
+  text += (state.wechat || '未填写') + '\n\n';
+
+  text += '—— 由 WK 设计服务生成';
+
+
+
+  if (navigator.clipboard) {
+
+    navigator.clipboard.writeText(text).then(function() {
+
+      showToast('✅ Brief 已复制，可粘贴发送给设计师');
+
+    });
+
+  } else {
+
+    showToast('📋 请手动选择文字复制');
+
+  }
+
+}
+
+
+
+// Edit form
+
+function editForm() {
+
+  $('briefOutput').style.display = 'none';
+
+  $('inputForm').style.display = 'block';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+}
+
+
+
+// Reset
+
+function resetForm() {
+
+  $('brandName').value = '';
+
+  $('industry').value = '';
+
+  $('usageScenario').value = '';
+
+  $('referenceText').value = '';
+
+  $('wechat').value = '';
+
+  $('customColorWrap').classList.add('hidden');
+
+
+
+  var chips = document.querySelectorAll('.style-chip');
+
+  for (var i = 0; i < chips.length; i++) chips[i].classList.remove('checked');
+
+
+
+  var pcards = document.querySelectorAll('.palette-card');
+
+  for (var i = 0; i < pcards.length; i++) pcards[i].classList.remove('selected');
+
+
+
+  var langChips = document.querySelectorAll('#langGroup .radio-chip');
+
+  for (var i = 0; i < langChips.length; i++) langChips[i].classList.remove('selected');
+
+  langChips[0].classList.add('selected');
+
+
+
+  var bcards = document.querySelectorAll('.budget-card');
+
+  for (var i = 0; i < bcards.length; i++) bcards[i].classList.remove('selected');
+
+
+
+  state = { brandName: '', industry: '', logoStyles: [], colorPreference: '', customColor: '#4f46e5', usageScenario: '', language: '仅中文', budget: '', referenceText: '', wechat: '' };
+
+  saveState();
+
+  showToast('已重置所有字段');
+
+}
+
+
+
+// Toast
+
+function showToast(msg) {
+
+  var t = $('toast');
+
+  t.textContent = msg;
+
+  t.classList.add('show');
+
+  clearTimeout(t._tid);
+
+  t._tid = setTimeout(function() { t.classList.remove('show'); }, 2500);
+
+}
+
+
+
+// State persistence
+
+function saveState() {
+
+  collectState();
+
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+
+}
+
+
+
+function restoreState() {
+
+  try {
+
+    var saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+    if (!saved) return;
+
+    state = saved;
+
+
+
+    if (state.brandName) $('brandName').value = state.brandName;
+
+    if (state.industry) $('industry').value = state.industry;
+
+    if (state.usageScenario) $('usageScenario').value = state.usageScenario;
+
+    if (state.referenceText) $('referenceText').value = state.referenceText;
+
+    if (state.wechat) $('wechat').value = state.wechat;
+
+
+
+    // Restore styles
+
+    for (var i = 0; i < state.logoStyles.length; i++) {
+
+      var chip = document.querySelector('.style-chip[data-style="' + state.logoStyles[i] + '"]');
+
+      if (chip) chip.classList.add('checked');
+
+    }
+
+
+
+    // Restore palette
+
+    if (state.colorPreference) {
+
+      var pcard = document.querySelector('.palette-card[data-palette="' + state.colorPreference + '"]');
+
+      if (pcard) pcard.classList.add('selected');
+
+      $('customColorWrap').classList.toggle('hidden', state.colorPreference !== 'custom');
+
+      if (state.customColor) $('customColor').value = state.customColor;
+
+    }
+
+
+
+    // Restore language
+
+    var lchip = document.querySelector('#langGroup .radio-chip[data-lang="' + state.language + '"]');
+
+    if (lchip) {
+
+      var langChips = document.querySelectorAll('#langGroup .radio-chip');
+
+      for (var i = 0; i < langChips.length; i++) langChips[i].classList.remove('selected');
+
+      lchip.classList.add('selected');
+
+    }
+
+
+
+    // Restore budget
+
+    if (state.budget) {
+
+      var bcard = document.querySelector('.budget-card[data-budget="' + state.budget + '"]');
+
+      if (bcard) bcard.classList.add('selected');
+
+    }
+
+  } catch(e) {}
+
+}
+
+
+
+// Init
+
+restoreState();
+
+
+
+// Auto-save on input change
+
+var inputs = document.querySelectorAll('input, select, textarea');
+
+for (var i = 0; i < inputs.length; i++) {
+
+  inputs[i].addEventListener('change', saveState);
+
+  inputs[i].addEventListener('input', saveState);
+
+}
+
+</script>
+
 <div class="cta-bar">
   <div class="cta-text">需要更专业的定制服务？</div>
   <div class="cta-links">
@@ -574,5 +1136,7 @@ for (var i = 0; i < inputs.length; i++) {
     <span>微信 Yhgc_2025</span>
   </div>
 </div>
-</body>
-</html>
+</body>
+
+</html>
+
