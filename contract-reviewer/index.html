@@ -58,32 +58,34 @@ textarea::placeholder{color:#475569}
   <h1>合同风险扫描器</h1>
   <p>AI驱动的智能合同审查 · 秒级识别潜在风险条款</p>
 </div>
-<div id="input-section">
-  <div class="card">
-    <h3>📄 粘贴合同文本</h3>
-    <textarea id="contract" placeholder="请将合同条款粘贴到这里...&#10;&#10;支持中文合同&#10;建议粘贴完整条款以获得准确分析"></textarea>
-    <div class="checks" id="checks">
-      <span class="check on" data-key="赔偿条款">赔偿条款</span>
-      <span class="check on" data-key="解约条款">解约条款</span>
-      <span class="check on" data-key="保密条款">保密条款</span>
-      <span class="check on" data-key="知识产权">知识产权</span>
-      <span class="check on" data-key="竞业限制">竞业限制</span>
-      <span class="check on" data-key="付款条款">付款条款</span>
-      <span class="check on" data-key="违约责任">违约责任</span>
-      <span class="check on" data-key="管辖权">管辖权</span>
-    </div>
-    <button class="btn" onclick="review()">🔍 开始审查</button>
+
+<div class="card" style="text-align:center">
+  <div style="font-size:48px;margin-bottom:16px">🔗</div>
+  <h3>请在工具端打开以使用AI审查</h3>
+  <p style="font-size:13px;color:#94a3b8;line-height:1.8;margin-bottom:20px">
+  由于浏览器安全策略，GitHub Pages无法直接调用AI后端。<br><br>
+  点击下方按钮，在Docker工具端打开完整功能：</p>
+  <a href="http://100.64.146.127:8000/contract-reviewer/" 
+     style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border-radius:8px;text-decoration:none;font-size:16px;font-weight:600">
+    🚀 打开合同扫描器（完整版）
+  </a>
+  <p style="font-size:11px;color:#64748b;margin-top:16px">需连接Tailscale内网</p>
+</div>
+
+<div class="card">
+  <h3>📋 功能预览</h3>
+  <div style="font-size:13px;color:#94a3b8;line-height:2">
+    ✅ 8维度风险审查（赔偿/解约/保密/知产/竞业/付款/违约/管辖）<br>
+    ✅ 逐条风险条款原文引用 + 修改建议<br>
+    ✅ 综合评分 0-100 一键判断合同质量<br>
+    ✅ DeepSeek AI驱动 · 15-30秒出结果
   </div>
 </div>
-<div id="loading"><h3>🤖 AI正在审查合同...</h3><div class="spinner"></div><p style="font-size:13px;color:#64748b">逐条分析风险条款，约15-30秒</p></div>
-<div id="result">
-  <div id="result-content"></div>
-  <button class="btn" onclick="reset()" style="background:#475569;margin-top:12px">🔄 重新审查</button>
-</div>
+
 <div class="footer">
   <a href="/">← 返回工具箱首页</a>
-  <p style="margin-top:8px">AI分析结果仅供参考，不构成法律意见。重要合同请咨询专业律师。</p>
 </div>
+
 <div class="cta-bar">
   <div class="cta-text">需要更专业的定制服务？</div>
   <div class="cta-links">
@@ -92,40 +94,4 @@ textarea::placeholder{color:#475569}
     <span>微信 Yhgc_2025</span>
   </div>
 </div>
-<script>
-document.getElementById('checks').addEventListener('click', function(e) { if (e.target.classList.contains('check')) { e.target.classList.toggle('on') } })
-async function review() {
-  var text = document.getElementById('contract').value.trim()
-  if (text.length < 100) { alert('合同文本太短，请至少粘贴100字'); return }
-  var checks = Array.from(document.querySelectorAll('.check.on')).map(function(c) { return c.dataset.key }).join(',')
-  document.getElementById('input-section').style.display = 'none'
-  document.getElementById('loading').style.display = 'block'
-  document.getElementById('result').style.display = 'none'
-  try {
-    var resp = await fetch('http://100.64.146.127:8000/api/contract-review', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: 'contract_text=' + encodeURIComponent(text) + '&checks=' + encodeURIComponent(checks) })
-    var data = await resp.json()
-    document.getElementById('loading').style.display = 'none'
-    document.getElementById('result').style.display = 'block'
-    if (!data.success) { document.getElementById('result-content').innerHTML = '<div class="card"><p style="color:#f87171">' + data.error + '</p></div>'; return }
-    render(data)
-  } catch(e) { document.getElementById('loading').style.display = 'none'; document.getElementById('result').style.display = 'block'; document.getElementById('result-content').innerHTML = '<div class="card"><p style="color:#f87171">网络错误，请稍后重试</p></div>' }
-}
-function render(d) {
-  var cls = d.score >= 80 ? 'score-good' : d.score >= 60 ? 'score-ok' : 'score-bad'
-  var risks = d.risks || []
-  var high = risks.filter(function(r) { return r.level === 'high' })
-  var medium = risks.filter(function(r) { return r.level === 'medium' })
-  var low = risks.filter(function(r) { return r.level === 'low' })
-  var riskHTML = ''
-  for (var i = 0; i < risks.length; i++) {
-    var r = risks[i]
-    var cls2 = r.level === 'high' ? 'risk-high' : r.level === 'medium' ? 'risk-medium' : 'risk-low'
-    var badge = r.level === 'high' ? '<span class="badge badge-high">高风险</span>' : r.level === 'medium' ? '<span class="badge badge-medium">中风险</span>' : '<span class="badge badge-low">低风险</span>'
-    riskHTML += '<div class="risk-item ' + cls2 + '"><div class="title">' + badge + (r.title || '') + '</div><div class="clause">📌 ' + (r.clause || '') + '</div><div class="detail">' + (r.detail || '') + '</div><div class="suggest">💡 建议：' + (r.suggestion || '') + '</div></div>'
-  }
-  document.getElementById('result-content').innerHTML = '<div class="card" style="text-align:center"><h3>📊 综合评分</h3><div class="score-ring ' + cls + '">' + d.score + '</div><div class="summary">' + (d.summary || '') + '</div><div style="font-size:13px;color:#64748b;margin-top:8px">高风险 ' + high.length + ' · 中风险 ' + medium.length + ' · 低风险 ' + low.length + '</div></div>' + (risks.length ? '<div class="card"><h3>🔍 风险详情</h3>' + riskHTML + '</div>' : '') + '<div class="card" style="text-align:center;background:linear-gradient(135deg,#1e3a5f,#312e81);border-color:#3b82f6"><p style="font-size:13px;color:#93c5fd;margin-bottom:8px">⚠️ AI分析结果仅供参考，不构成法律意见</p><p style="font-size:14px;font-weight:600">需要律师深度审查？ 闲鱼搜 <b>YHmy</b> 或 微信 <b>Yhgc_2025</b></p></div>'
-}
-function reset() { document.getElementById('input-section').style.display = ''; document.getElementById('loading').style.display = 'none'; document.getElementById('result').style.display = 'none'; window.scrollTo({top:0,behavior:'smooth'}) }
-</script>
-</body>
-</html>
+</body></html>

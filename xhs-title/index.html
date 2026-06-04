@@ -47,21 +47,28 @@ body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2
   <p>输入主题 · 秒出5个爆款标题 · 一键复制</p>
 </div>
 
-<div id="input-section">
-  <div class="card">
-    <h3>✏️ 输入内容信息</h3>
-    <div class="field"><label>文章主题 *</label><input id="topic" placeholder="例如：新人入职第一周该做什么" maxlength="100"></div>
-    <div class="field"><label>内容类型</label><select id="type"><option value="干货分享">干货分享</option><option value="经验总结">经验总结</option><option value="好物推荐">好物推荐</option><option value="避坑指南">避坑指南</option><option value="创业记录">创业记录</option></select></div>
-    <div class="field"><label>目标人群（选填）</label><input id="audience" placeholder="例如：应届毕业生" maxlength="30"></div>
-    <button class="btn" onclick="generate()">🪄 生成爆款标题 生成爆款标题</button>
-  </div>
+<div class="card" style="text-align:center">
+  <div style="font-size:48px;margin-bottom:16px">🔗</div>
+  <h3>请在工具端打开以使用AI生成</h3>
+  <p style="font-size:13px;color:#94a3b8;line-height:1.8;margin-bottom:20px">
+  由于浏览器安全策略，GitHub Pages无法直接调用AI后端。<br><br>
+  点击下方按钮，在Docker工具端打开完整功能：</p>
+  <a href="http://100.64.146.127:8000/xhs-title/"
+     style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#dc2626,#f97316);color:#fff;border-radius:8px;text-decoration:none;font-size:16px;font-weight:600">
+    🚀 打开标题生成器（完整版）
+  </a>
+  <p style="font-size:11px;color:#64748b;margin-top:16px">需连接Tailscale内网</p>
 </div>
 
-<div id="loading"><h3>🤖 AI正在撰写标题...</h3><div class="spinner"></div></div>
-
-<div id="result">
-  <div id="result-content"></div>
-  <button class="btn" onclick="reset()" style="background:#475569;margin-top:12px">🔄 重新生成</button>
+<div class="card">
+  <h3>📋 功能预览</h3>
+  <div style="font-size:13px;color:#94a3b8;line-height:2">
+    ✅ 输入主题 → AI生成5个爆款标题<br>
+    ✅ 支持干货/经验/好物/避坑/创业 5种类型<br>
+    ✅ 每个标题含emoji + 高互动句式<br>
+    ✅ 附带3-5个推荐话题标签<br>
+    ✅ 一键复制，直接发布
+  </div>
 </div>
 
 <div class="footer">
@@ -69,72 +76,12 @@ body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2
 </div>
 
 <div class="cta-bar">
-  <div class="cta-text">需要完整内容代写/代运营？</div>
+  <div class="cta-text">需要更专业的定制服务？</div>
   <div class="cta-links">
     <span>闲鱼搜 YHmy</span>
     <span class="cta-divider">|</span>
     <span>微信 Yhgc_2025</span>
   </div>
 </div>
-
-<script>
-async function generate() {
-  var topic = document.getElementById('topic').value.trim()
-  if (!topic || topic.length < 2) { alert('请输入文章主题（至少2个字）'); return }
-  var type = document.getElementById('type').value
-  var audience = document.getElementById('audience').value.trim()
-
-  document.getElementById('input-section').style.display = 'none'
-  document.getElementById('loading').style.display = 'block'
-  document.getElementById('result').style.display = 'none'
-
-  try {
-    var resp = await fetch('http://100.64.146.127:8000/api/xhs-title', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: 'topic=' + encodeURIComponent(topic) + '&type=' + encodeURIComponent(type) + '&audience=' + encodeURIComponent(audience)
-    })
-    var data = await resp.json()
-    document.getElementById('loading').style.display = 'none'
-    document.getElementById('result').style.display = 'block'
-    if (!data.success) {
-      document.getElementById('result-content').innerHTML = '<div class="card"><p style="color:#f87171">' + data.error + '</p></div>'
-      return
-    }
-    render(data)
-  } catch(e) {
-    document.getElementById('loading').style.display = 'none'
-    document.getElementById('result').style.display = 'block'
-    document.getElementById('result-content').innerHTML = '<div class="card"><p style="color:#f87171">网络错误，请重试</p></div>'
-  }
-}
-
-function render(d) {
-  var titles = d.titles || []
-  var tags = d.tags || []
-  var titlesHTML = titles.map(function(t, i) {
-    return '<div class="title-card"><span class="rank">' + (i+1) + '</span><span class="text">' + t + '</span><button class="copy" onclick="copyText(this,\'' + t.replace(/'/g, "\'") + '\')">复制</button></div>'
-  }).join('')
-  var tagsHTML = tags.map(function(t) { return '<span class="tag-chip">#' + t + '</span>' }).join('')
-
-  document.getElementById('result-content').innerHTML =
-    '<div class="card"><h3>🔥 生成的标题</h3>' + titlesHTML + '</div>' +
-    '<div class="card"><h3>🏷️ 推荐话题标签</h3><div class="tags-block">' + tagsHTML + '</div></div>' +
-    '<div class="card" style="text-align:center;background:linear-gradient(135deg,#431407,#1e3a5f);border-color:#f87171"><p style="font-size:14px;font-weight:600;margin-bottom:8px">🚀 需要完整内容代写？</p><p style="font-size:13px;color:#fdba74">闲鱼搜 <b>YHmy</b> · 微信 <b>Yhgc_2025</b> · AI写作+人工精修</p></div>'
-}
-
-function copyText(btn, text) {
-  navigator.clipboard.writeText(text).then(function() {
-    btn.textContent = '✅已复制'; setTimeout(function() { btn.textContent = '复制' }, 1500)
-  })
-}
-
-function reset() {
-  document.getElementById('input-section').style.display = ''
-  document.getElementById('loading').style.display = 'none'
-  document.getElementById('result').style.display = 'none'
-  window.scrollTo({top:0,behavior:'smooth'})
-}
-</script>
 </body>
 </html>
