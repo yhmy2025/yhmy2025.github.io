@@ -1,32 +1,32 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>🦞 OpenClaw 工具箱</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px 40px}
-.header{padding:40px 0 24px;text-align:center}
-.header .icon{font-size:48px;margin-bottom:8px}
-.header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.header .sub{font-size:12px;color:#64748b;margin-top:4px}
-.section{margin-bottom:20px}
-.section-title{font-size:13px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px}
-.card{display:flex;align-items:center;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;margin-bottom:8px;text-decoration:none;color:#e2e8f0;transition:all .15s}
-.card:hover{background:#1e3a5f;border-color:#3b82f6;transform:translateY(-1px)}
-.card .emoji{font-size:28px;margin-right:12px;flex-shrink:0}
-.card .info{flex:1;min-width:0}
-.card .name{font-size:15px;font-weight:600;margin-bottom:2px}
-.card .desc{font-size:11px;color:#94a3b8;line-height:1.4}
-.card .arrow{color:#475569;font-size:18px;margin-left:8px}
-.badge{display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;margin-left:6px;font-weight:600}
-.badge-new{background:#22c55e;color:#fff}
-.badge-hot{background:#ef4444;color:#fff}
-.footer{text-align:center;padding:30px 0 20px;font-size:11px;color:#475569}
-.footer a{color:#64748b}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>🦞 OpenClaw 工具箱</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px 40px}
+.header{padding:40px 0 24px;text-align:center}
+.header .icon{font-size:48px;margin-bottom:8px}
+.header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .sub{font-size:12px;color:#64748b;margin-top:4px}
+.section{margin-bottom:20px}
+.section-title{font-size:13px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px}
+.card{display:flex;align-items:center;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;margin-bottom:8px;text-decoration:none;color:#e2e8f0;transition:all .15s}
+.card:hover{background:#1e3a5f;border-color:#3b82f6;transform:translateY(-1px)}
+.card .emoji{font-size:28px;margin-right:12px;flex-shrink:0}
+.card .info{flex:1;min-width:0}
+.card .name{font-size:15px;font-weight:600;margin-bottom:2px}
+.card .desc{font-size:11px;color:#94a3b8;line-height:1.4}
+.card .arrow{color:#475569;font-size:18px;margin-left:8px}
+.badge{display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;margin-left:6px;font-weight:600}
+.badge-new{background:#22c55e;color:#fff}
+.badge-hot{background:#ef4444;color:#fff}
+.footer{text-align:center;padding:30px 0 20px;font-size:11px;color:#475569}
+.footer a{color:#64748b}
 .cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100}.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}.cta-bar .cta-divider{color:#334155;margin:0 8px}
-</style>
+</style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
@@ -35,111 +35,143 @@ function gtag(){dataLayer.push(arguments);}
 gtag("js", new Date());
 gtag("config", "G-XXXXXXXXXX");
 </script>
-</head>
-<body>
-
-<div class="header">
-  <div class="icon">🦞</div>
-  <h1>OpenClaw 工具箱</h1>
-
-</div>
-
-<div class="section">
-  <div class="section-title">🌏 生活工具</div>
-  <a class="card" href="/thai-guide/">
-    <span class="emoji">🇹🇭</span>
-    <div class="info">
-      <div class="name">泰国工作生活小科普<span class="badge badge-new">v2026</span></div>
-      <div class="desc">春武里建材人随身手册 · 吃喝出行安全急救</div>
-    </div>
-    <span class="arrow">›</span>
-  </a>
-</div>
-
-<div class="section">
-  <div class="section-title">💰 记账理财</div>
-  <a class="card" href="/small-accounting/">
-    <span class="emoji">💰</span>
-    <div class="info">
-      <div class="name">简易记账</div>
-      <div class="desc">小微企业/个人记账 · 流水报告一键生成</div>
-    </div>
-    <span class="arrow">›</span>
-  </a>
-  <a class="card" href="/small-accounting/sub-bill/">
-    <span class="emoji">🔔</span>
-    <div class="info">
-      <div class="name">订阅账单汇总</div>
-      <div class="desc">统计每月自动扣款 · 看看一年被扣了多少钱</div>
-    </div>
-    <span class="arrow">›</span>
-  </a>
-</div>
-
-<div class="section">
-  <div class="section-title">📋 职场提效</div>
-  <a class="card" href="/resume-checker/">
-    <span class="emoji">📋</span>
-    <div class="info">
-      <div class="name">简历诊断器</div>
-      <div class="desc">免费AI智能简历分析 · 评分+改进建议</div>
-    </div>
-    <span class="arrow">›</span>
-  </a>
-  <a class="card" href="/ai-writing/">
-    <span class="emoji">✍️</span>
-    <div class="info">
-      <div class="name">AI写作免费试用<span class="badge badge-new">NEW</span></div>
-      <div class="desc">在线体验AI代写 · 简历/演讲稿/报告</div>
-    </div>
-    <span class="arrow">›</span>
-  </a>
-</div>
-
-<div class="section">
-  <div class="section-title">🎨 创作工具箱</div>
-  <a class="card" href="/xhs-card/">
-    <span class="emoji">🦞</span>
-    <div class="info">
-      <div class="name">小红书配图卡片生成器<span class="badge badge-new">HOT</span></div>
-      <div class="desc">3种风格一键切换 · 编辑实时预览 · 1080×1440截图即发</div>
-    </div>
-    <span class="arrow">›</span>
-  </a>
-  <a class="card" href="/logo-brief/">
-    <span class="emoji">🎨</span>
-    <div class="info">
-      <div class="name">Logo设计需求提交</div>
-      <div class="desc">描述你的品牌 · 一键提交设计需求</div>
-    </div>
-    <span class="arrow">›</span>
-  </a>
-</div>
-
-<div class="section">
-  <div class="section-title">📦 服务 & 案例</div>
-  <a class="card" href="/services/">
-    <span class="emoji">📝</span>
-    <div class="info">
-      <div class="name">文字服务商店</div>
-      <div class="desc">简历优化 · 演讲稿 · 商业计划书 · 述职报告 · PPT文案</div>
-    </div>
-    <span class="arrow">›</span>
-  </a>
-  <a class="card" href="/fde/">
-    <span class="emoji">🔺</span>
-    <div class="info">
-      <div class="name">FDE Portfolio<span class="badge badge-new">NEW</span></div>
-      <div class="desc">AI全栈 · 业务拆解 · 客户交付 · 案例展示</div>
-    </div>
-    <span class="arrow">›</span>
-  </a>
-</div>
-
-<div class="footer">
-  Powered by <a href="https://openclaw.ai" target="_blank">OpenClaw</a> · 三节点全域AI助手
-</div>
-
+</head>
+<body>
+
+<div class="header">
+  <div class="icon">🦞</div>
+  <h1>OpenClaw 工具箱</h1>
+  <p class="sub">12个免费工具 · 闲鱼搜 YHmy · 微信 Yhgc_2025</p>
+</div>
+
+<div class="section">
+  <div class="section-title">🛡️ 合同商务</div>
+  <a class="card" href="/contract-reviewer/">
+    <span class="emoji">🛡️</span>
+    <div class="info">
+      <div class="name">合同风险扫描器<span class="badge badge-hot">HOT</span></div>
+      <div class="desc">AI智能合同审查 · 8维度风险识别+修改建议</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="section">
+  <div class="section-title">🌏 生活工具</div>
+  <a class="card" href="/thai-guide/">
+    <span class="emoji">🇹🇭</span>
+    <div class="info">
+      <div class="name">泰国工作生活小科普<span class="badge badge-new">v2026</span></div>
+      <div class="desc">春武里建材人随身手册 · 吃喝出行安全急救</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="section">
+  <div class="section-title">💰 记账理财</div>
+  <a class="card" href="/small-accounting/">
+    <span class="emoji">💰</span>
+    <div class="info">
+      <div class="name">简易记账</div>
+      <div class="desc">小微企业/个人记账 · 流水报告一键生成</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="/small-accounting/sub-bill/">
+    <span class="emoji">🔔</span>
+    <div class="info">
+      <div class="name">订阅账单汇总</div>
+      <div class="desc">统计每月自动扣款 · 看看一年被扣了多少钱</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="section">
+  <div class="section-title">📋 职场提效</div>
+  <a class="card" href="/resume-checker/">
+    <span class="emoji">📋</span>
+    <div class="info">
+      <div class="name">简历诊断器</div>
+      <div class="desc">免费AI智能简历分析 · 评分+改进建议</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="/ai-writing/">
+    <span class="emoji">✍️</span>
+    <div class="info">
+      <div class="name">AI写作免费试用<span class="badge badge-new">NEW</span></div>
+      <div class="desc">在线体验AI代写 · 简历/演讲稿/报告</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="section">
+  <div class="section-title">🎨 创作工具箱</div>
+  <a class="card" href="/xhs-card/">
+    <span class="emoji">🦞</span>
+    <div class="info">
+      <div class="name">小红书配图卡片生成器<span class="badge badge-hot">HOT</span></div>
+      <div class="desc">3种风格一键切换 · 编辑实时预览 · 1080×1440截图即发</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="/xhs-title/">
+    <span class="emoji">📕</span>
+    <div class="info">
+      <div class="name">小红书标题生成器<span class="badge badge-new">NEW</span></div>
+      <div class="desc">AI生成爆款标题 · 一键复制+话题推荐</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="/logo-brief/">
+    <span class="emoji">🎨</span>
+    <div class="info">
+      <div class="name">Logo设计需求提交</div>
+      <div class="desc">描述你的品牌 · 一键提交设计需求</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="section">
+  <div class="section-title">🛒 跨境电商</div>
+  <a class="card" href="/fba-calculator/">
+    <span class="emoji">🛒</span>
+    <div class="info">
+      <div class="name">选品利润计算器<span class="badge badge-new">NEW</span></div>
+      <div class="desc">FBA/FBM成本拆解 · 利润率一秒知道</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="section">
+  <div class="section-title">📦 服务 & 案例</div>
+  <a class="card" href="/services/">
+    <span class="emoji">📝</span>
+    <div class="info">
+      <div class="name">文字服务商店</div>
+      <div class="desc">简历优化 · 演讲稿 · 商业计划书 · 述职报告 · PPT文案</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="/fde/">
+    <span class="emoji">🔺</span>
+    <div class="info">
+      <div class="name">FDE Portfolio<span class="badge badge-new">NEW</span></div>
+      <div class="desc">AI全栈 · 业务拆解 · 客户交付 · 案例展示</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="footer">
+  Powered by <a href="https://openclaw.ai" target="_blank">OpenClaw</a> · 三节点全域AI助手
+</div>
+
 <div class="cta-bar">
   <div class="cta-text">需要更专业的定制服务？</div>
   <div class="cta-links">
@@ -148,5 +180,5 @@ gtag("config", "G-XXXXXXXXXX");
     <span>微信 Yhgc_2025</span>
   </div>
 </div>
-</body>
-</html>
+</body>
+</html>
