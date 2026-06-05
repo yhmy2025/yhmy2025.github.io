@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080,initial-scale=1.0">
+<title>YH工具箱 · 引导卡片</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  width:1080px;height:1260px;overflow:hidden;
+  background:linear-gradient(160deg,#0f172a 0%,#1a2744 50%,#0f172a 100%);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  color:#e2e8f0;
+  padding:48px 52px;
+  display:flex;flex-direction:column;
+}
+.header{text-align:center;margin-bottom:32px}
+.header .badge{
+  display:inline-block;padding:6px 16px;border:1px solid #38bdf8;border-radius:20px;
+  font-size:20px;color:#38bdf8;letter-spacing:2px;margin-bottom:16px;
+}
+.header h1{
+  font-size:52px;font-weight:800;
+  background:linear-gradient(135deg,#38bdf8,#818cf8,#c084fc);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;letter-spacing:4px;
+}
+.header .sub{font-size:24px;color:#94a3b8;font-weight:400}
+.grid{
+  flex:1;display:grid;grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(4,1fr);gap:12px;margin-bottom:28px;
+}
+.tool{
+  background:#1e293b;border:1px solid #334155;border-radius:14px;
+  padding:18px 20px;display:flex;align-items:center;gap:14px;
+  transition:all .2s;
+}
+.tool .emoji{font-size:36px;flex-shrink:0;width:48px;text-align:center}
+.tool .info{flex:1;min-width:0}
+.tool .name{font-size:18px;font-weight:700;margin-bottom:3px;color:#f1f5f9}
+.tool .desc{font-size:13px;color:#94a3b8;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tool.highlight{border-color:#3b82f6;background:#1e3a5f}
+.footer{
+  text-align:center;padding:28px 0 12px;border-top:1px solid #1e293b;
+}
+.footer .cta-title{font-size:22px;color:#94a3b8;margin-bottom:16px}
+.footer .cta-row{
+  display:flex;justify-content:center;align-items:center;gap:36px;
+  font-size:28px;font-weight:700;color:#38bdf8;
+}
+.footer .cta-divider{color:#334155;font-weight:300}
+.footer .url{font-size:18px;color:#64748b;margin-top:12px}
+.footer .tagline{font-size:16px;color:#475569;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">🧰 12件工具箱</div>
+  <h1>YH 的工具箱</h1>
+  <div class="sub">一个人 + AI = 无限可能</div>
+</div>
+
+<div class="grid">
+  <div class="tool">
+    <span class="emoji">📋</span>
+    <div class="info"><div class="name">简历诊断器</div><div class="desc">免费AI简历分析 · 评分+建议</div></div>
+  </div>
+  <div class="tool">
+    <span class="emoji">✍️</span>
+    <div class="info"><div class="name">AI写作试用</div><div class="desc">在线体验AI代写简历/演讲稿</div></div>
+  </div>
+  <div class="tool">
+    <span class="emoji">📝</span>
+    <div class="info"><div class="name">文字服务商店</div><div class="desc">简历优化·演讲稿·商业计划书</div></div>
+  </div>
+  <div class="tool highlight">
+    <span class="emoji">🛡️</span>
+    <div class="info"><div class="name">合同风险扫描器</div><div class="desc">AI秒级识别潜在风险条款</div></div>
+  </div>
+  <div class="tool">
+    <span class="emoji">🛒</span>
+    <div class="info"><div class="name">选品利润计算器</div><div class="desc">FBA/FBM全成本利润测算</div></div>
+  </div>
+  <div class="tool">
+    <span class="emoji">🦞</span>
+    <div class="info"><div class="name">小红书标题生成器</div><div class="desc">输入主题秒出10个爆款标题</div></div>
+  </div>
+  <div class="tool">
+    <span class="emoji">🎨</span>
+    <div class="info"><div class="name">Logo需求提交</div><div class="desc">描述品牌 · AI辅助设计提案</div></div>
+  </div>
+  <div class="tool">
+    <span class="emoji">🖼️</span>
+    <div class="info"><div class="name">小红书配卡片生成器</div><div class="desc">3种风格 · 编辑预览 · 截图即发</div></div>
+  </div>
+  <div class="tool">
+    <span class="emoji">💰</span>
+    <div class="info"><div class="name">简易记账</div><div class="desc">极简记账·流水报告一键生成</div></div>
+  </div>
+  <div class="tool">
+    <span class="emoji">🔔</span>
+    <div class="info"><div class="name">订阅账单汇总</div><div class="desc">统计每月自动扣款 · 看看花哪了</div></div>
+  </div>
+  <div class="tool">
+    <span class="emoji">🇹🇭</span>
+    <div class="info"><div class="name">泰国工作生活指南</div><div class="desc">春武里建材人随身手册</div></div>
+  </div>
+  <div class="tool">
+    <span class="emoji">🔺</span>
+    <div class="info"><div class="name">FDE Portfolio</div><div class="desc">AI全栈·业务拆解·案例展示</div></div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="cta-title">全部免费 · 打开即用</div>
+  <div class="cta-row">
+    <span>📱 微信 Yhgc_2025</span>
+    <span class="cta-divider">|</span>
+    <span>🔍 闲鱼搜 YHmy</span>
+  </div>
+  <div class="url">yhmy2025.github.io</div>
+  <div class="tagline">定制服务见闲鱼 · 工具永远免费</div>
+</div>
+
+</body>
+</html>

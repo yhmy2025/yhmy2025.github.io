@@ -48,6 +48,19 @@ textarea::placeholder{color:#475569}
 .cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}
 .cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}
 .cta-bar .cta-divider{color:#334155;margin:0 8px}
+#demoSection{position:relative}
+#demoSection .demo-contract{width:100%;height:160px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#94a3b8;padding:14px;font-size:12px;line-height:1.8;font-family:"SF Mono","Cascadia Code",monospace;overflow-y:auto;white-space:pre-line;cursor:default}
+#demoSection .btn-outline{background:transparent;border:1px solid #3b82f6;color:#60a5fa}
+#demoSection .btn-outline:hover{background:#1e3a5f}
+#demoLoading{display:none;text-align:center;padding:30px}
+#demoResult{display:none}
+#demoCta{display:none;text-align:center;padding:20px 16px;margin-top:16px;background:linear-gradient(135deg,#1e293b,#0f172a);border:1px solid #334155;border-radius:12px}
+#demoCta.visible{display:block}
+#demoCta .cta-title{font-size:16px;font-weight:700;margin-bottom:8px;color:#fbbf24}
+#demoCta .cta-desc{font-size:13px;color:#94a3b8;margin-bottom:12px;line-height:1.7}
+#demoCta .cta-contact{font-size:15px;font-weight:700;color:#38bdf8}
+#demoCta .cta-price{font-size:12px;color:#64748b;margin-top:6px}
+.demo-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;margin-left:6px;background:#1e3a5f;color:#60a5fa}
 </style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-XXXXXXXXXX")</script>
@@ -82,6 +95,72 @@ textarea::placeholder{color:#475569}
   </div>
 </div>
 
+<div class="card" id="demoSection">
+  <h3>📋 没有合同？试试演示版 <span class="demo-badge">模拟</span></h3>
+  <div class="demo-contract" readonly>采购框架协议
+
+甲方：XX科技有限公司
+乙方：YY供应链管理有限公司
+
+第一条 合同标的
+乙方为甲方提供电子元器件供应链管理服务。
+
+第二条 价格与结算
+产品价格以双方确认的报价单为准。甲方应于每批次货物交付后30日内支付全款。如逾期支付，按日万分之五计收违约金。
+
+第三条 赔偿与责任
+因乙方原因造成货物毁损、灭失的，乙方承担全部连带赔偿责任。因不可抗力导致延迟交货的，乙方不承担责任，但应在48小时内通知甲方并提供证明。
+
+第四条 保密与竞业限制
+未经甲方书面同意，乙方不得向任何第三方透露本合同内容及合作细节。本合同终止后3年内，乙方及其关联方不得从事与甲方有直接或间接竞争关系的任何业务。</div>
+  <button class="btn btn-outline" style="margin-top:14px" onclick="runDemo()">🔍 演示扫描</button>
+</div>
+
+<div id="demoLoading">
+  <div class="spinner"></div>
+  <p style="font-size:13px;color:#64748b;margin-top:12px">正在逐条分析合同条款…</p>
+</div>
+
+<div id="demoResult">
+  <div class="card" style="text-align:center">
+    <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">综合评分</div>
+    <div class="score-ring score-ok">55</div>
+    <p style="font-size:15px;font-weight:600;color:#fbbf24;margin-bottom:4px">⚠️ 中等风险</p>
+    <p style="font-size:12px;color:#64748b">发现 3 个风险点，建议进一步审核</p>
+  </div>
+
+  <div class="risk-item risk-high">
+    <span class="badge badge-high">高风险</span>
+    <div class="title">赔偿条款无责任上限</div>
+    <div class="clause">第三条 · "乙方承担全部连带赔偿责任"</div>
+    <div class="detail">"全部连带赔偿"未设金额上限，一旦发生赔偿事件，乙方可能面临超出合同金额数倍的赔偿风险。</div>
+    <div class="suggest">建议修改为：乙方的累计赔偿总额不超过本合同项下已支付的合同价款。</div>
+  </div>
+
+  <div class="risk-item risk-medium">
+    <span class="badge badge-medium">中风险</span>
+    <div class="title">竞业限制范围过于宽泛</div>
+    <div class="clause">第四条 · "3年内不得从事有竞争关系的任何业务"</div>
+    <div class="detail">3年期限超出多数地区司法支持的合理范围（通常为1-2年），且"任何竞争业务"定义模糊，可能被认定为无效条款。</div>
+    <div class="suggest">建议：限制期限缩短为1-2年；明确竞业范围仅限"电子元器件供应链管理"细分领域。</div>
+  </div>
+
+  <div class="risk-item risk-low">
+    <span class="badge badge-low">低风险</span>
+    <div class="title">付款账期对乙方不利</div>
+    <div class="clause">第二条 · "交付后30日内支付全款"</div>
+    <div class="detail">30天付款账期较长，且逾期违约金（日万分之五≈年化18.25%）偏高。如甲方为强势方此条可能难以修改，但需关注现金流压力。</div>
+    <div class="suggest">建议：争取缩短为15天；违约金上限约定为合同金额的5%。</div>
+  </div>
+
+  <div id="demoCta">
+    <div class="cta-title">🛡️ 演示报告仅供参考</div>
+    <div class="cta-desc">真实合同涉及的具体条款、行业惯例和法律适用<br>需要专业人工逐条审核，避免遗漏关键风险</div>
+    <div class="cta-contact">📱 加微信 Yhgc_2025 → 48小时内出完整报告</div>
+    <div class="cta-price">💰 单份合同审核 ¥99 · 3份套餐 ¥249 · 企业年包另议</div>
+  </div>
+</div>
+
 <div class="footer">
   <a href="/">← 返回工具箱首页</a>
 </div>
@@ -94,4 +173,28 @@ textarea::placeholder{color:#475569}
     <span>微信 Yhgc_2025</span>
   </div>
 </div>
+<script>
+function runDemo(){
+  document.getElementById("demoSection").style.display="none";
+  var loading=document.getElementById("demoLoading");
+  loading.style.display="block";
+  setTimeout(function(){
+    loading.style.display="none";
+    var result=document.getElementById("demoResult");
+    result.style.display="block";
+    result.scrollIntoView({behavior:"smooth",block:"start"});
+    observeCta();
+  },2400);
+}
+function observeCta(){
+  var cta=document.getElementById("demoCta");
+  if(!cta)return;
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){cta.classList.add("visible");obs.disconnect();}
+    });
+  },{threshold:0.3});
+  obs.observe(cta);
+}
+</script>
 </body></html>
