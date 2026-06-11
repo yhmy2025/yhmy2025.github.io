@@ -631,7 +631,7 @@ function clearAll() {
 function order() {
   const s = SCENARIOS[currentScenario];
   const msg = encodeURIComponent(`你好，我试用了"${s.title.replace(/[📋🎤📊📝🖼️]/g,'').trim()}"的Demo，想正式下单。`);
-  window.open(`https://m.tb.cn/xxxxxx?msg=${msg}`, '_blank');
+  window.open(`#'_blank');
   showToast('🚀 跳转到闲鱼店铺...');
 }
 
@@ -650,3 +650,4 @@ document.addEventListener('keydown', e => {
 </script>
 </body>
 </html>
+
