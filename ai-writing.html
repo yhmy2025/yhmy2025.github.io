@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 智能写作 · 免费试用</title>
+<style>
+  :root {
+    --bg: #0a0a12;
+    --card: #11111a;
+    --border: #1e1e30;
+    --text: #e0e0e0;
+    --muted: #8888a0;
+    --accent: #6366F1;
+    --accent2: #10B981;
+    --accent3: #F59E0B;
+    --input-bg: #1a1a28;
+    --hover: #1c1c2e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .hero {
+    text-align: center;
+    padding: 60px 20px 40px;
+    background: linear-gradient(180deg, #111128 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero h1 {
+    font-size: 36px;
+    background: linear-gradient(135deg, var(--accent), #8B5CF6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p { color: var(--muted); margin-top: 10px; font-size: 16px; max-width: 600px; margin-inline: auto; }
+  .badge {
+    display: inline-block;
+    background: rgba(99,102,241,0.15);
+    color: var(--accent);
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+  /* Scenario tabs */
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 32px 0 24px;
+  }
+  .tab {
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab:hover { background: var(--hover); color: var(--text); }
+  .tab.active {
+    background: rgba(99,102,241,0.15);
+    border-color: var(--accent);
+    color: #a5b4fc;
+  }
+  .tab .icon { margin-right: 6px; }
+
+  /* Demo area */
+  .demo-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 32px;
+  }
+  .demo-card h3 {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+  .demo-card .desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  /* Input/output layout */
+  .io-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 700px) { .io-grid { grid-template-columns: 1fr; } }
+
+  .io-panel {
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .io-panel label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .io-panel textarea {
+    width: 100%;
+    min-height: 140px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    line-height: 1.7;
+  }
+  .io-panel textarea:focus { outline: none; }
+  .io-panel textarea::placeholder { color: #555; }
+  .io-panel .output-area {
+    min-height: 140px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--accent2);
+  }
+  .output-area.placeholder { color: #444; font-style: italic; }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 20px; align-items: center; }
+  .btn {
+    padding: 12px 28px;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #5558e6; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+  .btn-outline:hover { background: rgba(99,102,241,0.1); }
+  .btn-ghost {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .btn-ghost:hover { color: var(--text); }
+
+  .typing-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: blink 1.4s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink {
+    0%, 60%, 100% { opacity: 0.2; transform: scale(0.8); }
+    30% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* CTA banner */
+  .cta-banner {
+    background: linear-gradient(135deg, #1a1a3e, #0d2847);
+    border: 1px solid #2a3a5e;
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    margin: 40px 0;
+  }
+  .cta-banner h3 { font-size: 22px; margin-bottom: 8px; }
+  .cta-banner p { color: var(--muted); margin-bottom: 20px; }
+  .price-tag {
+    display: inline-block;
+    background: var(--accent2);
+    color: #000;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  /* Features grid */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .feature {
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+  .feature .emoji { font-size: 28px; margin-bottom: 8px; }
+  .feature h4 { font-size: 14px; margin-bottom: 4px; }
+  .feature span { font-size: 12px; color: var(--muted); }
+
+  /* Notification toast */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--accent2);
+    color: #000;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(0); }
+
+  footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="badge">✨ AI-Powered</span>
+  <h1>AI 智能写作 · 免费试用</h1>
+  <p>选择场景，输入需求，立即体验 AI 写作能力。满意后下单，不满意不用花一分钱。</p>
+</div>
+
+<div class="container">
+  <!-- Tabs -->
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-id="0"><span class="icon">📋</span>简历优化</button>
+    <button class="tab" data-id="1"><span class="icon">🎤</span>演讲稿</button>
+    <button class="tab" data-id="2"><span class="icon">📊</span>商业计划书</button>
+    <button class="tab" data-id="3"><span class="icon">📝</span>述职报告</button>
+    <button class="tab" data-id="4"><span class="icon">🖼️</span>PPT内容大纲</button>
+  </div>
+
+  <!-- Demo Card -->
+  <div class="demo-card" id="demo-card">
+    <h3 id="demo-title">📋 简历优化</h3>
+    <p class="desc" id="demo-desc">粘贴你的原始简历内容，AI 将帮你优化措辞、突出亮点、匹配岗位关键词。</p>
+    <div class="io-grid">
+      <div class="io-panel">
+        <label>✏️ 你的输入</label>
+        <textarea id="userInput" placeholder="在此粘贴你的需求或原始内容……"></textarea>
+      </div>
+      <div class="io-panel">
+        <label>🤖 AI 输出预览</label>
+        <div class="output-area placeholder" id="output">点击「生成Demo」查看AI写作效果</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="genBtn" onclick="generate()">⚡ 生成 Demo</button>
+      <button class="btn btn-ghost" onclick="clearAll()">清空</button>
+      <span style="font-size:12px;color:var(--muted);margin-left:auto;">免费试用，不限次数</span>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="features">
+    <div class="feature">
+      <div class="emoji">🔒</div>
+      <h4>不满意不付费</h4>
+      <span>先试用后下单</span>
+    </div>
+    <div class="feature">
+      <div class="emoji">⚡</div>
+      <h4>24h 交付</h4>
+      <span>急单可加急</span>
+    </div>
+    <div class="feature">
+      <div class="emoji">🔄</div>
+      <h4>免费修改 2 次</h4>
+      <span>改到你满意</span>
+    </div>
+    <div class="feature">
+      <div class="emoji">🛡️</div>
+      <h4>走平台交易</h4>
+      <span>闲鱼担保，安全可靠</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-banner">
+    <span class="price-tag">💰 从 ¥30 起</span>
+    <h3>Demo 满意？正式下单</h3>
+    <p>提供完整需求，AI 深度写作 + 人工润色，交付可立即使用的成品</p>
+    <button class="btn btn-primary" onclick="order()" style="font-size:16px;padding:14px 40px;">
+      🛒 去闲鱼下单
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<footer>AI 智能写作 · yhmy2025 · 闲鱼官方店铺</footer>
+
+<script>
+// ============ 5 场景数据 ============
+const SCENARIOS = [
+  {
+    title: '📋 简历优化',
+    desc: '粘贴你的原始简历内容，AI 将帮你优化措辞、突出亮点、匹配岗位关键词。',
+    placeholder: '例如：\n\n个人简介：我在XX公司做了3年销售，负责客户开发和维护。\n\n期望岗位：大客户经理\n目标行业：互联网/IT',
+    demoOutput: `**优化后简历片段：**
+
+---
+
+**个人简介**
+
+3年B2B销售经验，深耕互联网与IT行业客户开发。主导完成20+企业客户签约，累计成交额超800万元，客户留存率92%。擅长顾问式销售与关键决策人关系维护，具备独立完成从线索挖掘到合同签署的全流程能力。
+
+**核心能力**
+- 客户开发：月均触达80+潜在客户，转化率行业前15%
+- 关系管理：KA客户平均合作周期2.3年，复购率87%
+- 行业洞察：深度理解SaaS、云计算、企业服务赛道
+
+**意向岗位：大客户经理 | 互联网/IT 行业**
+
+---
+💡 *以上为Demo预览，正式版将完整覆盖您的全部简历内容*`
+  },
+  {
+    title: '🎤 演讲稿',
+    desc: '输入演讲主题、场合和受众，AI 将生成结构清晰、有感染力的演讲稿。',
+    placeholder: '例如：\n\n主题：公司年度总结大会发言\n场合：公司年会，200人\n时长：5分钟\n风格：激励人心，回顾成绩，展望未来',
+    demoOutput: `**年会演讲稿（5分钟版）**
+
+---
+
+各位同事，晚上好！
+
+站在这里，我想先请大家做一件事——回头看看你身边的人。
+
+（停顿）
+
+是的，就是这群人。过去365天里，和你一起熬过深夜、吵过方案、拿下客户的人。
+
+2025年，我们做到了三件事：
+**第一，活下来了。** 在行业裁员潮中，我们一个没少。
+**第二，跑起来了。** 营收同比增长40%，3条新产品线落地。
+**第三，长大了。** 从执行者变成了思考者，从单兵变成了团队。
+
+但今晚我不想谈数字。我想谈一个词——「可能性」。
+
+年初的时候，没人相信我们能拿下XX客户。但我们做到了。不是因为我，不是因为管理层——**是因为在座每一个人，在别人说"不可能"的时候，多问了一句"为什么不试试"。**
+
+2026年，我们要把这份「可能性」变成「必然」。
+
+最后——今晚酒管够，明天继续干！
+
+谢谢大家！
+
+---
+💡 *以上为Demo预览，正式版将根据您的具体场合、时长、风格深度定制*`
+  },
+  {
+    title: '📊 商业计划书',
+    desc: '输入项目简介和核心数据，AI 将生成结构化的商业计划书摘要。',
+    placeholder: '例如：\n\n项目：AI智能宠物喂食器\n阶段：已完成产品原型\n目标：融资300万，占股10%\n核心优势：自研AI算法，精准识别宠物进食行为',
+    demoOutput: `**商业计划书 · 执行摘要**
+
+---
+
+## 项目概述
+
+AI智能宠物喂食器——通过自研AI视觉算法实现宠物进食行为的精准识别与个性化喂养方案。已获实用新型专利（ZL2024xxxxxx），完成工程样机第3代迭代。
+
+## 市场机会
+
+- 中国宠物经济市场规模 **5,928亿元**（2025），年增速12%
+- 智能宠物用品渗透率仅 **8%**，对标美国24%存在3倍增长空间
+- 目标客群：25-40岁城市养宠人群，约6,800万人
+
+## 产品与竞争壁垒
+
+| 维度 | 竞品A | 竞品B | 本项目 |
+|------|:----:|:----:|:-----:|
+| AI识别 | ❌ | 基础识别 | ✅ 32种行为 |
+| 分药功能 | ❌ | ❌ | ✅ 智能分药 |
+| 远程视频 | ✅ | ✅ | ✅ 4K夜视 |
+
+**核心壁垒：** 自研PetVision™算法，在3.2万条真实喂食数据上训练，识别准确率96.7%。
+
+## 商业模式
+
+- **硬件销售：** 定价¥599，预估毛利42%
+- **订阅服务：** AI健康报告 ¥29/月，预计LTV ¥348
+- **耗材复购：** 定制食盆、药盒等配件
+
+## 融资需求
+
+**本轮融资 ¥300万，出让10%股权（投后估值¥3,000万）**
+
+资金用途：量产开模(40%) + 市场推广(35%) + 算法迭代(25%)
+
+## 团队
+
+- CEO：前小米生态链产品经理，5年智能硬件经验
+- CTO：前商汤AI工程师，CV方向博士
+- COO：宠物行业8年渠道资源
+
+---
+💡 *以上为Demo预览，正式版含完整财务模型、SWOT分析、风险评估*`
+  },
+  {
+    title: '📝 述职报告',
+    desc: '输入你的岗位和工作成果，AI 将生成条理清晰、亮点突出的述职报告。',
+    placeholder: '例如：\n\n岗位：运营主管\n周期：2025年度\n主要工作：搭建了用户增长体系，日活从5万增长到18万\n困惑：不知道哪些该重点写，怎么量化成绩',
+    demoOutput: `**2025年度述职报告（运营主管）**
+
+---
+
+## 一、年度核心成果
+
+**一句话总结：** 主导用户增长体系从0到1搭建，推动DAU从5万增长至18万（+260%），获客成本下降41%。
+
+### 关键数据
+
+| 指标 | 年初 | 年末 | 变化 |
+|------|:--:|:--:|:--:|
+| DAU | 5万 | 18万 | +260% |
+| 7日留存率 | 23% | 41% | +78% |
+| CAC | ¥8.7 | ¥5.1 | -41% |
+| 自然裂变占比 | 12% | 37% | +208% |
+
+## 二、重点举措
+
+**1. 增长体系搭建（Q1-Q2）**
+- 建立AARRR增长模型，定向前链路指标体系
+- 搭建裂变引擎：邀请有礼+拼团，月均带来1.2万新用户
+- **成果：** 获客成本从¥8.7降至¥5.1，累计节省推广费用¥87万
+
+**2. 内容生态建设（Q3-Q4）**
+- 启动UGC激励计划，月产出从300篇提升至2,800篇
+- 搭建内容标签体系，CTR提升32%
+- **成果：** 内容贡献DAU从8,000增长至3.2万
+
+**3. 团队建设**
+- 招聘培养3名运营专员，0离职
+- 制定运营SOP手册（47页），新人上手周期从3周缩短至5天
+
+## 三、不足与改进
+
+- 短视频渠道运营起步晚，TikTok/小红书尚未形成规模
+- 2026年目标：DAU突破35万，开辟视频内容增长曲线
+
+## 四、2026年规划
+
+- Q1：搭建短视频矩阵，目标月曝光500万
+- Q2：启动海外版增长测试
+- 全年预算申请：¥200万（含3个HC）
+
+---
+💡 *以上为Demo预览，正式版将根据您的具体岗位、业绩、文化深度个性化*`
+  },
+  {
+    title: '🖼️ PPT内容大纲',
+    desc: '输入PPT主题和受众，AI 将生成完整的幻灯片大纲，含每页标题+要点。',
+    placeholder: '例如：\n\n主题：2026年市场部年度规划\n受众：公司管理层\n页数：15-20页\n重点：预算分配、渠道策略、KPI目标',
+    demoOutput: `**PPT大纲：2026年市场部年度规划**
+
+---
+
+**第1页 | 封面**
+- 主标题：2026年市场部年度规划
+- 副标题：从流量获取到品牌增长
+- 汇报人/日期
+
+**第2页 | 目录**
+1. 2025年复盘
+2. 市场格局分析
+3. 2026年战略方向
+4. 渠道策略与预算
+5. 团队与KPI
+
+**第3页 | 2025关键数据**
+- 年度线索量：12万条（+65% YoY）
+- MQL转化率：18%（目标15%，超额完成）
+- 获客成本：¥52/MQL（行业平均¥80）
+- 品牌搜索量：+90%
+
+**第4页 | 做的对 vs 做的错**
+- ✅ 内容营销带来45%的线索
+- ✅ SEO投入产出比1:7.3
+- ❌ SEM过度依赖，占预算55%
+- ❌ 短视频试水未成规模
+
+**第5页 | 竞争格局**
+- 竞品A：预算约¥5000万，主打信息流
+- 竞品B：预算约¥2000万，主打内容+SEO
+- 我们的位置：预算¥1200万，效率领先，规模不足
+
+**第6页 | 2026战略主题**
+> "用内容建立壁垒，用数据驱动增长"
+
+三大战役：
+1. 内容工业化 — 月产300篇高质量内容
+2. 私域闭环 — 从流量到LTV
+3. AI赋能 — 降本增效30%
+
+**第7页 | 渠道策略矩阵**
+| 渠道 | 预算占比 | 目标 | KPI |
+|------|:--:|------|------|
+| 内容营销 | 35% | 品牌壁垒 | 月线索4万 |
+| SEM | 25% | 精准获客 | CPL<¥50 |
+| 私域运营 | 20% | LTV最大化 | 复购率25% |
+| 短视频 | 15% | 新增长极 | 月曝光500万 |
+| 线下活动 | 5% | 高层关系 | 4场/年 |
+
+**第8-10页 | 三大战役详解** *(每页含目标、策略、里程碑、预算)*
+
+**第11页 | 预算总览**
+- 总预算：¥1,500万（+25% YoY）
+- 人力成本：¥420万（6人团队）
+- 渠道费用：¥980万
+- 工具/技术：¥100万
+
+**第12页 | 团队架构**
+- 内容组（2人）、投放组（1人）、视频组（1人）、数据/运营（1人）、负责人（1人）
+
+**第13页 | Q1-Q4 里程碑**
+
+**第14页 | 风险与预案**
+
+**第15页 | 总结**
+- 一句话：花更少的钱，做更准的投放，建更强的品牌
+- 请求：批准预算¥1,500万 + 3个HC
+
+---
+💡 *以上为Demo预览，正式版将根据您的主题、受众、时长深度定制每页文案*`
+  }
+];
+
+let currentScenario = 0;
+let isGenerating = false;
+
+// ============ Init ============
+document.getElementById('tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.tab');
+  if (!tab) return;
+  switchScenario(parseInt(tab.dataset.id));
+});
+
+function switchScenario(idx) {
+  currentScenario = idx;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+
+  const s = SCENARIOS[idx];
+  document.getElementById('demo-title').textContent = s.title;
+  document.getElementById('demo-desc').textContent = s.desc;
+  document.getElementById('userInput').placeholder = s.placeholder;
+  document.getElementById('userInput').value = '';
+  document.getElementById('output').textContent = '点击「生成Demo」查看AI写作效果';
+  document.getElementById('output').classList.add('placeholder');
+}
+
+// ============ Generate ============
+function generate() {
+  if (isGenerating) return;
+  const input = document.getElementById('userInput').value.trim();
+  if (!input) {
+    showToast('请先输入你的需求再生成 Demo');
+    return;
+  }
+
+  isGenerating = true;
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.textContent = '生成中...';
+
+  const output = document.getElementById('output');
+  output.classList.remove('placeholder');
+  output.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+
+  // Simulate generation delay
+  const delay = 800 + Math.random() * 1200;
+  setTimeout(() => {
+    const s = SCENARIOS[currentScenario];
+    output.innerHTML = s.demoOutput.replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    btn.disabled = false;
+    btn.textContent = '⚡ 重新生成';
+    isGenerating = false;
+
+    // Scroll to output
+    output.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, delay);
+}
+
+function clearAll() {
+  document.getElementById('userInput').value = '';
+  document.getElementById('output').textContent = '点击「生成Demo」查看AI写作效果';
+  document.getElementById('output').classList.add('placeholder');
+}
+
+// ============ Order ============
+function order() {
+  const s = SCENARIOS[currentScenario];
+  const msg = encodeURIComponent(`你好，我试用了"${s.title.replace(/[📋🎤📊📝🖼️]/g,'').trim()}"的Demo，想正式下单。`);
+  window.open(`https://m.tb.cn/xxxxxx?msg=${msg}`, '_blank');
+  showToast('🚀 跳转到闲鱼店铺...');
+}
+
+// ============ Toast ============
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============ Keyboard shortcut ============
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') generate();
+});
+</script>
+</body>
+</html>
