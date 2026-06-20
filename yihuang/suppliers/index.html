@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>谊璜贸易 · 供应商管理</title>
+<link rel="stylesheet" href="../_shared/css/yihuang.css">
+<style>
+.sup-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px;margin-bottom:8px}
+.sup-card .sc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sup-card .sc-name{font-size:14px;font-weight:700}
+.sup-card .sc-rating{font-size:11px;color:#f59e0b}
+.sup-card .sc-meta{font-size:11px;color:#94a3b8;line-height:1.6}
+.sup-card .sc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.sup-card .sc-tags span{font-size:9px;padding:2px 6px;border-radius:3px;background:#0f172a;color:#64748b}
+.summary-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.summary-item{text-align:center;padding:10px;background:#1e293b;border:1px solid #334155;border-radius:10px}
+.summary-item .si-value{font-size:22px;font-weight:800;color:#38bdf8}
+.summary-item .si-label{font-size:10px;color:#64748b;margin-top:2px}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="tb-left">
+    <div class="tb-brand">🏭 供应商管理</div>
+    <div class="tb-sub">供应商档案 · 评分 · 采购历史</div>
+  </div>
+  <div class="tb-right"><span class="tb-badge">Phase 2 · WK待补</span></div>
+</div>
+
+<!-- 统计 -->
+<div class="summary-bar" id="supSummary"></div>
+
+<div class="search-bar">
+  <input type="text" id="supSearch" placeholder="搜索供应商..." oninput="render()">
+  <button onclick="openSupplierPopup()">+ 新增</button>
+</div>
+
+<div id="supplierList"></div>
+
+<div class="bottom-nav">
+  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">仪表盘</span></a>
+  <a class="bn-item active" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
+  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
+  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
+  <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
+  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
+  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
+</div>
+
+<!-- 弹窗 -->
+<div class="popup-overlay" id="supPopup">
+  <div class="popup">
+    <h3 id="supPopupTitle">🏭 新增供应商</h3>
+    <label>供应商名称</label>
+    <input type="text" id="supName" placeholder="公司全称">
+    <label>平台/来源</label>
+    <select id="supPlatform">
+      <option value="1688">1688</option>
+      <option value="alibaba">Alibaba</option>
+      <option value="线下">线下</option>
+      <option value="推荐">推荐</option>
+      <option value="其他">其他</option>
+    </select>
+    <label>评分 (1-5)</label>
+    <input type="number" id="supRating" min="1" max="5" step="0.5" value="4">
+    <label>主营品类</label>
+    <input type="text" id="supCategory" placeholder="如：调味品、粮食">
+    <label>联系人</label>
+    <input type="text" id="supContact" placeholder="联系人姓名">
+    <label>联系方式</label>
+    <input type="text" id="supPhone" placeholder="电话/微信">
+    <label>付款条件</label>
+    <input type="text" id="supPayment" placeholder="如：T/T 30%订金">
+    <label>备注</label>
+    <textarea id="supNotes" rows="2"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeSupPopup()">取消</button>
+      <button class="btn btn-primary" onclick="saveSupplier()">✅ 保存</button>
+    </div>
+    <input type="hidden" id="editSupId">
+  </div>
+</div>
+
+<script src="../_shared/js/yihuang.js"></script>
+<script>
+let DATA = loadData('yihuang_suppliers') || { suppliers: [] };
+
+function saveAll() { saveData('yihuang_suppliers', DATA); }
+
+function render() {
+  const query = document.getElementById('supSearch').value.toLowerCase();
+  let filtered = DATA.suppliers;
+  if (query) filtered = filtered.filter(s => s.name.toLowerCase().includes(query) || (s.category||'').toLowerCase().includes(query) || (s.contact||'').toLowerCase().includes(query));
+
+  const total = DATA.suppliers.length;
+  const active = DATA.suppliers.filter(s => s.status !== 'inactive').length;
+  const avgRating = total ? (DATA.suppliers.reduce((s,x) => s+parseFloat(x.rating||4), 0)/total).toFixed(1) : '-';
+  document.getElementById('supSummary').innerHTML = `
+    <div class="summary-item"><div class="si-value">${total}</div><div class="si-label">总供应商</div></div>
+    <div class="summary-item"><div class="si-value">${active}</div><div class="si-label">活跃</div></div>
+    <div class="summary-item"><div class="si-value">${avgRating}</div><div class="si-label">平均评分</div></div>
+  `;
+
+  const el = document.getElementById('supplierList');
+  if (!filtered.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🏭</div>暂无供应商<br><small>点击"+新增"添加</small></div>';
+    return;
+  }
+  el.innerHTML = filtered.map(s => `
+    <div class="sup-card fade-in">
+      <div class="sc-header">
+        <div class="sc-name">${s.name}</div>
+        <div class="sc-rating">${'★'.repeat(Math.floor(s.rating||4))}${(s.rating||4)%1>=0.5?'½':''} ${s.rating}</div>
+      </div>
+      <div class="sc-meta">
+        ${s.platform ? '📌 ' + s.platform : ''}
+        ${s.category ? ' · ' + s.category : ''}
+        ${s.contact ? '<br>📞 ' + s.contact + (s.phone?' · '+s.phone:'') : ''}
+        ${s.payment ? '<br>💳 ' + s.payment : ''}
+        ${s.notes ? '<br>💬 ' + s.notes : ''}
+      </div>
+      <div class="sc-tags">
+        <span>${s.status === 'inactive' ? '停用' : '活跃'}</span>
+        <span style="cursor:pointer;color:#38bdf8" onclick="editSupplier('${s.id}')">✏️</span>
+        <span style="cursor:pointer;color:#ef4444" onclick="deleteSupplier('${s.id}')">🗑</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openSupplierPopup() {
+  document.getElementById('supPopupTitle').textContent = '🏭 新增供应商';
+  document.getElementById('editSupId').value = '';
+  ['supName','supCategory','supContact','supPhone','supPayment','supNotes'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('supPlatform').value = '1688';
+  document.getElementById('supRating').value = '4';
+  document.getElementById('supPopup').classList.add('show');
+}
+function closeSupPopup() { document.getElementById('supPopup').classList.remove('show'); }
+
+function saveSupplier() {
+  const name = document.getElementById('supName').value.trim();
+  if (!name) return showToast('请输入供应商名称');
+  const editId = document.getElementById('editSupId').value;
+  const obj = { name, platform:document.getElementById('supPlatform').value, rating:parseFloat(document.getElementById('supRating').value)||4, category:document.getElementById('supCategory').value.trim(), contact:document.getElementById('supContact').value.trim(), phone:document.getElementById('supPhone').value.trim(), payment:document.getElementById('supPayment').value.trim(), notes:document.getElementById('supNotes').value.trim(), status:'active' };
+  if (editId) {
+    const s = DATA.suppliers.find(x => x.id === editId);
+    if (s) Object.assign(s, obj);
+  } else {
+    obj.id = uuid(); obj.createdAt = now();
+    DATA.suppliers.push(obj);
+  }
+  saveAll(); render(); closeSupPopup(); showToast('✅ 已保存');
+}
+
+function editSupplier(id) {
+  const s = DATA.suppliers.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('supPopupTitle').textContent = '✏️ 编辑供应商';
+  document.getElementById('editSupId').value = id;
+  document.getElementById('supName').value = s.name;
+  document.getElementById('supPlatform').value = s.platform||'1688';
+  document.getElementById('supRating').value = s.rating||4;
+  document.getElementById('supCategory').value = s.category||'';
+  document.getElementById('supContact').value = s.contact||'';
+  document.getElementById('supPhone').value = s.phone||'';
+  document.getElementById('supPayment').value = s.payment||'';
+  document.getElementById('supNotes').value = s.notes||'';
+  document.getElementById('supPopup').classList.add('show');
+}
+
+function deleteSupplier(id) {
+  if (confirm('确定删除？')) { DATA.suppliers = DATA.suppliers.filter(s => s.id !== id); saveAll(); render(); showToast('🗑 已删除'); }
+}
+
+document.querySelectorAll('.popup-overlay').forEach(el => { el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); }); });
+
+render();
+</script>
+</body>
+</html>

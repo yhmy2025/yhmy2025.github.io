@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>谊璜贸易 · 客户管理</title>
+<link rel="stylesheet" href="../_shared/css/yihuang.css">
+<style>
+.crm-tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto}
+.crm-tab{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;background:#1e293b;color:#94a3b8;border:1px solid #334155}
+.crm-tab.active{background:#1e3a5f;color:#38bdf8;border-color:#3b82f6}
+.client-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px;margin-bottom:8px}
+.client-card .cc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.client-card .cc-name{font-size:14px;font-weight:700}
+.client-card .cc-level{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600}
+.client-card .level-A{background:#065f46;color:#34d399}
+.client-card .level-B{background:#78350f;color:#fbbf24}
+.client-card .level-C{background:#1e3a5f;color:#94a3b8}
+.client-card .cc-info{font-size:11px;color:#94a3b8;line-height:1.6}
+.client-card .cc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.client-card .cc-tags span{font-size:9px;padding:2px 6px;border-radius:3px;background:#0f172a;color:#64748b}
+.search-bar{display:flex;gap:8px;margin-bottom:12px}
+.search-bar input{flex:1;padding:10px 12px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#e2e8f0;font-size:13px;outline:none}
+.search-bar input:focus{border-color:#3b82f6}
+.search-bar button{padding:10px 16px;border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;white-space:nowrap}
+.empty-state{text-align:center;padding:40px 20px;color:#64748b;font-size:13px}
+.empty-state .empty-icon{font-size:48px;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="tb-left">
+    <div class="tb-brand">👥 客户管理</div>
+    <div class="tb-sub">CRM · 客户关系管理</div>
+  </div>
+  <div class="tb-right">
+    <span class="tb-badge">Phase 2</span>
+  </div>
+</div>
+
+<!-- 搜索栏 -->
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="搜索客户名称/联系人..." oninput="render()">
+  <button onclick="openClientPopup()">+ 新增</button>
+</div>
+
+<!-- 过滤标签 -->
+<div class="crm-tabs" id="filterTabs"></div>
+
+<!-- 客户列表 -->
+<div id="clientList"></div>
+
+<!-- 底栏 -->
+<div class="bottom-nav">
+  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">仪表盘</span></a>
+  <a class="bn-item active" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
+  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
+  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
+  <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
+  <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
+  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
+</div>
+
+<!-- 新增/编辑客户弹窗 -->
+<div class="popup-overlay" id="clientPopup">
+  <div class="popup">
+    <h3 id="clientPopupTitle">👤 新增客户</h3>
+    <label>客户名称</label>
+    <input type="text" id="clientName" placeholder="公司/个人名称">
+    <label>客户等级</label>
+    <select id="clientLevel">
+      <option value="A">A级 - 重点客户</option>
+      <option value="B">B级 - 潜力客户</option>
+      <option value="C">C级 - 一般客户</option>
+    </select>
+    <label>来源</label>
+    <select id="clientSource">
+      <option value="展会">展会</option>
+      <option value="1688">1688</option>
+      <option value="推荐">推荐</option>
+      <option value="线上">线上</option>
+      <option value="其他">其他</option>
+    </select>
+    <label>联系人</label>
+    <input type="text" id="clientContact" placeholder="联系人姓名">
+    <label>电话</label>
+    <input type="text" id="clientPhone" placeholder="手机号">
+    <label>备注</label>
+    <textarea id="clientNotes" rows="2" placeholder="客户特点/需求..."></textarea>
+    <label>状态</label>
+    <select id="clientStatus">
+      <option value="potential">潜在客户</option>
+      <option value="negotiating">洽谈中</option>
+      <option value="active">合作中</option>
+      <option value="inactive">暂缓</option>
+    </select>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeClientPopup()">取消</button>
+      <button class="btn btn-primary" onclick="saveClient()">✅ 保存</button>
+    </div>
+    <input type="hidden" id="editClientId" value="">
+  </div>
+</div>
+
+<script src="../_shared/js/yihuang.js"></script>
+<script>
+let DATA = loadData('yihuang_crm') || { clients: [] };
+let currentFilter = 'all';
+
+function saveAll() { saveData('yihuang_crm', DATA); }
+
+function render() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  let filtered = DATA.clients;
+  if (currentFilter !== 'all') filtered = filtered.filter(c => c.status === currentFilter);
+  if (query) filtered = filtered.filter(c => c.name.toLowerCase().includes(query) || (c.contact||'').toLowerCase().includes(query));
+
+  // 过滤标签
+  const tabs = document.getElementById('filterTabs');
+  const statuses = [
+    {id:'all', label:'全部 ('+DATA.clients.length+')'},
+    {id:'potential', label:'潜在'},
+    {id:'negotiating', label:'洽谈'},
+    {id:'active', label:'合作中'},
+    {id:'inactive', label:'暂缓'},
+  ];
+  tabs.innerHTML = statuses.map(s => `<div class="crm-tab ${currentFilter===s.id?'active':''}" onclick="currentFilter='${s.id}';render()">${s.label}</div>`).join('');
+
+  // 客户列表
+  const el = document.getElementById('clientList');
+  if (!filtered.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div>暂无客户数据<br><small>点击"+新增"添加第一个客户</small></div>';
+    return;
+  }
+  el.innerHTML = filtered.map(c => `
+    <div class="client-card fade-in">
+      <div class="cc-header">
+        <div class="cc-name">${c.name}</div>
+        <span class="cc-level level-${c.level}">${c.level}级</span>
+      </div>
+      <div class="cc-info">
+        ${c.contact ? '📞 ' + c.contact + (c.phone ? ' · ' + c.phone : '') : ''}
+        ${c.source ? '<br>📌 ' + c.source : ''}
+        ${c.notes ? '<br>💬 ' + c.notes : ''}
+      </div>
+      <div class="cc-tags">
+        <span>状态: ${statusMap(c.status)}</span>
+        <span style="cursor:pointer;color:#38bdf8" onclick="editClient('${c.id}')">✏️ 编辑</span>
+        <span style="cursor:pointer;color:#ef4444" onclick="deleteClient('${c.id}')">🗑 删除</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function statusMap(s) { return {potential:'潜在',negotiating:'洽谈中',active:'合作中',inactive:'暂缓'}[s]||s; }
+
+function openClientPopup() {
+  document.getElementById('clientPopupTitle').textContent = '👤 新增客户';
+  document.getElementById('editClientId').value = '';
+  ['clientName','clientContact','clientPhone','clientNotes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('clientLevel').value = 'B';
+  document.getElementById('clientSource').value = '其他';
+  document.getElementById('clientStatus').value = 'potential';
+  document.getElementById('clientPopup').classList.add('show');
+}
+
+function closeClientPopup() { document.getElementById('clientPopup').classList.remove('show'); }
+
+function saveClient() {
+  const name = document.getElementById('clientName').value.trim();
+  if (!name) return showToast('请输入客户名称');
+  const editId = document.getElementById('editClientId').value;
+  if (editId) {
+    const c = DATA.clients.find(x => x.id === editId);
+    if (c) {
+      Object.assign(c, {
+        name, level:document.getElementById('clientLevel').value,
+        source:document.getElementById('clientSource').value,
+        contact:document.getElementById('clientContact').value.trim(),
+        phone:document.getElementById('clientPhone').value.trim(),
+        notes:document.getElementById('clientNotes').value.trim(),
+        status:document.getElementById('clientStatus').value
+      });
+    }
+  } else {
+    DATA.clients.push({
+      id: uuid(), name, level:document.getElementById('clientLevel').value,
+      source:document.getElementById('clientSource').value,
+      contact:document.getElementById('clientContact').value.trim(),
+      phone:document.getElementById('clientPhone').value.trim(),
+      notes:document.getElementById('clientNotes').value.trim(),
+      status:document.getElementById('clientStatus').value,
+      createdAt: now()
+    });
+  }
+  saveAll(); render(); closeClientPopup(); showToast('✅ 已保存');
+}
+
+function editClient(id) {
+  const c = DATA.clients.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('clientPopupTitle').textContent = '✏️ 编辑客户';
+  document.getElementById('editClientId').value = id;
+  document.getElementById('clientName').value = c.name;
+  document.getElementById('clientLevel').value = c.level;
+  document.getElementById('clientSource').value = c.source||'其他';
+  document.getElementById('clientContact').value = c.contact||'';
+  document.getElementById('clientPhone').value = c.phone||'';
+  document.getElementById('clientNotes').value = c.notes||'';
+  document.getElementById('clientStatus').value = c.status;
+  document.getElementById('clientPopup').classList.add('show');
+}
+
+function deleteClient(id) {
+  if (confirm('确定删除该客户？')) {
+    DATA.clients = DATA.clients.filter(c => c.id !== id);
+    saveAll(); render(); showToast('🗑 已删除');
+  }
+}
+
+// 遮罩关闭
+document.querySelectorAll('.popup-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); });
+});
+
+render();
+</script>
+</body>
+</html>

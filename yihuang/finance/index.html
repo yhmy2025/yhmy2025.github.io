@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>谊璜贸易 · 财务管理</title>
+<link rel="stylesheet" href="../_shared/css/yihuang.css">
+<style>
+.fin-tabs{display:flex;gap:6px;margin-bottom:12px}
+.fin-tab{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:#1e293b;color:#94a3b8;border:1px solid #334155}
+.fin-tab.active{background:#1e3a5f;color:#38bdf8;border-color:#3b82f6}
+.fin-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.fin-card{text-align:center;padding:14px;background:#1e293b;border:1px solid #334155;border-radius:10px}
+.fin-card .fc-value{font-size:24px;font-weight:800}
+.fin-card .fc-label{font-size:11px;color:#64748b;margin-top:2px}
+.fin-card.income .fc-value{color:#22c55e}
+.fin-card.expense .fc-value{color:#ef4444}
+.fin-card.profit .fc-value{background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.trans-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #1e293b;font-size:12px}
+.trans-item:last-child{border:none}
+.trans-amount{font-weight:700;font-size:14px}
+.trans-amount.positive{color:#22c55e}.trans-amount.negative{color:#ef4444}
+.trans-cat{font-size:9px;padding:2px 6px;border-radius:3px;background:#0f172a;color:#64748b}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="tb-left">
+    <div class="tb-brand">💰 财务管理</div>
+    <div class="tb-sub">收支记录 · 利润分析</div>
+  </div>
+  <div class="tb-right"><span class="tb-badge">Phase 2</span></div>
+</div>
+
+<!-- 财务汇总 -->
+<div class="fin-summary" id="finSummary"></div>
+
+<!-- 操作栏 -->
+<div class="search-bar">
+  <input type="text" id="finSearch" placeholder="搜索备注/分类..." oninput="render()">
+  <button onclick="openTransPopup('income')">+ 收入</button>
+  <button onclick="openTransPopup('expense')" style="background:linear-gradient(135deg,#dc2626,#ef4444)">- 支出</button>
+</div>
+
+<!-- Tab切换 -->
+<div class="fin-tabs" id="finTabs"></div>
+
+<!-- 流水列表 -->
+<div id="transList"></div>
+
+<div class="bottom-nav">
+  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">仪表盘</span></a>
+  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
+  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
+  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
+  <a class="bn-item active" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
+  <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
+  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
+</div>
+
+<!-- 交易弹窗 -->
+<div class="popup-overlay" id="transPopup">
+  <div class="popup">
+    <h3 id="transPopupTitle">💰 新增交易</h3>
+    <label id="transTypeLabel">金额 (¥)</label>
+    <input type="number" id="transAmount" placeholder="0.00" step="0.01">
+    <label>分类</label>
+    <select id="transCategory"></select>
+    <label>备注</label>
+    <input type="text" id="transNote" placeholder="备注...">
+    <label>日期</label>
+    <input type="date" id="transDate">
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closeTransPopup()">取消</button>
+      <button class="btn btn-primary" onclick="saveTrans()">✅ 保存</button>
+    </div>
+    <input type="hidden" id="editTransId">
+    <input type="hidden" id="transType">
+  </div>
+</div>
+
+<script src="../_shared/js/yihuang.js"></script>
+<script>
+const INCOME_CATS = ['销售收入','服务收入','退款','其他收入'];
+const EXPENSE_CATS = ['差旅','办公用品','采购成本','营销推广','交通','餐饮','房租水电','工资','税费','其他支出'];
+
+let DATA = loadData('yihuang_finance') || { transactions: [] };
+let currentFinTab = 'all';
+
+function saveAll() { saveData('yihuang_finance', DATA); }
+
+function render() {
+  const query = document.getElementById('finSearch').value.toLowerCase();
+  let filtered = DATA.transactions;
+  if (currentFinTab === 'income') filtered = filtered.filter(t => t.type === 'income');
+  else if (currentFinTab === 'expense') filtered = filtered.filter(t => t.type === 'expense');
+  if (query) filtered = filtered.filter(t => (t.note||'').toLowerCase().includes(query) || (t.category||'').toLowerCase().includes(query));
+
+  // 汇总
+  const totalInc = DATA.transactions.filter(t=>t.type==='income').reduce((s,t)=>s+parseFloat(t.amount||0),0);
+  const totalExp = DATA.transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+parseFloat(t.amount||0),0);
+  document.getElementById('finSummary').innerHTML = `
+    <div class="fin-card income"><div class="fc-value">¥${totalInc.toFixed(0)}</div><div class="fc-label">总收入</div></div>
+    <div class="fin-card expense"><div class="fc-value">¥${totalExp.toFixed(0)}</div><div class="fc-label">总支出</div></div>
+    <div class="fin-card profit" style="grid-column:1/-1"><div class="fc-value" style="${totalInc-totalExp>=0?'color:#22c55e':'color:#ef4444'}">¥${(totalInc-totalExp).toFixed(2)}</div><div class="fc-label">净利润</div></div>
+  `;
+
+  // Tabs
+  document.getElementById('finTabs').innerHTML = [
+    {id:'all', label:'全部 ('+DATA.transactions.length+')'},
+    {id:'income', label:'收入 ('+DATA.transactions.filter(t=>t.type==='income').length+')'},
+    {id:'expense', label:'支出 ('+DATA.transactions.filter(t=>t.type==='expense').length+')'}
+  ].map(t => `<div class="fin-tab ${currentFinTab===t.id?'active':''}" onclick="currentFinTab='${t.id}';render()">${t.label}</div>`).join('');
+
+  const el = document.getElementById('transList');
+  if (!filtered.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">💰</div>暂无流水<br><small>点击"+收入"或"-支出"开始记账</small></div>';
+    return;
+  }
+  filtered.sort((a,b) => new Date(b.date||b.createdAt) - new Date(a.date||a.createdAt));
+  el.innerHTML = filtered.map(t => `
+    <div class="trans-item fade-in">
+      <div>
+        <div style="font-weight:600;font-size:13px">${t.note||'未备注'}</div>
+        <div><span class="trans-cat">${t.category||'未分类'}</span> <span style="color:#64748b;font-size:10px">${t.date||formatDate(t.createdAt)}</span></div>
+      </div>
+      <div>
+        <div class="trans-amount ${t.type==='income'?'positive':'negative'}">${t.type==='income'?'+':'-'}¥${parseFloat(t.amount||0).toFixed(2)}</div>
+        <div style="display:flex;gap:6px;justify-content:flex-end">
+          <span style="cursor:pointer;color:#38bdf8;font-size:10px" onclick="editTrans('${t.id}')">✏️</span>
+          <span style="cursor:pointer;color:#ef4444;font-size:10px" onclick="deleteTrans('${t.id}')">🗑</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openTransPopup(type) {
+  document.getElementById('transPopupTitle').textContent = type==='income' ? '💰 新增收入' : '💸 新增支出';
+  document.getElementById('transType').value = type;
+  document.getElementById('editTransId').value = '';
+  document.getElementById('transAmount').value = '';
+  document.getElementById('transNote').value = '';
+  document.getElementById('transDate').value = today();
+  const catEl = document.getElementById('transCategory');
+  const cats = type==='income' ? INCOME_CATS : EXPENSE_CATS;
+  catEl.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+  document.getElementById('transPopup').classList.add('show');
+}
+function closeTransPopup() { document.getElementById('transPopup').classList.remove('show'); }
+
+function saveTrans() {
+  const amount = parseFloat(document.getElementById('transAmount').value);
+  if (!amount || amount <= 0) return showToast('请输入有效金额');
+  const type = document.getElementById('transType').value;
+  const editId = document.getElementById('editTransId').value;
+  const obj = { amount, type, category:document.getElementById('transCategory').value, note:document.getElementById('transNote').value.trim(), date:document.getElementById('transDate').value };
+  if (editId) {
+    const t = DATA.transactions.find(x => x.id === editId);
+    if (t) Object.assign(t, obj);
+  } else {
+    obj.id = uuid(); obj.createdAt = now();
+    DATA.transactions.push(obj);
+  }
+  saveAll(); render(); closeTransPopup(); showToast('✅ 已记录');
+}
+
+function editTrans(id) {
+  const t = DATA.transactions.find(x => x.id === id);
+  if (!t) return;
+  document.getElementById('transPopupTitle').textContent = '✏️ 编辑交易';
+  document.getElementById('editTransId').value = id;
+  document.getElementById('transType').value = t.type;
+  document.getElementById('transAmount').value = t.amount;
+  document.getElementById('transNote').value = t.note||'';
+  document.getElementById('transDate').value = t.date||today();
+  const catEl = document.getElementById('transCategory');
+  const cats = t.type==='income' ? INCOME_CATS : EXPENSE_CATS;
+  catEl.innerHTML = cats.map(c => `<option value="${c}" ${c===t.category?'selected':''}>${c}</option>`).join('');
+  document.getElementById('transPopup').classList.add('show');
+}
+
+function deleteTrans(id) {
+  if (confirm('确定删除？')) { DATA.transactions = DATA.transactions.filter(t => t.id !== id); saveAll(); render(); showToast('🗑 已删除'); }
+}
+
+document.querySelectorAll('.popup-overlay').forEach(el => { el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); }); });
+
+render();
+</script>
+</body>
+</html>
