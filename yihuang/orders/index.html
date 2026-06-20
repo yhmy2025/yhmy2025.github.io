@@ -6,23 +6,18 @@
 <title>谊璜贸易 · 订单管理</title>
 <link rel="stylesheet" href="../_shared/css/yihuang.css">
 <style>
-.order-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px;margin-bottom:8px}
 .order-card .oc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.order-card .oc-id{font-size:11px;color:#64748b;font-family:monospace}
+.order-card .oc-id{font-size:11px;color:var(--text-muted);font-family:monospace}
 .order-card .oc-client{font-size:14px;font-weight:700}
-.order-card .oc-amount{font-size:18px;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.order-card .oc-info{font-size:11px;color:#94a3b8;line-height:1.6}
-.order-card .oc-status{font-size:9px;padding:2px 8px;border-radius:4px;font-weight:600}
-.oc-status.quote{background:#1e3a5f;color:#38bdf8}
-.oc-status.confirmed{background:#78350f;color:#fbbf24}
-.oc-status.processing{background:#1e3a5f;color:#818cf8}
-.oc-status.shipped{background:#065f46;color:#34d399}
-.oc-status.completed{background:#1e293b;color:#22c55e}
-.oc-status.cancelled{background:#3b1a1a;color:#ef4444}
-.summary-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.summary-item{text-align:center;padding:10px;background:#1e293b;border:1px solid #334155;border-radius:10px}
-.summary-item .si-value{font-size:22px;font-weight:800;color:#38bdf8}
-.summary-item .si-label{font-size:10px;color:#64748b;margin-top:2px}
+.order-card .oc-amount{font-size:20px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.order-card .oc-info{font-size:11px;color:var(--text-secondary);line-height:1.6;margin-top:4px}
+.order-card .oc-status{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.oc-status.quote{background:rgba(56,189,248,.15);color:#38bdf8}
+.oc-status.confirmed{background:rgba(251,191,36,.15);color:#fbbf24}
+.oc-status.processing{background:rgba(129,140,248,.15);color:#818cf8}
+.oc-status.shipped{background:rgba(52,211,153,.15);color:#34d399}
+.oc-status.completed{background:rgba(34,197,94,.15);color:#22c55e}
+.oc-status.cancelled{background:rgba(239,68,68,.15);color:#ef4444}
 </style>
 </head>
 <body>
@@ -32,35 +27,31 @@
     <div class="tb-brand">📦 订单管理</div>
     <div class="tb-sub">订单全生命周期跟踪</div>
   </div>
-  <div class="tb-right"><span class="tb-badge">Phase 2</span></div>
+  <div class="tb-right"><span class="tb-badge">v2.0</span></div>
 </div>
 
-<!-- 统计概览 -->
-<div class="summary-bar" id="summaryBar"></div>
+<div class="summary-bar" id="summary"></div>
 
-<!-- 搜索栏 -->
 <div class="search-bar">
-  <input type="text" id="orderSearch" placeholder="搜索订单号/客户..." oninput="render()">
-  <button onclick="openOrderPopup()">+ 新建</button>
+  <input type="text" id="searchInput" placeholder="搜索订单号/客户..." oninput="render()">
+  <button onclick="openPopup()">+ 新建</button>
 </div>
 
-<!-- 订单列表 -->
+<div class="filter-tabs" id="filterTabs"></div>
+
 <div id="orderList"></div>
 
 <div class="bottom-nav">
-  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">仪表盘</span></a>
+  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
   <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
   <a class="bn-item active" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
-  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
   <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
-  <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
-  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
+  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
 </div>
 
-<!-- 订单弹窗 -->
-<div class="popup-overlay" id="orderPopup">
+<div class="popup-overlay" id="popup">
   <div class="popup">
-    <h3 id="orderPopupTitle">📦 新建订单</h3>
+    <h3 id="popupTitle">📦 新建订单</h3>
     <label>客户名称</label>
     <input type="text" id="orderClient" placeholder="客户名">
     <label>金额 (¥)</label>
@@ -69,114 +60,92 @@
     <input type="text" id="orderProduct" placeholder="产品名称或服务项目">
     <label>订单状态</label>
     <select id="orderStatus">
-      <option value="quote">报价中</option>
-      <option value="confirmed">已确认</option>
-      <option value="processing">处理中</option>
-      <option value="shipped">已发货</option>
-      <option value="completed">已完成</option>
-      <option value="cancelled">已取消</option>
+      <option value="quote">报价中</option><option value="confirmed">已确认</option>
+      <option value="processing">处理中</option><option value="shipped">已发货</option>
+      <option value="completed">已完成</option><option value="cancelled">已取消</option>
     </select>
     <label>备注</label>
     <textarea id="orderNotes" rows="2" placeholder="备注信息..."></textarea>
     <div class="btn-row">
-      <button class="btn btn-secondary" onclick="closeOrderPopup()">取消</button>
-      <button class="btn btn-primary" onclick="saveOrder()">✅ 保存</button>
+      <button class="btn btn-secondary" onclick="closePopup()">取消</button>
+      <button class="btn btn-primary" onclick="save()">✅ 保存</button>
     </div>
-    <input type="hidden" id="editOrderId">
+    <input type="hidden" id="editId">
   </div>
 </div>
 
 <script src="../_shared/js/yihuang.js"></script>
 <script>
-let DATA = loadData('yihuang_orders') || { orders: [] };
+const $=id=>document.getElementById(id);
+let DATA=loadData('yihuang_orders')||{orders:[]};
+let filter='all';
 
-function saveAll() { saveData('yihuang_orders', DATA); }
+function saveAll(){saveData('yihuang_orders',DATA);}
 
-function render() {
-  const query = document.getElementById('orderSearch').value.toLowerCase();
-  let filtered = DATA.orders;
-  if (query) filtered = filtered.filter(o => (o.id||'').toLowerCase().includes(query) || (o.client||'').toLowerCase().includes(query));
+function render(){
+  const q=$('searchInput').value.toLowerCase();
+  let f=DATA.orders;
+  if(filter!=='all')f=f.filter(o=>o.status===filter);
+  if(q)f=f.filter(o=>(o.id||'').toLowerCase().includes(q)||(o.client||'').toLowerCase().includes(q));
 
-  // 统计
-  const total = DATA.orders.length;
-  const active = DATA.orders.filter(o => !['completed','cancelled'].includes(o.status)).length;
-  const totalAmt = DATA.orders.reduce((s,o) => s + parseFloat(o.amount||0), 0);
-  document.getElementById('summaryBar').innerHTML = `
+  const total=DATA.orders.length;
+  const active=DATA.orders.filter(o=>!['completed','cancelled'].includes(o.status)).length;
+  const totalAmt=DATA.orders.reduce((s,o)=>s+parseFloat(o.amount||0),0);
+  $('summary').innerHTML=`
     <div class="summary-item"><div class="si-value">${total}</div><div class="si-label">总订单</div></div>
     <div class="summary-item"><div class="si-value">${active}</div><div class="si-label">进行中</div></div>
-    <div class="summary-item"><div class="si-value">¥${totalAmt.toFixed(0)}</div><div class="si-label">总金额</div></div>
-  `;
+    <div class="summary-item"><div class="si-value">¥${totalAmt.toFixed(0)}</div><div class="si-label">总金额</div></div>`;
 
-  const el = document.getElementById('orderList');
-  if (!filtered.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div>暂无订单<br><small>点击"+新建"创建第一个订单</small></div>';
+  const statusMap={'all':'全部','quote':'报价','confirmed':'已确认','processing':'处理中','shipped':'已发货','completed':'已完成','cancelled':'已取消'};
+  $('filterTabs').innerHTML=Object.entries(statusMap).map(([k,v])=>`<div class="filter-tab ${filter===k?'active':''}" onclick="filter='${k}';render()">${v}</div>`).join('');
+
+  const el=$('orderList');
+  if(!f.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">暂无订单</div><div class="empty-desc">点击"+新建"创建第一个订单</div></div>';
     return;
   }
-  el.innerHTML = filtered.map(o => `
-    <div class="order-card fade-in">
+  f.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const sm={quote:'报价中',confirmed:'已确认',processing:'处理中',shipped:'已发货',completed:'已完成',cancelled:'已取消'};
+  el.innerHTML=f.map(o=>`
+    <div class="item-card fade-in">
       <div class="oc-header">
         <span class="oc-id">#${o.id.slice(-6)}</span>
-        <span class="oc-status ${o.status}">${statusMap(o.status)}</span>
+        <span class="oc-status ${o.status}">${sm[o.status]}</span>
       </div>
       <div class="oc-client">${o.client}</div>
       <div class="oc-amount">¥${parseFloat(o.amount||0).toFixed(2)}</div>
-      <div class="oc-info">
-        ${o.product ? '📦 ' + o.product + '<br>' : ''}
-        📅 ${o.createdAt ? formatDate(o.createdAt) : '-'}
-        ${o.notes ? '<br>💬 ' + o.notes : ''}
+      <div class="oc-info">${o.product?'📦 '+o.product+'<br>':''}📅 ${o.createdAt?formatDate(o.createdAt):'-'}${o.notes?'<br>💬 '+o.notes:''}</div>
+      <div class="actions">
+        <span class="act-edit" onclick="edit('${o.id}')">✏️ 编辑</span>
+        <span class="act-delete" onclick="del('${o.id}')">🗑 删除</span>
       </div>
-      <div class="cc-tags" style="margin-top:6px;display:flex;gap:4px">
-        <span style="cursor:pointer;color:#38bdf8;font-size:11px" onclick="editOrder('${o.id}')">✏️ 编辑</span>
-        <span style="cursor:pointer;color:#ef4444;font-size:11px" onclick="deleteOrder('${o.id}')">🗑 删除</span>
-      </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function statusMap(s) { return {quote:'报价中',confirmed:'已确认',processing:'处理中',shipped:'已发货',completed:'已完成',cancelled:'已取消'}[s]||s; }
-
-function openOrderPopup() {
-  document.getElementById('orderPopupTitle').textContent = '📦 新建订单';
-  document.getElementById('editOrderId').value = '';
-  ['orderClient','orderAmount','orderProduct','orderNotes'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('orderStatus').value = 'quote';
-  document.getElementById('orderPopup').classList.add('show');
+function openPopup(){
+  $('popupTitle').textContent='📦 新建订单';$('editId').value='';
+  ['orderClient','orderAmount','orderProduct','orderNotes'].forEach(id=>$(id).value='');
+  $('orderStatus').value='quote';$('popup').classList.add('show');
 }
-function closeOrderPopup() { document.getElementById('orderPopup').classList.remove('show'); }
+function closePopup(){$('popup').classList.remove('show')}
 
-function saveOrder() {
-  const client = document.getElementById('orderClient').value.trim();
-  const amount = parseFloat(document.getElementById('orderAmount').value) || 0;
-  if (!client) return showToast('请输入客户名称');
-  const editId = document.getElementById('editOrderId').value;
-  if (editId) {
-    const o = DATA.orders.find(x => x.id === editId);
-    if (o) Object.assign(o, { client, amount, product:document.getElementById('orderProduct').value.trim(), status:document.getElementById('orderStatus').value, notes:document.getElementById('orderNotes').value.trim() });
-  } else {
-    DATA.orders.push({ id: uuid(), client, amount, product:document.getElementById('orderProduct').value.trim(), status:document.getElementById('orderStatus').value, notes:document.getElementById('orderNotes').value.trim(), createdAt: now() });
-  }
-  saveAll(); render(); closeOrderPopup(); showToast('✅ 已保存');
+function save(){
+  const client=$('orderClient').value.trim(),amount=parseFloat($('orderAmount').value)||0;
+  if(!client)return showToast('请输入客户名称');
+  const editId=$('editId').value;
+  const obj={client,amount,product:$('orderProduct').value.trim(),status:$('orderStatus').value,notes:$('orderNotes').value.trim()};
+  if(editId){const o=DATA.orders.find(x=>x.id===editId);if(o)Object.assign(o,obj);}
+  else{obj.id=uuid();obj.createdAt=now();DATA.orders.push(obj);}
+  saveAll();render();closePopup();showToast('✅ 已保存');
 }
-
-function editOrder(id) {
-  const o = DATA.orders.find(x => x.id === id);
-  if (!o) return;
-  document.getElementById('orderPopupTitle').textContent = '✏️ 编辑订单';
-  document.getElementById('editOrderId').value = id;
-  document.getElementById('orderClient').value = o.client;
-  document.getElementById('orderAmount').value = o.amount;
-  document.getElementById('orderProduct').value = o.product||'';
-  document.getElementById('orderStatus').value = o.status;
-  document.getElementById('orderNotes').value = o.notes||'';
-  document.getElementById('orderPopup').classList.add('show');
+function edit(id){const o=DATA.orders.find(x=>x.id===id);if(!o)return;
+  $('popupTitle').textContent='✏️ 编辑订单';$('editId').value=id;
+  $('orderClient').value=o.client;$('orderAmount').value=o.amount;$('orderProduct').value=o.product||'';
+  $('orderStatus').value=o.status;$('orderNotes').value=o.notes||'';$('popup').classList.add('show');
 }
+function del(id){if(confirm('确定删除？')){DATA.orders=DATA.orders.filter(o=>o.id!==id);saveAll();render();showToast('🗑 已删除');}}
 
-function deleteOrder(id) {
-  if (confirm('确定删除该订单？')) { DATA.orders = DATA.orders.filter(o => o.id !== id); saveAll(); render(); showToast('🗑 已删除'); }
-}
-
-document.querySelectorAll('.popup-overlay').forEach(el => { el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); }); });
-
+document.querySelectorAll('.popup-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')})});
 render();
 </script>
 </body>

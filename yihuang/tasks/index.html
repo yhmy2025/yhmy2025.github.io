@@ -6,21 +6,21 @@
 <title>谊璜贸易 · 任务中心</title>
 <link rel="stylesheet" href="../_shared/css/yihuang.css">
 <style>
-.task-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px;margin-bottom:8px}
-.task-card .tc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.task-card .tc-row{display:flex;gap:10px;align-items:flex-start}
+.task-card .tc-check{
+  width:20px;height:20px;border-radius:5px;border:2px solid #475569;
+  cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:11px;transition:all .15s;color:transparent;margin-top:1px;
+}
+.task-card .tc-check.done{background:var(--success);border-color:var(--success);color:#fff}
 .task-card .tc-title{font-size:14px;font-weight:600;flex:1}
-.task-card .tc-priority{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600}
-.priority-high{background:#3b1a1a;color:#ef4444}
-.priority-medium{background:#78350f;color:#fbbf24}
-.priority-low{background:#1e3a5f;color:#94a3b8}
-.task-card .tc-meta{font-size:10px;color:#64748b;display:flex;gap:8px;align-items:center;margin-top:6px}
-.task-card .tc-meta .dept-tag{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
-.task-card .tc-check{width:18px;height:18px;border-radius:5px;border:2px solid #475569;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:all .15s}
-.task-card .tc-check.done{background:#22c55e;border-color:#22c55e;color:#fff}
-.task-card .tc-title.done{text-decoration:line-through;color:#64748b}
-.task-tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto}
-.task-tab{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;background:#1e293b;color:#94a3b8;border:1px solid #334155}
-.task-tab.active{background:#1e3a5f;color:#38bdf8;border-color:#3b82f6}
+.task-card .tc-title.done{text-decoration:line-through;color:var(--text-muted)}
+.task-card .tc-priority{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap;margin-left:6px}
+.pri-high{background:rgba(239,68,68,.15);color:#ef4444}
+.pri-medium{background:rgba(251,191,36,.15);color:#fbbf24}
+.pri-low{background:rgba(148,163,184,.15);color:#94a3b8}
+.task-card .tc-meta{font-size:10px;color:var(--text-muted);display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.task-card .tc-meta .dept-tag{font-size:9px;padding:2px 6px;border-radius:10px;font-weight:600;color:#fff}
 </style>
 </head>
 <body>
@@ -30,178 +30,135 @@
     <div class="tb-brand">✅ 任务中心</div>
     <div class="tb-sub">全部门待办 · 优先级管理</div>
   </div>
-  <div class="tb-right"><span class="tb-badge">Phase 2</span></div>
+  <div class="tb-right"><span class="tb-badge">v2.0</span></div>
 </div>
 
-<!-- 统计栏 -->
-<div class="summary-bar" id="taskSummary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px"></div>
+<div class="summary-bar" id="summary" style="grid-template-columns:repeat(4,1fr)"></div>
 
-<!-- 搜索+新增 -->
 <div class="search-bar">
-  <input type="text" id="taskSearch" placeholder="搜索任务..." oninput="render()">
-  <button onclick="openTaskPopup()">+ 新建</button>
+  <input type="text" id="searchInput" placeholder="搜索任务..." oninput="render()">
+  <button onclick="openPopup()">+ 新建</button>
 </div>
 
-<!-- 过滤Tabs -->
-<div class="task-tabs" id="taskTabs"></div>
+<div class="filter-tabs" id="filterTabs"></div>
 
-<!-- 任务列表 -->
 <div id="taskList"></div>
 
 <div class="bottom-nav">
-  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">仪表盘</span></a>
+  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
   <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
   <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
-  <a class="bn-item active" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
   <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
-  <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
-  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
+  <a class="bn-item active" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
 </div>
 
-<!-- 新建/编辑任务弹窗 -->
-<div class="popup-overlay" id="taskPopup">
+<div class="popup-overlay" id="popup">
   <div class="popup">
-    <h3 id="taskPopupTitle">✅ 新建任务</h3>
+    <h3 id="popupTitle">✅ 新建任务</h3>
     <label>任务内容</label>
     <input type="text" id="taskTitle" placeholder="描述任务...">
     <label>所属部门</label>
     <select id="taskDept"></select>
     <label>优先级</label>
     <select id="taskPriority">
-      <option value="high">🔴 高优先级</option>
-      <option value="medium" selected>🟡 中优先级</option>
-      <option value="low">🟢 低优先级</option>
+      <option value="high">🔴 高优先级</option><option value="medium" selected>🟡 中优先级</option><option value="low">🟢 低优先级</option>
     </select>
     <label>截止日期</label>
     <input type="date" id="taskDue">
     <label>备注</label>
     <input type="text" id="taskNote" placeholder="补充说明...">
     <div class="btn-row">
-      <button class="btn btn-secondary" onclick="closeTaskPopup()">取消</button>
-      <button class="btn btn-primary" onclick="saveTask()">✅ 创建</button>
+      <button class="btn btn-secondary" onclick="closePopup()">取消</button>
+      <button class="btn btn-primary" onclick="save()">✅ 创建</button>
     </div>
-    <input type="hidden" id="editTaskId">
+    <input type="hidden" id="editId">
   </div>
 </div>
 
 <script src="../_shared/js/yihuang.js"></script>
 <script>
-let DATA = loadData('yihuang_tasks') || { tasks: [] };
-let currentFilter = 'all';
+const $=id=>document.getElementById(id);
+let DATA=loadData('yihuang_tasks')||{tasks:[]};
+let filter='all';
 
-function saveAll() { saveData('yihuang_tasks', DATA); }
+function saveAll(){saveData('yihuang_tasks',DATA);}
 
-function render() {
-  const query = document.getElementById('taskSearch').value.toLowerCase();
-  let filtered = DATA.tasks;
-  if (currentFilter === 'pending') filtered = filtered.filter(t => !t.done);
-  else if (currentFilter === 'done') filtered = filtered.filter(t => t.done);
-  else if (currentFilter === 'high') filtered = filtered.filter(t => t.priority === 'high' && !t.done);
-  if (query) filtered = filtered.filter(t => t.title.toLowerCase().includes(query));
+function render(){
+  const q=$('searchInput').value.toLowerCase();
+  let f=DATA.tasks;
+  if(filter==='pending')f=f.filter(t=>!t.done);
+  else if(filter==='done')f=f.filter(t=>t.done);
+  else if(filter==='high')f=f.filter(t=>t.priority==='high'&&!t.done);
+  if(q)f=f.filter(t=>t.title.toLowerCase().includes(q));
 
-  // 统计
-  const total = DATA.tasks.length;
-  const done = DATA.tasks.filter(t => t.done).length;
-  const pending = total - done;
-  const high = DATA.tasks.filter(t => t.priority === 'high' && !t.done).length;
-  document.getElementById('taskSummary').innerHTML = `
+  const total=DATA.tasks.length,done=DATA.tasks.filter(t=>t.done).length;
+  const pending=total-done,high=DATA.tasks.filter(t=>t.priority==='high'&&!t.done).length;
+  $('summary').innerHTML=`
     <div class="summary-item"><div class="si-value">${total}</div><div class="si-label">总任务</div></div>
     <div class="summary-item"><div class="si-value">${pending}</div><div class="si-label">待处理</div></div>
-    <div class="summary-item"><div class="si-value" style="color:#ef4444">${high}</div><div class="si-label">高优先</div></div>
-    <div class="summary-item"><div class="si-value" style="color:#22c55e">${done}</div><div class="si-label">已完成</div></div>
-  `;
+    <div class="summary-item"><div class="si-value" style="color:var(--danger)">${high}</div><div class="si-label">高优先</div></div>
+    <div class="summary-item"><div class="si-value" style="color:var(--success)">${done}</div><div class="si-label">已完成</div></div>`;
 
-  // Tabs
-  document.getElementById('taskTabs').innerHTML = [
-    {id:'all', label:'全部'},
-    {id:'pending', label:'待处理'},
-    {id:'done', label:'已完成'},
-    {id:'high', label:'🔴 高优先'},
-  ].map(t => `<div class="task-tab ${currentFilter===t.id?'active':''}" onclick="currentFilter='${t.id}';render()">${t.label}</div>`).join('');
+  const tabs=[{id:'all',label:'全部'},{id:'pending',label:'待处理'},{id:'done',label:'已完成'},{id:'high',label:'🔴 高优先'}];
+  $('filterTabs').innerHTML=tabs.map(t=>`<div class="filter-tab ${filter===t.id?'active':''}" onclick="filter='${t.id}';render()">${t.label}</div>`).join('');
 
-  const el = document.getElementById('taskList');
-  if (!filtered.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div>暂无任务</div>';
+  const el=$('taskList');
+  if(!f.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">暂无任务</div><div class="empty-desc">点击"+新建"创建第一个任务</div></div>';
     return;
   }
-  filtered.sort((a,b) => a.done === b.done ? 0 : a.done ? 1 : -1);
-  el.innerHTML = filtered.map(t => `
-    <div class="task-card fade-in">
-      <div style="display:flex;gap:10px;align-items:flex-start">
-        <div class="tc-check ${t.done?'done':''}" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</div>
-        <div style="flex:1">
-          <div class="tc-header">
+  f.sort((a,b)=>a.done===b.done?0:a.done?1:-1);
+  const priLabel={high:'🔴 高优先',medium:'🟡 中优先',low:'🟢 低优先'};
+  el.innerHTML=f.map(t=>`
+    <div class="item-card task-card fade-in">
+      <div class="tc-row">
+        <div class="tc-check ${t.done?'done':''}" onclick="toggle('${t.id}')">${t.done?'✓':''}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <div class="tc-title ${t.done?'done':''}">${t.title}</div>
-            <span class="tc-priority priority-${t.priority}">${t.priority==='high'?'🔴':t.priority==='medium'?'🟡':'🟢'} ${priLabel(t.priority)}</span>
+            <span class="tc-priority pri-${t.priority}">${priLabel[t.priority]}</span>
           </div>
           <div class="tc-meta">
-            <span class="dept-tag" style="background:${deptColor(t.dept)};color:#fff">${deptLabel(t.dept)}</span>
-            ${t.due ? '<span>📅 ' + formatDate(t.due) + '</span>' : ''}
-            <span style="cursor:pointer;color:#38bdf8" onclick="editTask('${t.id}')">✏️</span>
-            <span style="cursor:pointer;color:#ef4444" onclick="deleteTask('${t.id}')">🗑</span>
+            <span class="dept-tag" style="background:${deptColor(t.dept)}">${deptLabel(t.dept)}</span>
+            ${t.due?'📅 '+formatDate(t.due):''}
           </div>
-          ${t.note ? '<div style="font-size:11px;color:#94a3b8;margin-top:4px">💬 '+t.note+'</div>' : ''}
+          ${t.note?'<div style="font-size:11px;color:var(--text-secondary);margin-top:4px">💬 '+t.note+'</div>':''}
+          <div class="actions">
+            <span class="act-edit" onclick="edit('${t.id}')">✏️ 编辑</span>
+            <span class="act-delete" onclick="del('${t.id}')">🗑 删除</span>
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function priLabel(p) { return {high:'高优先',medium:'中优先',low:'低优先'}[p]||p; }
+function toggle(id){const t=DATA.tasks.find(x=>x.id===id);if(t){t.done=!t.done;saveAll();render();}}
 
-function toggleTask(id) {
-  const t = DATA.tasks.find(x => x.id === id);
-  if (t) { t.done = !t.done; saveAll(); render(); }
+function openPopup(){
+  $('popupTitle').textContent='✅ 新建任务';$('editId').value='';
+  $('taskTitle').value='';$('taskPriority').value='medium';$('taskDue').value='';$('taskNote').value='';
+  $('taskDept').innerHTML=Object.entries(DEPARTMENTS).map(([k,v])=>`<option value="${k}">${v.icon} ${v.name}</option>`).join('');
+  $('popup').classList.add('show');
 }
+function closePopup(){$('popup').classList.remove('show')}
 
-function openTaskPopup() {
-  document.getElementById('taskPopupTitle').textContent = '✅ 新建任务';
-  document.getElementById('editTaskId').value = '';
-  document.getElementById('taskTitle').value = '';
-  document.getElementById('taskPriority').value = 'medium';
-  document.getElementById('taskDue').value = '';
-  document.getElementById('taskNote').value = '';
-  const deptEl = document.getElementById('taskDept');
-  deptEl.innerHTML = Object.entries(DEPARTMENTS).map(([k,v]) => `<option value="${k}">${v.icon} ${v.name}</option>`).join('');
-  document.getElementById('taskPopup').classList.add('show');
+function save(){
+  const title=$('taskTitle').value.trim();if(!title)return showToast('请输入任务内容');
+  const editId=$('editId').value;
+  const obj={title,dept:$('taskDept').value,priority:$('taskPriority').value,due:$('taskDue').value,note:$('taskNote').value.trim()};
+  if(editId){const t=DATA.tasks.find(x=>x.id===editId);if(t)Object.assign(t,obj);}
+  else{obj.id=uuid();obj.done=false;obj.createdAt=now();DATA.tasks.push(obj);}
+  saveAll();render();closePopup();showToast('✅ 已保存');
 }
-function closeTaskPopup() { document.getElementById('taskPopup').classList.remove('show'); }
-
-function saveTask() {
-  const title = document.getElementById('taskTitle').value.trim();
-  if (!title) return showToast('请输入任务内容');
-  const editId = document.getElementById('editTaskId').value;
-  const obj = { title, dept:document.getElementById('taskDept').value, priority:document.getElementById('taskPriority').value, due:document.getElementById('taskDue').value, note:document.getElementById('taskNote').value.trim() };
-  if (editId) {
-    const t = DATA.tasks.find(x => x.id === editId);
-    if (t) Object.assign(t, obj);
-  } else {
-    obj.id = uuid(); obj.done = false; obj.createdAt = now();
-    DATA.tasks.push(obj);
-  }
-  saveAll(); render(); closeTaskPopup(); showToast('✅ 已保存');
+function edit(id){const t=DATA.tasks.find(x=>x.id===id);if(!t)return;
+  $('popupTitle').textContent='✏️ 编辑任务';$('editId').value=id;
+  $('taskTitle').value=t.title;$('taskPriority').value=t.priority;$('taskDue').value=t.due||'';$('taskNote').value=t.note||'';
+  $('taskDept').innerHTML=Object.entries(DEPARTMENTS).map(([k,v])=>`<option ${k===t.dept?'selected':''} value="${k}">${v.icon} ${v.name}</option>`).join('');
+  $('popup').classList.add('show');
 }
+function del(id){if(confirm('确定删除？')){DATA.tasks=DATA.tasks.filter(t=>t.id!==id);saveAll();render();showToast('🗑 已删除');}}
 
-function editTask(id) {
-  const t = DATA.tasks.find(x => x.id === id);
-  if (!t) return;
-  document.getElementById('taskPopupTitle').textContent = '✏️ 编辑任务';
-  document.getElementById('editTaskId').value = id;
-  document.getElementById('taskTitle').value = t.title;
-  document.getElementById('taskPriority').value = t.priority;
-  const deptEl = document.getElementById('taskDept');
-  deptEl.innerHTML = Object.entries(DEPARTMENTS).map(([k,v]) => `<option value="${k}" ${k===t.dept?'selected':''}>${v.icon} ${v.name}</option>`).join('');
-  document.getElementById('taskDue').value = t.due||'';
-  document.getElementById('taskNote').value = t.note||'';
-  document.getElementById('taskPopup').classList.add('show');
-}
-
-function deleteTask(id) {
-  if (confirm('确定删除？')) { DATA.tasks = DATA.tasks.filter(t => t.id !== id); saveAll(); render(); showToast('🗑 已删除'); }
-}
-
-document.querySelectorAll('.popup-overlay').forEach(el => { el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); }); });
-
+document.querySelectorAll('.popup-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')})});
 render();
 </script>
 </body>

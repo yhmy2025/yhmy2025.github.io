@@ -6,23 +6,18 @@
 <title>谊璜贸易 · 库存看板</title>
 <link rel="stylesheet" href="../_shared/css/yihuang.css">
 <style>
-.inv-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px;margin-bottom:8px}
-.inv-card .ic-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.inv-card .ic-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .inv-card .ic-name{font-size:14px;font-weight:700}
-.inv-card .ic-qty{font-size:18px;font-weight:800}
-.inv-card .ic-qty.low{color:#ef4444}
-.inv-card .ic-qty.normal{color:#22c55e}
-.inv-card .ic-meta{font-size:11px;color:#94a3b8;line-height:1.6}
-.inv-card .ic-bar{height:4px;background:#334155;border-radius:2px;margin:8px 0;overflow:hidden}
-.inv-card .ic-bar .fill{height:100%;border-radius:2px;transition:width .5s}
-.fill.low{background:#ef4444}.fill.normal{background:#f59e0b}.fill.high{background:#22c55e}
-.summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.summary-item{text-align:center;padding:10px;background:#1e293b;border:1px solid #334155;border-radius:10px}
-.summary-item .si-value{font-size:22px;font-weight:800;color:#38bdf8}
-.summary-item .si-label{font-size:10px;color:#64748b;margin-top:2px}
-.stock-tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto}
-.stock-tab{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;background:#1e293b;color:#94a3b8;border:1px solid #334155}
-.stock-tab.active{background:#1e3a5f;color:#38bdf8;border-color:#3b82f6}
+.inv-card .ic-qty{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+.inv-card .ic-qty.low{color:var(--danger)}
+.inv-card .ic-qty.normal{color:var(--warning)}
+.inv-card .ic-qty.ok{color:var(--success)}
+.inv-card .ic-bar{height:5px;background:var(--border);border-radius:3px;margin:8px 0;overflow:hidden}
+.inv-card .ic-bar .fill{height:100%;border-radius:3px;transition:width .5s}
+.inv-card .fill.low{background:var(--danger)}
+.inv-card .fill.normal{background:var(--warning)}
+.inv-card .fill.ok{background:var(--success)}
+.inv-card .ic-meta{font-size:11px;color:var(--text-secondary);line-height:1.6}
 </style>
 </head>
 <body>
@@ -30,185 +25,138 @@
 <div class="top-bar">
   <div class="tb-left">
     <div class="tb-brand">📦 库存看板</div>
-    <div class="tb-sub">库存监控 · 补货预警</div>
+    <div class="tb-sub">库存监控 · 安全预警</div>
   </div>
-  <div class="tb-right"><span class="tb-badge">Phase 2</span></div>
+  <div class="tb-right"><span class="tb-badge">v2.0</span></div>
 </div>
 
-<!-- 统计 -->
-<div class="summary-bar" id="invSummary"></div>
+<div class="summary-bar" id="summary" style="grid-template-columns:repeat(4,1fr)"></div>
 
 <div class="search-bar">
-  <input type="text" id="invSearch" placeholder="搜索产品..." oninput="render()">
-  <button onclick="openInvPopup()">+ 新增产品</button>
+  <input type="text" id="searchInput" placeholder="搜索产品..." oninput="render()">
+  <button onclick="openPopup()">+ 新增</button>
 </div>
 
-<!-- 筛选 -->
-<div class="stock-tabs" id="invTabs"></div>
+<div class="filter-tabs" id="filterTabs"></div>
 
-<!-- 列表 -->
 <div id="invList"></div>
 
 <div class="bottom-nav">
-  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">仪表盘</span></a>
+  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
   <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
   <a class="bn-item active" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
   <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
   <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
-  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
-  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
 </div>
 
-<!-- 弹窗 -->
-<div class="popup-overlay" id="invPopup">
+<div class="popup-overlay" id="popup">
   <div class="popup">
-    <h3 id="invPopupTitle">📦 新增库存产品</h3>
-    <label>产品名称</label>
-    <input type="text" id="invName" placeholder="如：粤盐焗鸡粉">
+    <h3 id="popupTitle">📦 新增产品</h3>
+    <label>产品名称</label><input type="text" id="invName" placeholder="如：粤盐焗鸡粉">
     <label>品类</label>
     <select id="invCategory">
-      <option value="调味品">调味品</option>
-      <option value="粮食">粮食/大宗</option>
-      <option value="跨境">跨境电商</option>
-      <option value="包材">包装材料</option>
-      <option value="其他">其他</option>
+      <option value="调味品">调味品</option><option value="粮食">粮食/大宗</option><option value="跨境">跨境电商</option><option value="包材">包装材料</option><option value="其他">其他</option>
     </select>
-    <label>当前库存</label>
-    <input type="number" id="invQty" placeholder="数量" min="0">
-    <label>单位</label>
-    <input type="text" id="invUnit" value="箱" placeholder="箱/吨/个">
-    <label>安全库存</label>
-    <input type="number" id="invSafeQty" placeholder="低于此值预警" min="0">
-    <label>成本价 (¥)</label>
-    <input type="number" id="invCost" placeholder="0.00" step="0.01">
-    <label>备注</label>
-    <textarea id="invNotes" rows="2"></textarea>
+    <label>当前库存</label><input type="number" id="invQty" min="0">
+    <label>单位</label><input type="text" id="invUnit" value="箱" placeholder="箱/吨/个">
+    <label>安全库存</label><input type="number" id="invSafeQty" min="0" placeholder="低于此值预警">
+    <label>成本价 (¥)</label><input type="number" id="invCost" step="0.01" placeholder="0.00">
+    <label>备注</label><textarea id="invNotes" rows="2"></textarea>
     <div class="btn-row">
-      <button class="btn btn-secondary" onclick="closeInvPopup()">取消</button>
-      <button class="btn btn-primary" onclick="saveInv()">✅ 保存</button>
+      <button class="btn btn-secondary" onclick="closePopup()">取消</button>
+      <button class="btn btn-primary" onclick="save()">✅ 保存</button>
     </div>
-    <input type="hidden" id="editInvId">
+    <input type="hidden" id="editId">
   </div>
 </div>
 
 <script src="../_shared/js/yihuang.js"></script>
 <script>
-let DATA = loadData('yihuang_inventory') || { items: [] };
-let currentFilter = 'all';
+const $=id=>document.getElementById(id);
+let DATA=loadData('yihuang_inventory')||{items:[]};
+let filter='all';
 
-function saveAll() { saveData('yihuang_inventory', DATA); }
+function saveAll(){saveData('yihuang_inventory',DATA);}
 
-function render() {
-  const query = document.getElementById('invSearch').value.toLowerCase();
-  let filtered = DATA.items;
-  if (currentFilter === 'low') filtered = filtered.filter(i => i.qty < i.safeQty);
-  else if (currentFilter === 'normal') filtered = filtered.filter(i => i.qty >= i.safeQty && i.qty < i.safeQty*3);
-  else if (currentFilter === 'high') filtered = filtered.filter(i => i.qty >= i.safeQty*3);
-  if (query) filtered = filtered.filter(i => i.name.toLowerCase().includes(query) || (i.category||'').toLowerCase().includes(query));
+function render(){
+  const q=$('searchInput').value.toLowerCase();
+  let f=DATA.items;
+  if(filter==='low')f=f.filter(i=>i.qty<i.safeQty);
+  else if(filter==='normal')f=f.filter(i=>i.qty>=i.safeQty&&i.qty<i.safeQty*3);
+  else if(filter==='high')f=f.filter(i=>i.qty>=i.safeQty*3);
+  if(q)f=f.filter(i=>i.name.toLowerCase().includes(q)||(i.category||'').toLowerCase().includes(q));
 
-  const total = DATA.items.length;
-  const low = DATA.items.filter(i => i.qty < i.safeQty).length;
-  const totalCost = DATA.items.reduce((s,i) => s + parseFloat(i.cost||0)*i.qty, 0);
-  document.getElementById('invSummary').innerHTML = `
+  const total=DATA.items.length,low=DATA.items.filter(i=>i.qty<i.safeQty).length;
+  const totalCost=DATA.items.reduce((s,i)=>s+parseFloat(i.cost||0)*i.qty,0);
+  $('summary').innerHTML=`
     <div class="summary-item"><div class="si-value">${total}</div><div class="si-label">总SKU</div></div>
-    <div class="summary-item"><div class="si-value" style="color:#ef4444">${low}</div><div class="si-label">⚠️ 低库存</div></div>
-    <div class="summary-item"><div class="si-value">${total - low}</div><div class="si-label">正常</div></div>
-    <div class="summary-item"><div class="si-value">¥${totalCost.toFixed(0)}</div><div class="si-label">库存价值</div></div>
-  `;
+    <div class="summary-item"><div class="si-value" style="color:var(--danger)">${low}</div><div class="si-label">⚠️ 低库存</div></div>
+    <div class="summary-item"><div class="si-value">${total-low}</div><div class="si-label">正常</div></div>
+    <div class="summary-item"><div class="si-value">¥${totalCost.toFixed(0)}</div><div class="si-label">库存价值</div></div>`;
 
-  document.getElementById('invTabs').innerHTML = [
-    {id:'all', label:'全部'},
-    {id:'low', label:'⚠️ 低库存'+'('+low+')'},
-    {id:'normal', label:'正常'},
-    {id:'high', label:'充足'},
-  ].map(t => `<div class="stock-tab ${currentFilter===t.id?'active':''}" onclick="currentFilter='${t.id}';render()">${t.label}</div>`).join('');
+  const tabs=[{id:'all',label:'全部'},{id:'low',label:'⚠️ 低库存('+low+')'},{id:'normal',label:'正常'},{id:'high',label:'充足'}];
+  $('filterTabs').innerHTML=tabs.map(t=>`<div class="filter-tab ${filter===t.id?'active':''}" onclick="filter='${t.id}';render()">${t.label}</div>`).join('');
 
-  const el = document.getElementById('invList');
-  if (!filtered.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div>暂无库存产品</div>';
+  const el=$('invList');
+  if(!f.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">暂无库存产品</div><div class="empty-desc">点击"+新增"添加产品</div></div>';
     return;
   }
-
-  el.innerHTML = filtered.map(i => {
-    const pct = i.safeQty > 0 ? Math.min(100, (i.qty / i.safeQty) * 100) : 100;
-    const level = i.qty < i.safeQty ? 'low' : i.qty < i.safeQty*3 ? 'normal' : 'high';
+  el.innerHTML=f.map(i=>{
+    const pct=i.safeQty>0?Math.min(100,(i.qty/i.safeQty)*100):100;
+    const level=i.qty<i.safeQty?'low':i.qty<i.safeQty*3?'normal':'ok';
     return `
-    <div class="inv-card fade-in">
+    <div class="item-card inv-card fade-in">
       <div class="ic-header">
         <div class="ic-name">${i.name}</div>
-        <div class="ic-qty ${level}">${i.qty} ${i.unit||'件'}</div>
+        <div class="ic-qty ${level}">${i.qty}<span style="font-size:11px;font-weight:400;color:var(--text-muted)"> ${i.unit||'件'}</span></div>
       </div>
       <div class="ic-bar"><div class="fill ${level}" style="width:${pct}%"></div></div>
       <div class="ic-meta">
-        📂 ${i.category||'未分类'} ${i.cost ? ' | ¥'+parseFloat(i.cost).toFixed(2)+'/'+(i.unit||'件') : ''}
-        ${i.safeQty ? ' | 安全线: '+i.safeQty : ''}
-        ${i.qty < i.safeQty ? '<br>⚠️ <span style="color:#ef4444">低于安全库存，建议补货</span>' : ''}
-        ${i.notes ? '<br>💬 '+i.notes : ''}
+        📂 ${i.category||'未分类'}${i.cost?' | ¥'+parseFloat(i.cost).toFixed(2)+'/'+(i.unit||'件'):''}
+        ${i.safeQty?' | 安全线:'+i.safeQty:''}
+        ${i.qty<i.safeQty?'<br>⚠️ <span style="color:var(--danger)">低于安全库存，建议补货</span>':''}
+        ${i.notes?'<br>💬 '+i.notes:''}
       </div>
-      <div style="display:flex;gap:8px;margin-top:6px">
-        <span style="cursor:pointer;color:#38bdf8;font-size:11px" onclick="editInv('${i.id}')">✏️ 编辑</span>
-        <span style="cursor:pointer;color:#22c55e;font-size:11px" onclick="adjustQty('${i.id}')">📦 入库/出库</span>
-        <span style="cursor:pointer;color:#ef4444;font-size:11px" onclick="deleteInv('${i.id}')">🗑 删除</span>
+      <div class="actions">
+        <span class="act-edit" onclick="edit('${i.id}')">✏️ 编辑</span>
+        <span class="act-ok" onclick="adjust('${i.id}')">📦 入库/出库</span>
+        <span class="act-delete" onclick="del('${i.id}')">🗑 删除</span>
       </div>
-    </div>`;
-  }).join('');
+    </div>`}).join('');
 }
 
-function openInvPopup() {
-  document.getElementById('invPopupTitle').textContent = '📦 新增产品';
-  document.getElementById('editInvId').value = '';
-  ['invName','invQty','invUnit','invSafeQty','invCost','invNotes'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('invCategory').value = '调味品';
-  document.getElementById('invUnit').value = '箱';
-  document.getElementById('invPopup').classList.add('show');
+function openPopup(){
+  $('popupTitle').textContent='📦 新增产品';$('editId').value='';
+  ['invName','invQty','invUnit','invSafeQty','invCost','invNotes'].forEach(id=>$(id).value='');
+  $('invCategory').value='调味品';$('invUnit').value='箱';$('popup').classList.add('show');
 }
-function closeInvPopup() { document.getElementById('invPopup').classList.remove('show'); }
+function closePopup(){$('popup').classList.remove('show')}
 
-function saveInv() {
-  const name = document.getElementById('invName').value.trim();
-  if (!name) return showToast('请输入产品名称');
-  const editId = document.getElementById('editInvId').value;
-  const obj = { name, category:document.getElementById('invCategory').value, qty:parseInt(document.getElementById('invQty').value)||0, unit:document.getElementById('invUnit').value||'件', safeQty:parseInt(document.getElementById('invSafeQty').value)||0, cost:parseFloat(document.getElementById('invCost').value)||0, notes:document.getElementById('invNotes').value.trim() };
-  if (editId) {
-    const i = DATA.items.find(x => x.id === editId);
-    if (i) Object.assign(i, obj);
-  } else { obj.id = uuid(); obj.createdAt = now(); DATA.items.push(obj); }
-  saveAll(); render(); closeInvPopup(); showToast('✅ 已保存');
+function save(){
+  const name=$('invName').value.trim();if(!name)return showToast('请输入产品名称');
+  const editId=$('editId').value;
+  const obj={name,category:$('invCategory').value,qty:parseInt($('invQty').value)||0,unit:$('invUnit').value||'件',safeQty:parseInt($('invSafeQty').value)||0,cost:parseFloat($('invCost').value)||0,notes:$('invNotes').value.trim()};
+  if(editId){const i=DATA.items.find(x=>x.id===editId);if(i)Object.assign(i,obj);}
+  else{obj.id=uuid();obj.createdAt=now();DATA.items.push(obj);}
+  saveAll();render();closePopup();showToast('✅ 已保存');
 }
-
-function editInv(id) {
-  const i = DATA.items.find(x => x.id === id);
-  if (!i) return;
-  document.getElementById('invPopupTitle').textContent = '✏️ 编辑产品';
-  document.getElementById('editInvId').value = id;
-  document.getElementById('invName').value = i.name;
-  document.getElementById('invCategory').value = i.category||'其他';
-  document.getElementById('invQty').value = i.qty;
-  document.getElementById('invUnit').value = i.unit||'箱';
-  document.getElementById('invSafeQty').value = i.safeQty||0;
-  document.getElementById('invCost').value = i.cost||0;
-  document.getElementById('invNotes').value = i.notes||'';
-  document.getElementById('invPopup').classList.add('show');
+function edit(id){const i=DATA.items.find(x=>x.id===id);if(!i)return;
+  $('popupTitle').textContent='✏️ 编辑产品';$('editId').value=id;
+  $('invName').value=i.name;$('invCategory').value=i.category||'其他';$('invQty').value=i.qty;
+  $('invUnit').value=i.unit||'箱';$('invSafeQty').value=i.safeQty||0;
+  $('invCost').value=i.cost||0;$('invNotes').value=i.notes||'';$('popup').classList.add('show');
 }
-
-function adjustQty(id) {
-  const i = DATA.items.find(x => x.id === id);
-  if (!i) return;
-  const adjust = prompt(`当前库存: ${i.qty} ${i.unit}\n输入调整数量（正=入库，负=出库）:`);
-  if (adjust === null) return;
-  const n = parseInt(adjust);
-  if (isNaN(n) || n === 0) return showToast('无效数量');
-  i.qty = Math.max(0, i.qty + n);
-  saveAll(); render();
-  showToast(n>0 ? `📦 入库 ${n} ${i.unit}` : `📤 出库 ${Math.abs(n)} ${i.unit}`);
+function adjust(id){const i=DATA.items.find(x=>x.id===id);if(!i)return;
+  const adj=prompt(`当前库存: ${i.qty} ${i.unit}\n输入调整（正=入库，负=出库）: `);
+  if(adj===null)return;const n=parseInt(adj);
+  if(isNaN(n)||n===0)return showToast('无效数量');
+  i.qty=Math.max(0,i.qty+n);saveAll();render();
+  showToast(n>0?'📦 入库 '+n+' '+i.unit:'📤 出库 '+Math.abs(n)+' '+i.unit);
 }
+function del(id){if(confirm('确定删除？')){DATA.items=DATA.items.filter(i=>i.id!==id);saveAll();render();showToast('🗑 已删除');}}
 
-function deleteInv(id) {
-  if (confirm('确定删除？')) { DATA.items = DATA.items.filter(i => i.id !== id); saveAll(); render(); showToast('🗑 已删除'); }
-}
-
-document.querySelectorAll('.popup-overlay').forEach(el => { el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); }); });
-
+document.querySelectorAll('.popup-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')})});
 render();
 </script>
 </body>

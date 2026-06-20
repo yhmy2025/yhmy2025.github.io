@@ -6,69 +6,73 @@
 <title>谊璜贸易 · 经营仪表盘</title>
 <link rel="stylesheet" href="../_shared/css/yihuang.css">
 <style>
-/* ───── 仪表盘专属样式 ───── */
-.layout{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 0 80px}
+/* ───── Dashboard Layout ───── */
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 0 8px}
 .layout .full{grid-column:1/-1}
-.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px}
-.card-title{font-size:13px;font-weight:600;color:#94a3b8;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.card-title .icon{font-size:16px}
-.card-value{font-size:28px;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.card-sub{font-size:11px;color:#64748b;margin-top:2px}
-/* 业务线进度 */
-.biz-card{padding:12px;border-radius:10px;margin-bottom:8px;border:1px solid transparent}
+
+/* 战略指标的4列 */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.stat-grid > div{padding:4px 0}
+.stat-grid .card-value{font-size:24px}
+
+/* ───── 业务线进度 ───── */
+.biz-card{padding:14px;border-radius:10px;margin-bottom:8px;border:1px solid transparent}
 .biz-card:last-child{margin-bottom:0}
-.biz-card.ecom{background:#0f1e2e;border-color:#38bdf8}
-.biz-card.salt{background:#1e1f1a;border-color:#f59e0b}
-.biz-card.corn{background:#1e2e1a;border-color:#22c55e}
+.biz-card.ecom{background:linear-gradient(135deg,#0f1e2e,#0f172a);border-color:#38bdf8}
+.biz-card.salt{background:linear-gradient(135deg,#1e1f1a,#0f172a);border-color:#f59e0b}
+.biz-card.corn{background:linear-gradient(135deg,#1e2e1a,#0f172a);border-color:#22c55e}
 .biz-card .biz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .biz-card .biz-name{font-size:14px;font-weight:700}
-.biz-card .biz-tag{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600}
-.biz-tag.negotiating{background:#78350f;color:#fbbf24}
-.biz-tag.active{background:#065f46;color:#34d399}
-.biz-card .biz-progress{height:4px;background:#334155;border-radius:2px;margin:8px 0;overflow:hidden}
-.biz-card .biz-progress .bar{height:100%;border-radius:2px;transition:width .5s}
-.biz-card .biz-detail{font-size:11px;color:#94a3b8;line-height:1.5}
-/* 待办列表 */
-.todo-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid #1e293b;font-size:12px}
+.biz-card .biz-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.biz-tag.negotiating{background:rgba(251,191,36,.15);color:#fbbf24}
+.biz-tag.active{background:rgba(34,197,94,.15);color:#34d399}
+.biz-card .biz-progress{height:5px;background:var(--border);border-radius:3px;margin:8px 0;overflow:hidden}
+.biz-card .biz-progress .bar{height:100%;border-radius:3px;transition:width .5s ease}
+.biz-card .biz-detail{font-size:11px;color:var(--text-secondary);line-height:1.5}
+
+/* ───── 待办列表 ───── */
+.todo-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(51,65,85,.5);font-size:12px}
 .todo-item:last-child{border-bottom:none}
-.todo-check{width:16px;height:16px;border-radius:4px;border:2px solid #475569;cursor:pointer;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s}
-.todo-check.done{background:#22c55e;border-color:#22c55e;color:#fff}
-.todo-text{flex:1;color:#e2e8f0}.todo-text.done{text-decoration:line-through;color:#64748b}
-.todo-dept{font-size:9px;padding:1px 5px;border-radius:3px;margin-left:6px;font-weight:600}
-/* 关键事件时间线 */
-.timeline{padding-left:16px;border-left:2px solid #334155}
+.todo-check{
+  width:18px;height:18px;border-radius:5px;border:2px solid #475569;
+  cursor:pointer;flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;font-size:10px;
+  transition:all .15s;color:transparent;
+}
+.todo-check.done{background:var(--success);border-color:var(--success);color:#fff}
+.todo-text{flex:1;color:var(--text-primary)}
+.todo-text.done{text-decoration:line-through;color:var(--text-muted)}
+.todo-dept{font-size:9px;padding:2px 6px;border-radius:3px;margin-left:6px;font-weight:600;white-space:nowrap}
+
+/* ───── 关键事件时间线 ───── */
+.timeline{padding-left:16px;border-left:2px solid var(--border)}
 .tl-item{position:relative;padding:0 0 14px 12px;font-size:12px}
-.tl-item::before{content:"";position:absolute;left:-7px;top:4px;width:10px;height:10px;border-radius:50%;background:#334155}
-.tl-item.urgent::before{background:#f59e0b}
-.tl-item.done::before{background:#22c55e}
-.tl-item .tl-date{color:#64748b;font-size:10px}
-.tl-item .tl-text{color:#e2e8f0;margin-top:2px}
-/* 快速操作 */
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:'';position:absolute;left:-7px;top:4px;
+  width:12px;height:12px;border-radius:50%;background:var(--border);
+  border:2px solid var(--bg-body);
+}
+.tl-item.done::before{background:var(--success);border-color:rgba(34,197,94,.3)}
+.tl-item.urgent::before{background:var(--warning);border-color:rgba(245,158,11,.3)}
+.tl-item .tl-date{color:var(--text-muted);font-size:10px}
+.tl-item .tl-text{color:var(--text-primary);margin-top:3px}
+
+/* ───── 快速操作网格 ───── */
 .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.quick-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;background:#1e293b;border:1px solid #334155;border-radius:10px;cursor:pointer;transition:all .15s;text-decoration:none;color:#e2e8f0}
-.quick-btn:hover{background:#1e3a5f;border-color:#3b82f6}
+.quick-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:16px;background:var(--bg-input);border:1px solid var(--border);
+  border-radius:var(--radius-sm);cursor:pointer;transition:all .15s;
+  text-decoration:none;color:var(--text-primary);
+}
+.quick-btn:hover{background:var(--bg-hover);border-color:var(--border-hover)}
 .quick-btn .qb-icon{font-size:24px;margin-bottom:4px}
-.quick-btn .qb-text{font-size:11px;font-weight:600;color:#94a3b8}
-/* 窗口 */
-.popup-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
-.popup-overlay.show{display:flex}
-.popup{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px;width:100%;max-width:420px;max-height:80vh;overflow-y:auto}
-.popup h3{font-size:16px;margin-bottom:14px;color:#e2e8f0}
-.popup label{display:block;font-size:12px;color:#94a3b8;margin:10px 0 4px}
-.popup input,.popup select,.popup textarea{width:100%;padding:8px 10px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;font-size:13px;outline:none}
-.popup input:focus,.popup select:focus,.popup textarea:focus{border-color:#3b82f6}
-.popup .btn-row{display:flex;gap:8px;margin-top:14px}
-.popup .btn{flex:1;padding:10px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
-.popup .btn-primary{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}
-.popup .btn-secondary{background:#334155;color:#e2e8f0}
-/* 打印/导出 */
-.export-btn{text-align:center;padding:10px;background:#1e293b;border:1px dashed #334155;border-radius:10px;cursor:pointer;font-size:12px;color:#94a3b8;transition:all .15s}
-.export-btn:hover{background:#1e3a5f;border-color:#3b82f6;color:#38bdf8}
+.quick-btn .qb-text{font-size:11px;font-weight:600;color:var(--text-secondary)}
 </style>
 </head>
 <body>
 
-<!-- Top Header -->
 <div class="top-bar">
   <div class="tb-left">
     <div class="tb-brand">🏢 谊璜贸易</div>
@@ -76,33 +80,20 @@
   </div>
   <div class="tb-right">
     <span class="tb-date" id="currentDate"></span>
-    <span class="tb-badge">v1.0</span>
+    <span class="tb-badge">v2.0</span>
   </div>
 </div>
 
-<!-- Main Dashboard -->
 <div class="layout">
 
   <!-- 战略总览 -->
   <div class="card full">
     <div class="card-title"><span class="icon">🎯</span> 战略总览</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center">
-      <div>
-        <div class="card-value" id="statTasks">0</div>
-        <div class="card-sub">今日待办</div>
-      </div>
-      <div>
-        <div class="card-value" id="statBiz">3</div>
-        <div class="card-sub">业务线</div>
-      </div>
-      <div>
-        <div class="card-value" id="statDeal">0</div>
-        <div class="card-sub">进行中</div>
-      </div>
-      <div>
-        <div class="card-value" id="statProfit">$0</div>
-        <div class="card-sub">月利润</div>
-      </div>
+    <div class="stat-grid">
+      <div><div class="card-value" id="statTasks">0</div><div class="card-sub">待办/总计</div></div>
+      <div><div class="card-value" id="statBiz">3</div><div class="card-sub">业务线</div></div>
+      <div><div class="card-value" id="statDeal">0</div><div class="card-sub">进行中</div></div>
+      <div><div class="card-value" id="statProfit">¥0</div><div class="card-sub">净利润</div></div>
     </div>
   </div>
 
@@ -128,57 +119,22 @@
   <div class="card full">
     <div class="card-title"><span class="icon">⚡</span> 快速操作</div>
     <div class="quick-grid">
-      <a class="quick-btn" href="#" onclick="openTodoPopup();return false">
-        <span class="qb-icon">➕</span>
-        <span class="qb-text">新建待办</span>
-      </a>
-      <a class="quick-btn" href="#" onclick="openBizPopup();return false">
-        <span class="qb-icon">📈</span>
-        <span class="qb-text">更新业务线</span>
-      </a>
-      <a class="quick-btn" href="#" onclick="openExpensePopup();return false">
-        <span class="qb-icon">💰</span>
-        <span class="qb-text">记一笔支出</span>
-      </a>
-      <a class="quick-btn" href="#" onclick="exportData()">
-        <span class="qb-icon">📤</span>
-        <span class="qb-text">导出数据</span>
-      </a>
+      <a class="quick-btn" href="#" onclick="openTodoPopup();return false"><span class="qb-icon">➕</span><span class="qb-text">新建待办</span></a>
+      <a class="quick-btn" href="#" onclick="openBizPopup();return false"><span class="qb-icon">📈</span><span class="qb-text">更新业务线</span></a>
+      <a class="quick-btn" href="#" onclick="openExpensePopup();return false"><span class="qb-icon">💰</span><span class="qb-text">记一笔支出</span></a>
+      <a class="quick-btn" href="#" onclick="exportData()"><span class="qb-icon">📤</span><span class="qb-text">导出数据</span></a>
     </div>
   </div>
 
 </div>
 
-<!-- Bottom Nav -->
+<!-- Bottom Nav — 5核心模块 -->
 <div class="bottom-nav">
-  <a class="bn-item active" href="/yihuang/dashboard/">
-    <span class="bn-icon">📊</span>
-    <span class="bn-text">仪表盘</span>
-  </a>
-  <a class="bn-item" href="/yihuang/crm/">
-    <span class="bn-icon">👥</span>
-    <span class="bn-text">客户</span>
-  </a>
-  <a class="bn-item" href="/yihuang/suppliers/">
-    <span class="bn-icon">🏭</span>
-    <span class="bn-text">供应商</span>
-  </a>
-  <a class="bn-item" href="/yihuang/inventory/">
-    <span class="bn-icon">📦</span>
-    <span class="bn-text">库存</span>
-  </a>
-  <a class="bn-item" href="/yihuang/crm/">
-    <span class="bn-icon">👥</span>
-    <span class="bn-text">客户</span>
-  </a>
-  <a class="bn-item" href="/yihuang/orders/">
-    <span class="bn-icon">📦</span>
-    <span class="bn-text">订单</span>
-  </a>
-  <a class="bn-item" href="/yihuang/tasks/">
-    <span class="bn-icon">✅</span>
-    <span class="bn-text">任务</span>
-  </a>
+  <a class="bn-item active" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
+  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
+  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
+  <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
+  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
 </div>
 
 <!-- Popup: 新建待办 -->
@@ -223,9 +179,9 @@
     </select>
     <label>进度说明</label>
     <textarea id="bizNote" rows="3" placeholder="最新进展..."></textarea>
-    <label>进度百分比 (0-100%)</label>
+    <label>进度百分比</label>
     <input type="range" id="bizProgressSlider" min="0" max="100" value="50" oninput="document.getElementById('bizPct').textContent=this.value+'%'">
-    <div style="text-align:center;font-size:24px;font-weight:700;color:#38bdf8" id="bizPct">50%</div>
+    <div style="text-align:center;font-size:28px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:4px 0" id="bizPct">50%</div>
     <div class="btn-row">
       <button class="btn btn-secondary" onclick="closePopup('bizPopup')">取消</button>
       <button class="btn btn-primary" onclick="updateBiz()">✅ 更新</button>
@@ -258,165 +214,112 @@
 
 <script src="../_shared/js/yihuang.js"></script>
 <script>
-// ───── 初始化 ─────
-document.getElementById('currentDate').textContent = new Date().toLocaleDateString('zh-CN', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+const $ = id => document.getElementById(id);
+$('currentDate').textContent = new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
 
-// 默认数据
 const defaults = {
-  biz: [
-    {id:'ecom', name:'跨境电商', tag:'洽谈中', tagClass:'negotiating', progress:15, detail:'与朋友公司洽谈合作模式'},
-    {id:'salt', name:'粤盐经销 · 珩创合作', tag:'洽谈中', tagClass:'negotiating', progress:20, detail:'经销商资质审批中，产品清单待确认'},
-    {id:'corn', name:'大宗玉米', tag:'进行中', tagClass:'active', progress:60, detail:'供应链对接中，行情持续跟踪'}
+  biz:[
+    {id:'ecom',name:'跨境电商',tag:'洽谈中',tagClass:'negotiating',progress:15,detail:'与朋友公司洽谈合作模式'},
+    {id:'salt',name:'粤盐经销 · 珩创合作',tag:'洽谈中',tagClass:'negotiating',progress:20,detail:'经销商资质审批中，产品清单待确认'},
+    {id:'corn',name:'大宗玉米',tag:'进行中',tagClass:'active',progress:60,detail:'供应链对接中，行情持续跟踪'}
   ],
-  todos: [
-    {id:1, text:'跟进粤盐经销商资质审批', dept:'BIZ', deptLabel:'业务部', done:false, priority:'high'},
-    {id:2, text:'确认珩创集团合作框架', dept:'BIZ', deptLabel:'业务部', done:false, priority:'high'},
-    {id:3, text:'玉米行情更新+利润估算', dept:'SUPPLY', deptLabel:'供应链部', done:false, priority:'medium'},
-    {id:4, text:'整理跨境电商品类调研清单', dept:'MKT', deptLabel:'市场部', done:false, priority:'medium'},
-    {id:5, text:'工商/税务月报检查', dept:'FIN', deptLabel:'财务部', done:true, priority:'medium'}
+  todos:[
+    {id:1,text:'跟进粤盐经销商资质审批',dept:'BIZ',deptLabel:'业务部',done:false,priority:'high'},
+    {id:2,text:'确认珩创集团合作框架',dept:'BIZ',deptLabel:'业务部',done:false,priority:'high'},
+    {id:3,text:'玉米行情更新+利润估算',dept:'SUPPLY',deptLabel:'供应链部',done:false,priority:'medium'},
+    {id:4,text:'整理跨境电商品类调研清单',dept:'MKT',deptLabel:'市场部',done:false,priority:'medium'},
+    {id:5,text:'工商/税务月报检查',dept:'FIN',deptLabel:'财务部',done:true,priority:'medium'}
   ],
-  timeline: [
-    {date:'2026-06-12', text:'盐焗鸡粉配方工艺调研报告完成', status:'done'},
-    {date:'2026-06-15', text:'谊璜贸易工作系统项目启动', status:'done'},
-    {date:'2026-06-16', text:'跟进粤盐经销商资料提交', status:'urgent'},
-    {date:'2026-06-20', text:'跨境电商合作方案初步确认', status:'pending'},
-    {date:'2026-06-25', text:'玉米贸易第一批合同签署', status:'pending'}
+  timeline:[
+    {date:'2026-06-12',text:'盐焗鸡粉配方工艺调研报告完成',status:'done'},
+    {date:'2026-06-15',text:'谊璜贸易工作系统项目启动',status:'done'},
+    {date:'2026-06-16',text:'跟进粤盐经销商资料提交',status:'urgent'},
+    {date:'2026-06-20',text:'跨境电商合作方案初步确认',status:'pending'},
+    {date:'2026-06-25',text:'玉米贸易第一批合同签署',status:'pending'}
   ],
-  expenses: []
+  expenses:[]
 };
 
-// 加载数据
 let DATA = loadData('yihuang_data');
-if (!DATA) {
-  DATA = defaults;
-  saveData('yihuang_data', DATA);
-}
+if(!DATA){DATA=defaults;saveData('yihuang_data',DATA);}
 
-// ───── 渲染 ─────
-function render() {
-  renderBiz();
-  renderTodos();
-  renderTimeline();
-  renderStats();
+function render(){
+  renderBiz();renderTodos();renderTimeline();renderStats();
 }
 render();
 
-function renderBiz() {
-  const el = document.getElementById('bizProgress');
-  const colors = {ecom:'#38bdf8', salt:'#f59e0b', corn:'#22c55e'};
-  el.innerHTML = DATA.biz.map(b => `
+function renderBiz(){
+  const colors={ecom:'#38bdf8',salt:'#f59e0b',corn:'#22c55e'};
+  $('bizProgress').innerHTML = DATA.biz.map(b=>`
     <div class="biz-card ${b.id}">
-      <div class="biz-header">
-        <div class="biz-name">${b.name}</div>
-        <span class="biz-tag ${b.tagClass}">${b.tag}</span>
-      </div>
-      <div class="biz-progress">
-        <div class="bar" style="width:${b.progress}%;background:${colors[b.id]}"></div>
-      </div>
+      <div class="biz-header"><div class="biz-name">${b.name}</div><span class="biz-tag ${b.tagClass}">${b.tag}</span></div>
+      <div class="biz-progress"><div class="bar" style="width:${b.progress}%;background:${colors[b.id]}"></div></div>
       <div class="biz-detail">${b.detail}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function renderTodos() {
-  const el = document.getElementById('todoList');
-  const deptColors = {OPS:'#38bdf8',BIZ:'#818cf8',SUPPLY:'#22c55e',FIN:'#f59e0b',LEGAL:'#ef4444',MKT:'#f472b6',HR:'#94a3b8',IT:'#a78bfa'};
-  el.innerHTML = DATA.todos.map(t => `
+function renderTodos(){
+  const dc={OPS:'#38bdf8',BIZ:'#818cf8',SUPPLY:'#22c55e',FIN:'#f59e0b',LEGAL:'#ef4444',MKT:'#f472b6',HR:'#94a3b8',IT:'#a78bfa'};
+  $('todoList').innerHTML = DATA.todos.map(t=>`
     <div class="todo-item">
       <div class="todo-check ${t.done?'done':''}" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</div>
-      <div class="todo-text ${t.done?'done':''}">${t.text}<span class="todo-dept" style="background:${deptColors[t.dept]||'#475569'};color:#fff">${t.deptLabel||t.dept}</span></div>
-    </div>
-  `).join('');
+      <div class="todo-text ${t.done?'done':''}">${t.text}<span class="todo-dept" style="background:${dc[t.dept]||'#475569'};color:#fff">${t.deptLabel||t.dept}</span></div>
+    </div>`).join('');
 }
 
-function renderTimeline() {
-  const el = document.getElementById('timeline');
-  el.innerHTML = DATA.timeline.map(t => `
-    <div class="tl-item ${t.status}">
-      <div class="tl-date">${t.date}</div>
-      <div class="tl-text">${t.text}</div>
-    </div>
-  `).join('');
+function renderTimeline(){
+  $('timeline').innerHTML = DATA.timeline.map(t=>`
+    <div class="tl-item ${t.status}"><div class="tl-date">${t.date}</div><div class="tl-text">${t.text}</div></div>`).join('');
 }
 
-function renderStats() {
-  const total = DATA.todos.length;
-  const done = DATA.todos.filter(t => t.done).length;
-  const active = DATA.biz.filter(b => b.tag !== '待启动').length;
-  document.getElementById('statTasks').textContent = (total - done) + '/' + total;
-  document.getElementById('statDeal').textContent = active + '条';
+function renderStats(){
+  const total=DATA.todos.length,done=DATA.todos.filter(t=>t.done).length;
+  const active=DATA.biz.filter(b=>b.tag!=='待启动').length;
+  const totalExp=(DATA.expenses||[]).reduce((s,e)=>s+parseFloat(e.amount||0),0);
+  $('statTasks').textContent=(total-done)+'/'+total;
+  $('statDeal').textContent=active+'条';
+  $('statProfit').textContent=totalExp>0?'¥-'+totalExp.toFixed(0):'¥0';
 }
 
-// ───── 操作 ─────
-function toggleTodo(id) {
-  const t = DATA.todos.find(x => x.id === id);
-  if (t) { t.done = !t.done; saveData('yihuang_data', DATA); render(); }
+function toggleTodo(id){const t=DATA.todos.find(x=>x.id===id);if(t){t.done=!t.done;saveData('yihuang_data',DATA);render();}}
+
+function addTodo(){
+  const text=$('todoInput').value.trim();if(!text)return;
+  const dept=$('todoDept').value,deptMap={OPS:'运营中台',BIZ:'业务部',SUPPLY:'供应链部',FIN:'财务部',LEGAL:'法务合规部',MKT:'市场部',HR:'行政部',IT:'技术部'};
+  const pri=$('todoPriority').value;
+  DATA.todos.unshift({id:Date.now(),text,dept,deptLabel:deptMap[dept]||dept,done:false,priority:pri});
+  saveData('yihuang_data',DATA);render();closePopup('todoPopup');$('todoInput').value='';
 }
 
-function addTodo() {
-  const text = document.getElementById('todoInput').value.trim();
-  if (!text) return;
-  const dept = document.getElementById('todoDept').value;
-  const deptMap = {OPS:'运营中台',BIZ:'业务部',SUPPLY:'供应链部',FIN:'财务部',LEGAL:'法务合规部',MKT:'市场部',HR:'行政部',IT:'技术部'};
-  const pri = document.getElementById('todoPriority').value;
-  DATA.todos.unshift({id:Date.now(), text, dept, deptLabel:deptMap[dept]||dept, done:false, priority:pri});
-  saveData('yihuang_data', DATA);
-  render();
-  closePopup('todoPopup');
-  document.getElementById('todoInput').value = '';
+function updateBiz(){
+  const id=$('bizSelect').value,note=$('bizNote').value.trim(),progress=parseInt($('bizProgressSlider').value);
+  const b=DATA.biz.find(x=>x.id===id);
+  if(b){if(note)b.detail=note;b.progress=progress;saveData('yihuang_data',DATA);render();closePopup('bizPopup');}
 }
 
-function updateBiz() {
-  const id = document.getElementById('bizSelect').value;
-  const note = document.getElementById('bizNote').value.trim();
-  const progress = parseInt(document.getElementById('bizProgressSlider').value);
-  const b = DATA.biz.find(x => x.id === id);
-  if (b) {
-    if (note) b.detail = note;
-    b.progress = progress;
-    saveData('yihuang_data', DATA);
-    render();
-    closePopup('bizPopup');
-  }
+function addExpense(){
+  const amt=parseFloat($('expAmount').value);if(!amt||amt<=0)return;
+  const cat=$('expCategory').value,note=$('expNote').value.trim()||cat;
+  if(!DATA.expenses)DATA.expenses=[];
+  DATA.expenses.push({id:Date.now(),amount:amt,category:cat,note,date:new Date().toISOString().slice(0,10)});
+  saveData('yihuang_data',DATA);closePopup('expensePopup');
+  $('expAmount').value='';$('expNote').value='';render();
 }
 
-function addExpense() {
-  const amt = parseFloat(document.getElementById('expAmount').value);
-  if (!amt || amt <= 0) return;
-  const cat = document.getElementById('expCategory').value;
-  const note = document.getElementById('expNote').value.trim() || cat;
-  if (!DATA.expenses) DATA.expenses = [];
-  DATA.expenses.push({id:Date.now(), amount:amt, category:cat, note, date:new Date().toISOString().slice(0,10)});
-  saveData('yihuang_data', DATA);
-  closePopup('expensePopup');
-  document.getElementById('expAmount').value = '';
-  document.getElementById('expNote').value = '';
-  updateProfit();
+function exportData(){
+  const blob=new Blob([JSON.stringify(DATA,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='yihuang_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
 }
 
-function updateProfit() {
-  const totalExp = (DATA.expenses||[]).reduce((s, e) => s + e.amount, 0);
-  document.getElementById('statProfit').textContent = '¥-' + totalExp.toFixed(0);
-}
+function openTodoPopup(){$('todoPopup').classList.add('show')}
+function openBizPopup(){$('bizPopup').classList.add('show')}
+function openExpensePopup(){$('expensePopup').classList.add('show')}
+function closePopup(id){$(id).classList.remove('show')}
 
-function exportData() {
-  const blob = new Blob([JSON.stringify(DATA, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'yihuang_backup_' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-}
-
-function openTodoPopup() { document.getElementById('todoPopup').classList.add('show'); }
-function openBizPopup() { document.getElementById('bizPopup').classList.add('show'); }
-function openExpensePopup() { document.getElementById('expensePopup').classList.add('show'); }
-function closePopup(id) { document.getElementById(id).classList.remove('show'); }
-
-// 点击遮罩关弹窗
-document.querySelectorAll('.popup-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); });
+document.querySelectorAll('.popup-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')});
 });
 </script>
-
 </body>
 </html>
