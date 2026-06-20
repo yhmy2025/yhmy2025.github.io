@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>报价单 — 谊璜贸易</title>
+<link rel="stylesheet" href="../_shared/css/yihuang.css">
+<style>
+.quote-preview { background:#1a2332; border:1px dashed #334155; border-radius:8px; padding:20px; margin:16px 0; font-size:14px; line-height:2; }
+.quote-preview h2 { text-align:center; font-size:18px; margin-bottom:12px; color:#e2e8f0; }
+.quote-preview table { width:100%; border-collapse:collapse; margin:12px 0; }
+.quote-preview th { background:#1e3a5f; padding:8px; text-align:left; font-size:12px; color:#94a3b8; }
+.quote-preview td { padding:8px; border-bottom:1px solid #334155; font-size:13px; }
+.quote-preview .total { text-align:right; font-size:16px; font-weight:700; color:#38bdf8; margin-top:12px; }
+.quote-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+.quote-row select, .quote-row input { flex:1; }
+.remove-btn { background:#7f1d1d; color:#fca5a5; border:none; border-radius:4px; padding:8px 12px; cursor:pointer; font-size:13px; }
+.clipboard-msg { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#22c55e; color:#fff; padding:10px 24px; border-radius:20px; font-size:14px; z-index:1000; opacity:0; transition:opacity .3s; }
+.clipboard-msg.show { opacity:1; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>报价单生成器</h1>
+  <p class="sub">选择客户和产品，自动生成报价</p>
+</div>
+
+<div class="card">
+  <div class="card-title">客户信息</div>
+  <div style="margin-bottom:12px">
+    <select id="clientSelect" style="width:100%;padding:10px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;">
+      <option value="">-- 选择客户 --</option>
+    </select>
+  </div>
+  <div id="clientInfo" style="font-size:13px;color:#94a3b8;margin-top:4px;"></div>
+</div>
+
+<div class="card">
+  <div class="card-title">产品明细</div>
+  <div id="itemsContainer"></div>
+  <button class="btn btn-outline" onclick="addItem()" style="width:100%;margin-top:8px;">+ 添加产品</button>
+</div>
+
+<div class="card">
+  <div class="card-title">报价参数</div>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <label style="font-size:13px;color:#94a3b8;">加价率</label>
+    <input type="number" id="markupRate" value="30" min="0" max="200" style="width:80px;padding:8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;text-align:center;">
+    <span style="font-size:13px;color:#94a3b8;">%</span>
+    <span id="previewProfit" style="font-size:13px;color:#38bdf8;margin-left:auto;"></span>
+  </div>
+  <div style="margin-top:12px;">
+    <label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">备注（显示在报价单底部）</label>
+    <input type="text" id="quoteNote" placeholder="如: 报价有效期30天,含税含运费" style="width:100%;padding:10px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;">
+  </div>
+</div>
+
+<div class="card" id="previewCard" style="display:none;">
+  <div class="card-title">报价预览</div>
+  <div class="quote-preview" id="quotePreview"></div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-primary" onclick="saveQuote()" style="flex:1;">保存报价单</button>
+    <button class="btn btn-outline" onclick="printQuote()" style="flex:1;">打印 / 导出PDF</button>
+  </div>
+</div>
+
+<div class="footer">谊璜贸易系统 · 报价单生成器</div>
+<nav class="bottom-nav" id="bottomNav"></nav>
+<div class="clipboard-msg" id="clipboardMsg">报价单已保存</div>
+
+<script src="../_shared/js/yihuang-db.js"></script>
+<script src="../_shared/js/yihuang.js"></script>
+<script>
+let items = [];
+
+function loadSelects() {
+  const clients = YH.getClients();
+  const sel = document.getElementById('clientSelect');
+  clients.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.name || c.company || c.id;
+    sel.appendChild(opt);
+  });
+
+  // Bottom nav
+  if (typeof renderBottomNav === 'function') {
+    document.getElementById('bottomNav').innerHTML = renderBottomNav('quotes');
+  }
+}
+
+document.getElementById('clientSelect').addEventListener('change', function() {
+  const c = YH.getClientById(this.value);
+  if (c) {
+    document.getElementById('clientInfo').textContent =
+      `等级: ${c.level||'-'} | 来源: ${c.source||'-'} | 电话: ${c.phone||'-'}`;
+  }
+  updatePreview();
+});
+
+document.getElementById('markupRate').addEventListener('input', updatePreview);
+document.getElementById('quoteNote').addEventListener('input', updatePreview);
+
+function addItem() {
+  items.push({ productId: '', productName: '', costPrice: 0, quantity: 1 });
+  renderItems();
+}
+
+function removeItem(idx) {
+  items.splice(idx, 1);
+  renderItems();
+}
+
+function renderItems() {
+  const container = document.getElementById('itemsContainer');
+  const products = YH.getProducts();
+  const inventory = YH.getInventory();
+
+  container.innerHTML = items.map((item, i) => `
+    <div class="quote-row" style="margin-bottom:8px;">
+      <select onchange="updateItem(${i},'productId',this.value)" style="background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:8px;flex:2;">
+        <option value="">-- 产品 --</option>
+        ${products.map(p => `<option value="${p.id}" ${item.productId===p.id?'selected':''}>${p.name||p.id}</option>`).join('')}
+        ${inventory.map(inv => {
+          const p = products.find(pp => pp.id === inv.productId);
+          return p ? '' : `<option value="${inv.id}" ${item.productId===inv.id?'selected':''}>${inv.name||inv.productName||inv.id}</option>`;
+        }).join('')}
+      </select>
+      <input type="number" placeholder="数量" value="${item.quantity}" min="1"
+        onchange="updateItem(${i},'quantity',parseInt(this.value)||1)"
+        style="background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:8px;width:70px;">
+      <input type="number" placeholder="成本价" value="${item.costPrice}" step="0.01"
+        onchange="updateItem(${i},'costPrice',parseFloat(this.value)||0)"
+        style="background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:8px;width:90px;">
+      <button class="remove-btn" onclick="removeItem(${i})">X</button>
+    </div>
+  `).join('');
+
+  if (items.length === 0) {
+    container.innerHTML = '<p style="color:#64748b;font-size:13px;text-align:center;padding:16px;">暂无产品，点击下方按钮添加</p>';
+  }
+  updatePreview();
+}
+
+function updateItem(idx, field, value) {
+  items[idx][field] = value;
+  // Auto-fill product name and cost
+  if (field === 'productId' && value) {
+    const products = YH.getProducts();
+    const p = products.find(pp => pp.id === value);
+    if (p) {
+      items[idx].productName = p.name || '';
+      items[idx].costPrice = p.costPrice || items[idx].costPrice;
+    }
+    const inv = YH.getInventory();
+    const i = inv.find(ii => ii.id === value || ii.productId === value);
+    if (i) {
+      items[idx].productName = i.name || i.productName || items[idx].productName;
+      items[idx].costPrice = i.costPrice || items[idx].costPrice;
+    }
+    renderItems();
+  }
+  updatePreview();
+}
+
+function updatePreview() {
+  const clientId = document.getElementById('clientSelect').value;
+  const client = YH.getClientById(clientId);
+  const markup = parseFloat(document.getElementById('markupRate').value) || 0;
+  const note = document.getElementById('quoteNote').value;
+
+  if (!client || items.length === 0) {
+    document.getElementById('previewCard').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('previewCard').style.display = 'block';
+
+  let totalCost = 0;
+  let totalPrice = 0;
+  const rows = items.map(item => {
+    const cost = (item.costPrice || 0) * (item.quantity || 1);
+    const price = cost * (1 + markup / 100);
+    totalCost += cost;
+    totalPrice += price;
+    return `<tr>
+      <td>${item.productName || item.productId || '-'}</td>
+      <td>${item.quantity}</td>
+      <td>¥${item.costPrice.toFixed(2)}</td>
+      <td>¥${price.toFixed(2)}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('quotePreview').innerHTML = `
+    <h2>报价单</h2>
+    <p style="text-align:center;font-size:13px;color:#94a3b8;">${new Date().toLocaleDateString('zh-CN')}</p>
+    <p><strong>客户:</strong> ${client.name || client.company || '--'}</p>
+    <table>
+      <thead><tr><th>产品</th><th>数量</th><th>单价</th><th>金额</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="total">合计: ¥${totalPrice.toFixed(2)}</div>
+    <p style="font-size:12px;color:#64748b;margin-top:8px;">加价率: ${markup}% | 成本: ¥${totalCost.toFixed(2)} | 毛利: ¥${(totalPrice-totalCost).toFixed(2)}</p>
+    ${note ? `<p style="font-size:12px;color:#94a3b8;margin-top:8px;">备注: ${note}</p>` : ''}
+  `;
+
+  document.getElementById('previewProfit').textContent =
+    `预估毛利: ¥${(totalPrice - totalCost).toFixed(2)}`;
+}
+
+function saveQuote() {
+  const clientId = document.getElementById('clientSelect').value;
+  const client = YH.getClientById(clientId);
+  if (!client) return alert('请选择客户');
+
+  const markup = parseFloat(document.getElementById('markupRate').value) || 0;
+  const note = document.getElementById('quoteNote').value;
+  let totalCost = 0, totalPrice = 0;
+  items.forEach(item => {
+    const cost = (item.costPrice || 0) * (item.quantity || 1);
+    totalCost += cost;
+    totalPrice += cost * (1 + markup / 100);
+  });
+
+  YH.addQuote({
+    clientId, clientName: client.name || client.company || '',
+    items: JSON.parse(JSON.stringify(items)),
+    markup, note,
+    totalCost, totalPrice,
+    profit: totalPrice - totalCost,
+    date: new Date().toISOString().slice(0, 10),
+  });
+
+  const msg = document.getElementById('clipboardMsg');
+  msg.classList.add('show');
+  setTimeout(() => msg.classList.remove('show'), 2000);
+}
+
+function printQuote() {
+  const preview = document.getElementById('quotePreview').innerHTML;
+  const w = window.open('', '_blank', 'width=800,height=600');
+  w.document.write(`
+    <html><head><meta charset="UTF-8"><title>报价单</title>
+    <style>body{font-family:sans-serif;max-width:700px;margin:40px auto;color:#333}
+    table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:8px}
+    th{background:#f5f5f5}.total{text-align:right;font-size:18px;font-weight:bold;margin-top:16px}
+    @media print{body{margin:20px}}</style></head>
+    <body>${preview}</body></html>
+  `);
+  w.document.close();
+  setTimeout(() => w.print(), 500);
+}
+
+// Init
+loadSelects();
+addItem();
+</script>
+</body>
+</html>
