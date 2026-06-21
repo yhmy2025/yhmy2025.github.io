@@ -3,346 +3,211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>谊璜贸易 · 经营仪表盘</title>
+<title>经营看板 — 谊璜贸易</title>
 <link rel="stylesheet" href="../_shared/css/yihuang.css">
 <style>
-/* ───── Dashboard Layout ───── */
-.layout{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 0 8px}
-.layout .full{grid-column:1/-1}
-
-/* 战略指标的4列 */
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
-.stat-grid > div{padding:4px 0}
-.stat-grid .card-value{font-size:24px}
-
-/* ───── 业务线进度 ───── */
-.biz-card{padding:14px;border-radius:10px;margin-bottom:8px;border:1px solid transparent}
-.biz-card:last-child{margin-bottom:0}
-.biz-card.ecom{background:linear-gradient(135deg,#0f1e2e,#0f172a);border-color:#38bdf8}
-.biz-card.salt{background:linear-gradient(135deg,#1e1f1a,#0f172a);border-color:#f59e0b}
-.biz-card.corn{background:linear-gradient(135deg,#1e2e1a,#0f172a);border-color:#22c55e}
-.biz-card .biz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.biz-card .biz-name{font-size:14px;font-weight:700}
-.biz-card .biz-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
-.biz-tag.negotiating{background:rgba(251,191,36,.15);color:#fbbf24}
-.biz-tag.active{background:rgba(34,197,94,.15);color:#34d399}
-.biz-card .biz-progress{height:5px;background:var(--border);border-radius:3px;margin:8px 0;overflow:hidden}
-.biz-card .biz-progress .bar{height:100%;border-radius:3px;transition:width .5s ease}
-.biz-card .biz-detail{font-size:11px;color:var(--text-secondary);line-height:1.5}
-
-/* ───── 待办列表 ───── */
-.todo-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(51,65,85,.5);font-size:12px}
-.todo-item:last-child{border-bottom:none}
-.todo-check{
-  width:18px;height:18px;border-radius:5px;border:2px solid #475569;
-  cursor:pointer;flex-shrink:0;margin-top:1px;
-  display:flex;align-items:center;justify-content:center;font-size:10px;
-  transition:all .15s;color:transparent;
-}
-.todo-check.done{background:var(--success);border-color:var(--success);color:#fff}
-.todo-text{flex:1;color:var(--text-primary)}
-.todo-text.done{text-decoration:line-through;color:var(--text-muted)}
-.todo-dept{font-size:9px;padding:2px 6px;border-radius:3px;margin-left:6px;font-weight:600;white-space:nowrap}
-
-/* ───── 关键事件时间线 ───── */
-.timeline{padding-left:16px;border-left:2px solid var(--border)}
-.tl-item{position:relative;padding:0 0 14px 12px;font-size:12px}
-.tl-item:last-child{padding-bottom:0}
-.tl-item::before{
-  content:'';position:absolute;left:-7px;top:4px;
-  width:12px;height:12px;border-radius:50%;background:var(--border);
-  border:2px solid var(--bg-body);
-}
-.tl-item.done::before{background:var(--success);border-color:rgba(34,197,94,.3)}
-.tl-item.urgent::before{background:var(--warning);border-color:rgba(245,158,11,.3)}
-.tl-item .tl-date{color:var(--text-muted);font-size:10px}
-.tl-item .tl-text{color:var(--text-primary);margin-top:3px}
-
-/* ───── 快速操作网格 ───── */
-.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.quick-btn{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:16px;background:var(--bg-input);border:1px solid var(--border);
-  border-radius:var(--radius-sm);cursor:pointer;transition:all .15s;
-  text-decoration:none;color:var(--text-primary);
-}
-.quick-btn:hover{background:var(--bg-hover);border-color:var(--border-hover)}
-.quick-btn .qb-icon{font-size:24px;margin-bottom:4px}
-.quick-btn .qb-text{font-size:11px;font-weight:600;color:var(--text-secondary)}
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.stat-card { background:#1e293b; border-radius:8px; padding:14px; border:1px solid #334155; }
+.stat-card .num { font-size:26px; font-weight:700; margin:4px 0; }
+.stat-card .lbl { font-size:11px; color:#94a3b8; }
+.stat-card .trend { font-size:12px; }
+.trend-up { color:#86efac; }
+.trend-down { color:#fca5a5; }
+.sys-banner { border-radius:8px; padding:12px 16px; margin-bottom:12px; display:flex; align-items:center; gap:10px; font-size:13px; }
+.sys-ok { background:#0f1a0f; border:1px solid #22c55e; color:#86efac; }
+.sys-warn { background:#1a150f; border:1px solid #f59e0b; color:#fde68a; }
+.sys-danger { background:#1a0f0f; border:1px solid #ef4444; color:#fca5a5; }
+.quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.quick-btn { display:block; text-align:center; padding:14px 8px; border-radius:8px; background:#1e293b; border:1px solid #334155; color:#e2e8f0; text-decoration:none; font-size:13px; transition:all .15s; }
+.quick-btn:hover { background:#1e3a5f; border-color:#3b82f6; }
+.quick-btn .icon { font-size:24px; display:block; margin-bottom:4px; }
+.card-compact { padding:10px 14px; margin-bottom:6px; border-radius:8px; background:#1e293b; font-size:13px; display:flex; justify-content:space-between; align-items:center; }
 </style>
 </head>
 <body>
+<div class="header">
+  <h1>经营看板</h1>
+  <p class="sub" id="lastUpdate"></p>
+</div>
 
-<div class="top-bar">
-  <div class="tb-left">
-    <div class="tb-brand">🏢 谊璜贸易</div>
-    <div class="tb-sub">J · 总经理兼全员</div>
-  </div>
-  <div class="tb-right">
-    <span class="tb-date" id="currentDate"></span>
-    <span class="tb-badge">v2.0</span>
+<!-- System Status Banner -->
+<div id="sysBanner"></div>
+
+<!-- Key Stats -->
+<div class="stat-grid" id="statGrid"></div>
+
+<!-- Quick Actions -->
+<div class="card">
+  <div class="card-title">快速操作</div>
+  <div class="quick-actions">
+    <a href="../quotes/" class="quick-btn"><span class="icon">💵</span>新建报价单</a>
+    <a href="../orders/" class="quick-btn"><span class="icon">📦</span>新建订单</a>
+    <a href="../inventory/log.html" class="quick-btn"><span class="icon">📋</span>库存盘点</a>
+    <a href="../suppliers/scoring.html" class="quick-btn"><span class="icon">⭐</span>供应商评分</a>
   </div>
 </div>
 
-<div class="layout">
-
-  <!-- 战略总览 -->
-  <div class="card full">
-    <div class="card-title"><span class="icon">🎯</span> 战略总览</div>
-    <div class="stat-grid">
-      <div><div class="card-value" id="statTasks">0</div><div class="card-sub">待办/总计</div></div>
-      <div><div class="card-value" id="statBiz">3</div><div class="card-sub">业务线</div></div>
-      <div><div class="card-value" id="statDeal">0</div><div class="card-sub">进行中</div></div>
-      <div><div class="card-value" id="statProfit">¥0</div><div class="card-sub">净利润</div></div>
-    </div>
-  </div>
-
-  <!-- 业务线进度 -->
-  <div class="card full">
-    <div class="card-title"><span class="icon">📊</span> 业务线进度</div>
-    <div id="bizProgress"></div>
-  </div>
-
-  <!-- 今日待办 -->
-  <div class="card">
-    <div class="card-title"><span class="icon">📋</span> 今日待办</div>
-    <div id="todoList"></div>
-  </div>
-
-  <!-- 近期关键事件 -->
-  <div class="card">
-    <div class="card-title"><span class="icon">📅</span> 近期关键事件</div>
-    <div class="timeline" id="timeline"></div>
-  </div>
-
-  <!-- 快速操作 -->
-  <div class="card full">
-    <div class="card-title"><span class="icon">⚡</span> 快速操作</div>
-    <div class="quick-grid">
-      <a class="quick-btn" href="#" onclick="openTodoPopup();return false"><span class="qb-icon">➕</span><span class="qb-text">新建待办</span></a>
-      <a class="quick-btn" href="#" onclick="openBizPopup();return false"><span class="qb-icon">📈</span><span class="qb-text">更新业务线</span></a>
-      <a class="quick-btn" href="#" onclick="openExpensePopup();return false"><span class="qb-icon">💰</span><span class="qb-text">记一笔支出</span></a>
-      <a class="quick-btn" href="#" onclick="exportData()"><span class="qb-icon">📤</span><span class="qb-text">导出数据</span></a>
-    </div>
-  </div>
-
+<!-- Low Stock Alerts -->
+<div class="card">
+  <div class="card-title">低库存预警</div>
+  <div id="lowStockList"></div>
 </div>
 
-<!-- Bottom Nav — 8核心模块 -->
-<div class="bottom-nav">
-  <a class="bn-item active" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
-  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
-  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
-  <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
-  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
-  <a class="bn-item" href="/yihuang/quotes/"><span class="bn-icon">💵</span><span class="bn-text">报价</span></a>
-  <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
-  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
+<!-- Recent Activity -->
+<div class="card">
+  <div class="card-title">近期动态</div>
+  <div id="recentActivity"></div>
 </div>
 
-<!-- Popup: 新建待办 -->
-<div class="popup-overlay" id="todoPopup">
-  <div class="popup">
-    <h3>📋 新建待办</h3>
-    <label>待办内容</label>
-    <input type="text" id="todoInput" placeholder="描述待办事项...">
-    <label>所属部门</label>
-    <select id="todoDept">
-      <option value="OPS">运营中台</option>
-      <option value="BIZ">业务部</option>
-      <option value="SUPPLY">供应链部</option>
-      <option value="FIN">财务部</option>
-      <option value="LEGAL">法务合规部</option>
-      <option value="MKT">市场营销部</option>
-      <option value="HR">行政人事部</option>
-      <option value="IT">技术信息部</option>
-    </select>
-    <label>优先级</label>
-    <select id="todoPriority">
-      <option value="high">🔴 高优先级</option>
-      <option value="medium" selected>🟡 中优先级</option>
-      <option value="low">🟢 低优先级</option>
-    </select>
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="closePopup('todoPopup')">取消</button>
-      <button class="btn btn-primary" onclick="addTodo()">✅ 创建</button>
-    </div>
-  </div>
-</div>
+<div class="footer">谊璜贸易系统 · 经营看板</div>
+<nav class="bottom-nav" id="bottomNav"></nav>
 
-<!-- Popup: 更新业务线 -->
-<div class="popup-overlay" id="bizPopup">
-  <div class="popup">
-    <h3>📊 更新业务线进度</h3>
-    <label>选择业务线</label>
-    <select id="bizSelect">
-      <option value="ecom">跨境电商</option>
-      <option value="salt">粤盐经销</option>
-      <option value="corn">大宗玉米</option>
-    </select>
-    <label>进度说明</label>
-    <textarea id="bizNote" rows="3" placeholder="最新进展..."></textarea>
-    <label>进度百分比</label>
-    <input type="range" id="bizProgressSlider" min="0" max="100" value="50" oninput="document.getElementById('bizPct').textContent=this.value+'%'">
-    <div style="text-align:center;font-size:28px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:4px 0" id="bizPct">50%</div>
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="closePopup('bizPopup')">取消</button>
-      <button class="btn btn-primary" onclick="updateBiz()">✅ 更新</button>
-    </div>
-  </div>
-</div>
-
-<!-- Popup: 记支出 -->
-<div class="popup-overlay" id="expensePopup">
-  <div class="popup">
-    <h3>💰 记一笔支出</h3>
-    <label>金额 (¥)</label>
-    <input type="number" id="expAmount" placeholder="0.00">
-    <label>分类</label>
-    <select id="expCategory">
-      <option value="差旅">差旅</option>
-      <option value="办公">办公</option>
-      <option value="采购">采购</option>
-      <option value="营销">营销</option>
-      <option value="其他">其他</option>
-    </select>
-    <label>备注</label>
-    <input type="text" id="expNote" placeholder="什么支出？">
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="closePopup('expensePopup')">取消</button>
-      <button class="btn btn-primary" onclick="addExpense()">✅ 记录</button>
-    </div>
-  </div>
-</div>
-
-<script src="../_shared/js/yihuang.js"></script>
 <script src="../_shared/js/yihuang-db.js"></script>
+<script src="../_shared/js/yihuang.js"></script>
 <script>
-const $ = id => document.getElementById(id);
-$('currentDate').textContent = new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+function renderBanner() {
+  const stats = YH.getDashboardStats();
+  const inv = YH.getInventory();
+  const alerts = inv.filter(i => i.quantity <= (i.safetyStock || 10));
+  const criticals = alerts.filter(i => i.quantity <= (i.safetyStock || 10) * 0.5);
 
-const defaults = {
-  biz:[
-    {id:'ecom',name:'跨境电商',tag:'洽谈中',tagClass:'negotiating',progress:15,detail:'与朋友公司洽谈合作模式'},
-    {id:'salt',name:'粤盐经销 · 珩创合作',tag:'洽谈中',tagClass:'negotiating',progress:20,detail:'经销商资质审批中，产品清单待确认'},
-    {id:'corn',name:'大宗玉米',tag:'进行中',tagClass:'active',progress:60,detail:'供应链对接中，行情持续跟踪'}
-  ],
-  todos:[
-    {id:1,text:'跟进粤盐经销商资质审批',dept:'BIZ',deptLabel:'业务部',done:false,priority:'high'},
-    {id:2,text:'确认珩创集团合作框架',dept:'BIZ',deptLabel:'业务部',done:false,priority:'high'},
-    {id:3,text:'玉米行情更新+利润估算',dept:'SUPPLY',deptLabel:'供应链部',done:false,priority:'medium'},
-    {id:4,text:'整理跨境电商品类调研清单',dept:'MKT',deptLabel:'市场部',done:false,priority:'medium'},
-    {id:5,text:'工商/税务月报检查',dept:'FIN',deptLabel:'财务部',done:true,priority:'medium'}
-  ],
-  timeline:[
-    {date:'2026-06-12',text:'盐焗鸡粉配方工艺调研报告完成',status:'done'},
-    {date:'2026-06-15',text:'谊璜贸易工作系统项目启动',status:'done'},
-    {date:'2026-06-16',text:'跟进粤盐经销商资料提交',status:'urgent'},
-    {date:'2026-06-20',text:'跨境电商合作方案初步确认',status:'pending'},
-    {date:'2026-06-25',text:'玉米贸易第一批合同签署',status:'pending'}
-  ],
-  expenses:[]
-};
+  let cls, msg;
+  if (criticals.length > 0) {
+    cls = 'sys-danger';
+    msg = `${criticals.length} 个产品库存危急（低于安全线50%）—— 请立即补货或调整安全库存`;
+  } else if (alerts.length > 0) {
+    cls = 'sys-warn';
+    msg = `${alerts.length} 个产品库存低于安全线 —— 建议近期补货`;
+  } else {
+    cls = 'sys-ok';
+    msg = '系统运行正常 · 所有产品库存安全';
+  }
 
-let DATA = loadData('yihuang_data');
-if(!DATA){DATA=defaults;saveData('yihuang_data',DATA);}
-
-function render(){
-  renderBiz();renderTodos();renderTimeline();renderStats();
-}
-render();
-
-function renderBiz(){
-  const colors={ecom:'#38bdf8',salt:'#f59e0b',corn:'#22c55e'};
-  $('bizProgress').innerHTML = DATA.biz.map(b=>`
-    <div class="biz-card ${b.id}">
-      <div class="biz-header"><div class="biz-name">${b.name}</div><span class="biz-tag ${b.tagClass}">${b.tag}</span></div>
-      <div class="biz-progress"><div class="bar" style="width:${b.progress}%;background:${colors[b.id]}"></div></div>
-      <div class="biz-detail">${b.detail}</div>
-    </div>`).join('');
+  document.getElementById('sysBanner').innerHTML = `
+    <div class="sys-banner ${cls}">${msg}</div>
+  `;
 }
 
-function renderTodos(){
-  const dc={OPS:'#38bdf8',BIZ:'#818cf8',SUPPLY:'#22c55e',FIN:'#f59e0b',LEGAL:'#ef4444',MKT:'#f472b6',HR:'#94a3b8',IT:'#a78bfa'};
-  $('todoList').innerHTML = DATA.todos.map(t=>`
-    <div class="todo-item">
-      <div class="todo-check ${t.done?'done':''}" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</div>
-      <div class="todo-text ${t.done?'done':''}">${t.text}<span class="todo-dept" style="background:${dc[t.dept]||'#475569'};color:#fff">${t.deptLabel||t.dept}</span></div>
-    </div>`).join('');
+function renderStats() {
+  const stats = YH.getDashboardStats();
+  const clients = YH.getClients();
+  const orders = YH.getOrders();
+  const suppliers = YH.getSuppliers();
+
+  // This week new clients
+  const weekAgo = new Date(Date.now() - 7*86400000).toISOString();
+  const newClients = clients.filter(c => (c.createdAt||'') > weekAgo).length;
+
+  // This month orders
+  const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+  const monthOrders = orders.filter(o => (o.createdAt||'') > monthStart);
+  const monthTotal = monthOrders.reduce((s, o) => s + (parseFloat(o.totalPrice)||0), 0);
+
+  document.getElementById('statGrid').innerHTML = `
+    <div class="stat-card">
+      <div class="lbl">待处理任务</div>
+      <div class="num" style="color:#fbbf24;">${stats.tasks}</div>
+      <div class="trend">今日需关注</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">本月订单金额</div>
+      <div class="num" style="color:#38bdf8;">¥${monthTotal.toLocaleString()}</div>
+      <div class="trend trend-up">${monthOrders.length} 笔订单</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">客户总数</div>
+      <div class="num" style="color:#86efac;">${clients.length}</div>
+      <div class="trend trend-up">本周 +${newClients}</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">累计利润</div>
+      <div class="num" style="color:${stats.profit>=0?'#86efac':'#fca5a5'};">¥${stats.profit.toLocaleString()}</div>
+      <div class="trend">供应商 ${suppliers.length} 家</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">进行中交易</div>
+      <div class="num" style="color:#c084fc;">${stats.deals}</div>
+      <div class="trend">待完成订单</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">低库存预警</div>
+      <div class="num" style="color:${stats.lowStock>0?'#fca5a5':'#86efac'};">${stats.lowStock}</div>
+      <div class="trend ${stats.lowStock>0?'trend-down':''}">${stats.lowStock>0?'需补货':'安全'}</div>
+    </div>
+  `;
 }
 
-function renderTimeline(){
-  $('timeline').innerHTML = DATA.timeline.map(t=>`
-    <div class="tl-item ${t.status}"><div class="tl-date">${t.date}</div><div class="tl-text">${t.text}</div></div>`).join('');
+function renderLowStock() {
+  const lowItems = YH.getLowStockItems();
+  if (lowItems.length === 0) {
+    document.getElementById('lowStockList').innerHTML =
+      '<p style="color:#94a3b8;text-align:center;padding:16px;">所有产品库存充足</p>';
+    return;
+  }
+  document.getElementById('lowStockList').innerHTML = lowItems.map(i => {
+    const ratio = i.quantity / (i.safetyStock || 10);
+    const color = ratio <= 0.5 ? '#fca5a5' : '#fde68a';
+    const tag = ratio <= 0.5 ? '危急' : '偏低';
+    return `<div class="card-compact">
+      <span>${i.name||i.productName||i.id}</span>
+      <div style="text-align:right;">
+        <span style="font-weight:600;color:${color};">${i.quantity}</span>
+        <span style="font-size:11px;color:#64748b;margin-left:4px;">/ ${i.safetyStock||10}</span>
+        <span style="display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;margin-left:6px;background:${color}20;color:${color};">${tag}</span>
+      </div>
+    </div>`;
+  }).join('');
 }
 
-function renderStats(){
-  const total=DATA.todos.length,done=DATA.todos.filter(t=>t.done).length;
-  const active=DATA.biz.filter(b=>b.tag!=='待启动').length;
-  const totalExp=(DATA.expenses||[]).reduce((s,e)=>s+parseFloat(e.amount||0),0);
-  $('statTasks').textContent=(total-done)+'/'+total;
-  $('statBiz').textContent=3;
-  $('statDeal').textContent=active+'条';
-  $('statProfit').textContent=totalExp>0?'¥-'+totalExp.toFixed(0):'¥0';
-  // 从统一数据层拉取实时数据覆盖
-  try{
-    if(window.YH){
-      var stats=YH.getDashboardStats();
-      if(stats.tasks>0)$('statTasks').textContent=stats.tasks+'/'+(stats.tasks+$('statTasks').textContent.split('/')[1]||0);
-      if(stats.deals>0)$('statDeal').textContent=stats.deals+'条';
-      if(stats.profit>0)$('statProfit').textContent='¥'+stats.profit.toFixed(0);
-      // 库存预警卡片
-      var lsNotify=document.querySelector('.card.full:last-child');
-      if(stats.lowStock>0){
-        var warnEl=document.createElement('div');warnEl.className='card full';warnEl.id='stockWarn';
-        warnEl.innerHTML='<div class="card-title"><span class="icon">⚠️</span> 库存预警 <span style="color:var(--danger);font-size:12px;font-weight:700">'+stats.lowStock+'项低于安全库存</span></div><div style="font-size:12px;color:var(--text-secondary);padding:4px 0">请前往库存看板查看详情 → <a href="/yihuang/inventory/" style="color:var(--accent)">前往</a></div>';
-        var oldWarn=document.getElementById('stockWarn');
-        if(oldWarn)oldWarn.outerHTML=warnEl.outerHTML;
-        else document.querySelector('.layout').appendChild(warnEl);
-      }
-    }
-  }catch(e){console.warn('[dashboard] YH stats:',e.message);}
+function renderActivity() {
+  const items = [];
+  // Recent orders
+  const orders = YH.getOrders().slice(-3);
+  orders.forEach(o => {
+    items.push({
+      time: o.createdAt, icon: '📦',
+      text: `新订单: ${o.clientName||'客户'} — ¥${o.totalPrice||o.amount||0} [${o.status||'pending'}]`
+    });
+  });
+  // Recent clients
+  const clients = YH.getClients().slice(-2);
+  clients.forEach(c => {
+    items.push({
+      time: c.createdAt, icon: '👤',
+      text: `新客户: ${c.name||c.company||'--'} (${c.source||'-'})`
+    });
+  });
+  // Recent finance
+  const finance = YH.getFinance().slice(-2);
+  finance.forEach(f => {
+    items.push({
+      time: f.createdAt, icon: f.type==='income'?'💰':'💸',
+      text: `${f.type==='income'?'收入':'支出'}: ${f.category||''} ¥${f.amount}`
+    });
+  });
+
+  items.sort((a,b) => (b.time||'').localeCompare(a.time||''));
+  document.getElementById('recentActivity').innerHTML = items.slice(0,8).map(i => `
+    <div style="padding:8px 0;border-bottom:1px solid #334155;font-size:13px;display:flex;align-items:center;gap:8px;">
+      <span>${i.icon}</span>
+      <span style="flex:1;">${i.text}</span>
+      <span style="font-size:11px;color:#64748b;">${(i.time||'').slice(0,10)}</span>
+    </div>
+  `).join('') || '<p style="color:#64748b;text-align:center;padding:16px;">暂无动态</p>';
 }
 
-function toggleTodo(id){const t=DATA.todos.find(x=>x.id===id);if(t){t.done=!t.done;saveData('yihuang_data',DATA);render();}}
-
-function addTodo(){
-  const text=$('todoInput').value.trim();if(!text)return;
-  const dept=$('todoDept').value,deptMap={OPS:'运营中台',BIZ:'业务部',SUPPLY:'供应链部',FIN:'财务部',LEGAL:'法务合规部',MKT:'市场部',HR:'行政部',IT:'技术部'};
-  const pri=$('todoPriority').value;
-  DATA.todos.unshift({id:Date.now(),text,dept,deptLabel:deptMap[dept]||dept,done:false,priority:pri});
-  saveData('yihuang_data',DATA);render();closePopup('todoPopup');$('todoInput').value='';
+function init() {
+  renderBanner();
+  renderStats();
+  renderLowStock();
+  renderActivity();
+  document.getElementById('lastUpdate').textContent =
+    '数据刷新: ' + new Date().toLocaleTimeString('zh-CN');
+  if (typeof renderBottomNav === 'function') {
+    document.getElementById('bottomNav').innerHTML = renderBottomNav('dashboard');
+  }
 }
-
-function updateBiz(){
-  const id=$('bizSelect').value,note=$('bizNote').value.trim(),progress=parseInt($('bizProgressSlider').value);
-  const b=DATA.biz.find(x=>x.id===id);
-  if(b){if(note)b.detail=note;b.progress=progress;saveData('yihuang_data',DATA);render();closePopup('bizPopup');}
-}
-
-function addExpense(){
-  const amt=parseFloat($('expAmount').value);if(!amt||amt<=0)return;
-  const cat=$('expCategory').value,note=$('expNote').value.trim()||cat;
-  if(!DATA.expenses)DATA.expenses=[];
-  DATA.expenses.push({id:Date.now(),amount:amt,category:cat,note,date:new Date().toISOString().slice(0,10)});
-  saveData('yihuang_data',DATA);closePopup('expensePopup');
-  $('expAmount').value='';$('expNote').value='';render();
-}
-
-function exportData(){
-  const blob=new Blob([JSON.stringify(DATA,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='yihuang_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
-}
-
-function openTodoPopup(){$('todoPopup').classList.add('show')}
-function openBizPopup(){$('bizPopup').classList.add('show')}
-function openExpensePopup(){$('expensePopup').classList.add('show')}
-function closePopup(id){$(id).classList.remove('show')}
-
-document.querySelectorAll('.popup-overlay').forEach(el=>{
-  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')});
-});
+init();
 </script>
 </body>
 </html>
