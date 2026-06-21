@@ -35,14 +35,14 @@
 
 <div class="search-bar">
   <input type="text" id="searchInput" placeholder="搜索备注/分类..." oninput="render()">
-  <button onclick="openPopup('income')">+ 收入</button>
-  <button onclick="openPopup('expense')" style="background:linear-gradient(135deg,#dc2626,#ef4444)">− 支出</button>
-</div>
-
-<div class="filter-tabs" id="filterTabs"></div>
-
-<div id="transList"></div>
-
+<a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
+  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
+  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
+  <a class="bn-item active" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
+  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
+  <a class="bn-item" href="/yihuang/quotes/"><span class="bn-icon">💵</span><span class="bn-text">报价</span></a>
+  <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
+  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
 <div class="bottom-nav">
   <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
   <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
@@ -71,6 +71,7 @@
 </div>
 
 <script src="../_shared/js/yihuang.js"></script>
+<script src="../_shared/js/yihuang-db.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const INCOME_CATS=['销售收入','服务收入','退款','其他收入'];

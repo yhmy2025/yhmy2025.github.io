@@ -128,13 +128,16 @@
 
 </div>
 
-<!-- Bottom Nav — 5核心模块 -->
+<!-- Bottom Nav — 8核心模块 -->
 <div class="bottom-nav">
   <a class="bn-item active" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
   <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
   <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
   <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
   <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
+  <a class="bn-item" href="/yihuang/quotes/"><span class="bn-icon">💵</span><span class="bn-text">报价</span></a>
+  <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
+  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
 </div>
 
 <!-- Popup: 新建待办 -->
@@ -213,6 +216,7 @@
 </div>
 
 <script src="../_shared/js/yihuang.js"></script>
+<script src="../_shared/js/yihuang-db.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 $('currentDate').textContent = new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
@@ -277,8 +281,27 @@ function renderStats(){
   const active=DATA.biz.filter(b=>b.tag!=='待启动').length;
   const totalExp=(DATA.expenses||[]).reduce((s,e)=>s+parseFloat(e.amount||0),0);
   $('statTasks').textContent=(total-done)+'/'+total;
+  $('statBiz').textContent=3;
   $('statDeal').textContent=active+'条';
   $('statProfit').textContent=totalExp>0?'¥-'+totalExp.toFixed(0):'¥0';
+  // 从统一数据层拉取实时数据覆盖
+  try{
+    if(window.YH){
+      var stats=YH.getDashboardStats();
+      if(stats.tasks>0)$('statTasks').textContent=stats.tasks+'/'+(stats.tasks+$('statTasks').textContent.split('/')[1]||0);
+      if(stats.deals>0)$('statDeal').textContent=stats.deals+'条';
+      if(stats.profit>0)$('statProfit').textContent='¥'+stats.profit.toFixed(0);
+      // 库存预警卡片
+      var lsNotify=document.querySelector('.card.full:last-child');
+      if(stats.lowStock>0){
+        var warnEl=document.createElement('div');warnEl.className='card full';warnEl.id='stockWarn';
+        warnEl.innerHTML='<div class="card-title"><span class="icon">⚠️</span> 库存预警 <span style="color:var(--danger);font-size:12px;font-weight:700">'+stats.lowStock+'项低于安全库存</span></div><div style="font-size:12px;color:var(--text-secondary);padding:4px 0">请前往库存看板查看详情 → <a href="/yihuang/inventory/" style="color:var(--accent)">前往</a></div>';
+        var oldWarn=document.getElementById('stockWarn');
+        if(oldWarn)oldWarn.outerHTML=warnEl.outerHTML;
+        else document.querySelector('.layout').appendChild(warnEl);
+      }
+    }
+  }catch(e){console.warn('[dashboard] YH stats:',e.message);}
 }
 
 function toggleTodo(id){const t=DATA.todos.find(x=>x.id===id);if(t){t.done=!t.done;saveData('yihuang_data',DATA);render();}}

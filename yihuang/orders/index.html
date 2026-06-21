@@ -35,14 +35,14 @@
 <div class="search-bar">
   <input type="text" id="searchInput" placeholder="搜索订单号/客户..." oninput="render()">
   <button onclick="openPopup()">+ 新建</button>
-</div>
-
-<div class="filter-tabs" id="filterTabs"></div>
-
-<div id="orderList"></div>
-
-<div class="bottom-nav">
-  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
+<a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
+  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
+  <a class="bn-item active" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
+  <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
+  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
+  <a class="bn-item" href="/yihuang/quotes/"><span class="bn-icon">💵</span><span class="bn-text">报价</span></a>
+  <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
+  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
   <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
   <a class="bn-item active" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
   <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
@@ -75,6 +75,7 @@
 </div>
 
 <script src="../_shared/js/yihuang.js"></script>
+<script src="../_shared/js/yihuang-db.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 let DATA=loadData('yihuang_orders')||{orders:[]};
