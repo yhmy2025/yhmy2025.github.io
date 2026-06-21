@@ -36,6 +36,7 @@
   <input type="text" id="searchInput" placeholder="搜索产品..." oninput="render()">
   <button onclick="openPopup()">+ 新增</button>
 </div>
+<div class="filter-tabs" id="filterTabs"></div>
 
 <div class="popup-overlay" id="popup">
   <div class="popup">
@@ -62,21 +63,38 @@
 <script src="../_shared/js/yihuang-db.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-let DATA=loadData('yihuang_inventory')||{items:[]};
+
+// 统一数据层：使用 YH.getInventory/YH.saveInventory
+function getInv() { return YH.getInventory(); }
+function saveInv(data) { YH.saveInventory(data); }
+
 let filter='all';
 
-function saveAll(){saveData('yihuang_inventory',DATA);}
+function addLog(itemId, itemName, type, before, after, operator) {
+  try {
+    const logs = JSON.parse(localStorage.getItem('yihuang_inventory_log')) || [];
+    logs.unshift({
+      id: YH.genId(), itemId, itemName, type, before, after,
+      delta: after - before,
+      operator: operator || '看板',
+      time: new Date().toISOString()
+    });
+    if (logs.length > 500) logs.length = 500;
+    localStorage.setItem('yihuang_inventory_log', JSON.stringify(logs));
+  } catch(e) { console.warn('addLog failed:', e); }
+}
 
 function render(){
+  const items = getInv();
   const q=$('searchInput').value.toLowerCase();
-  let f=DATA.items;
+  let f=items;
   if(filter==='low')f=f.filter(i=>i.qty<i.safeQty);
   else if(filter==='normal')f=f.filter(i=>i.qty>=i.safeQty&&i.qty<i.safeQty*3);
   else if(filter==='high')f=f.filter(i=>i.qty>=i.safeQty*3);
-  if(q)f=f.filter(i=>i.name.toLowerCase().includes(q)||(i.category||'').toLowerCase().includes(q));
+  if(q)f=f.filter(i=>(i.name||'').toLowerCase().includes(q)||(i.category||'').toLowerCase().includes(q));
 
-  const total=DATA.items.length,low=DATA.items.filter(i=>i.qty<i.safeQty).length;
-  const totalCost=DATA.items.reduce((s,i)=>s+parseFloat(i.cost||0)*i.qty,0);
+  const total=items.length,low=items.filter(i=>i.qty<i.safeQty).length;
+  const totalCost=items.reduce((s,i)=>s+parseFloat(i.cost||0)*i.qty,0);
   $('summary').innerHTML=`
     <div class="summary-item"><div class="si-value">${total}</div><div class="si-label">总SKU</div></div>
     <div class="summary-item"><div class="si-value" style="color:var(--danger)">${low}</div><div class="si-label">⚠️ 低库存</div></div>
@@ -84,11 +102,13 @@ function render(){
     <div class="summary-item"><div class="si-value">¥${totalCost.toFixed(0)}</div><div class="si-label">库存价值</div></div>`;
 
   const tabs=[{id:'all',label:'全部'},{id:'low',label:'⚠️ 低库存('+low+')'},{id:'normal',label:'正常'},{id:'high',label:'充足'}];
-  $('filterTabs').innerHTML=tabs.map(t=>`<div class="filter-tab ${filter===t.id?'active':''}" onclick="filter='${t.id}';render()">${t.label}</div>`).join('');
+  const ft=$('filterTabs');
+  if(ft) ft.innerHTML=tabs.map(t=>`<div class="filter-tab ${filter===t.id?'active':''}" onclick="filter='${t.id}';render()">${t.label}</div>`).join('');
 
   const el=$('invList');
+  if(!el) return;
   if(!f.length){
-    el.innerHTML='<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">暂无库存产品</div><div class="empty-desc">点击"+新增"添加产品</div></div>';
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">暂无库存产品</div><div class="empty-desc">点击"新增"添加产品</div></div>';
     return;
   }
   el.innerHTML=f.map(i=>{
@@ -124,26 +144,40 @@ function closePopup(){$('popup').classList.remove('show')}
 
 function save(){
   const name=$('invName').value.trim();if(!name)return showToast('请输入产品名称');
+  const items=getInv();
   const editId=$('editId').value;
   const obj={name,category:$('invCategory').value,qty:parseInt($('invQty').value)||0,unit:$('invUnit').value||'件',safeQty:parseInt($('invSafeQty').value)||0,cost:parseFloat($('invCost').value)||0,notes:$('invNotes').value.trim()};
-  if(editId){const i=DATA.items.find(x=>x.id===editId);if(i)Object.assign(i,obj);}
-  else{obj.id=uuid();obj.createdAt=now();DATA.items.push(obj);}
-  saveAll();render();closePopup();showToast('✅ 已保存');
+  if(editId){
+    const i=items.find(x=>x.id===editId);
+    if(i){const oldQty=i.qty; Object.assign(i,obj); addLog(editId,name,'adj',oldQty,obj.qty,'看板编辑');}
+  } else {
+    obj.id=YH.genId();obj.createdAt=new Date().toISOString();
+    items.push(obj);
+    addLog(obj.id,name,'in',0,obj.qty,'看板新增');
+  }
+  saveInv(items);render();closePopup();showToast('✅ 已保存');
 }
-function edit(id){const i=DATA.items.find(x=>x.id===id);if(!i)return;
+function edit(id){const items=getInv();const i=items.find(x=>x.id===id);if(!i)return;
   $('popupTitle').textContent='✏️ 编辑产品';$('editId').value=id;
   $('invName').value=i.name;$('invCategory').value=i.category||'其他';$('invQty').value=i.qty;
   $('invUnit').value=i.unit||'箱';$('invSafeQty').value=i.safeQty||0;
   $('invCost').value=i.cost||0;$('invNotes').value=i.notes||'';$('popup').classList.add('show');
 }
-function adjust(id){const i=DATA.items.find(x=>x.id===id);if(!i)return;
+function adjust(id){const items=getInv();const i=items.find(x=>x.id===id);if(!i)return;
   const adj=prompt(`当前库存: ${i.qty} ${i.unit}\n输入调整（正=入库，负=出库）: `);
   if(adj===null)return;const n=parseInt(adj);
   if(isNaN(n)||n===0)return showToast('无效数量');
-  i.qty=Math.max(0,i.qty+n);saveAll();render();
+  const before=i.qty; i.qty=Math.max(0,i.qty+n);
+  saveInv(items);render();
+  addLog(id,i.name,n>0?'in':'out',before,i.qty,'看板');
   showToast(n>0?'📦 入库 '+n+' '+i.unit:'📤 出库 '+Math.abs(n)+' '+i.unit);
 }
-function del(id){if(confirm('确定删除？')){DATA.items=DATA.items.filter(i=>i.id!==id);saveAll();render();showToast('🗑 已删除');}}
+function del(id){const items=getInv();if(confirm('确定删除？')){const i=items.find(x=>x.id===id);
+  const name=i?i.name||i.id:id;
+  const newItems=items.filter(x=>x.id!==id);saveInv(newItems);render();
+  addLog(id,name,'out',i?i.qty:0,0,'看板删除');
+  showToast('🗑 已删除');
+}}
 
 document.querySelectorAll('.popup-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')})});
 render();
@@ -157,7 +191,7 @@ render();
   <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
   <a class="bn-item" href="/yihuang/quotes/"><span class="bn-icon">💵</span><span class="bn-text">报价</span></a>
   <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
-  <a class="bn-item" class="bn-item active" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
+  <a class="bn-item active" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
 </div>
 </body>
 </html>

@@ -215,24 +215,30 @@ function importCSV(event) {
   reader.onload = function(e) {
     const lines = e.target.result.split('\n').slice(1);
     const inv = YH.getInventory();
-    let added = 0;
+    const existingNames = new Set(inv.map(i => (i.name||i.productName||'').toLowerCase().trim()));
+    let added = 0, skipped = 0;
     lines.forEach(line => {
       if (!line.trim()) return;
       const cols = line.split(',');
       if (cols.length < 2) return;
+      const name = cols[0].trim();
+      if (!name) return;
+      // 跳过已存在的产品（名称去重）
+      if (existingNames.has(name.toLowerCase())) { skipped++; return; }
       inv.push({
         id: YH.genId(),
-        name: cols[0].trim(),
+        name: name,
         quantity: parseInt(cols[1]) || 0,
         safetyStock: parseInt(cols[2]) || 10,
         unit: (cols[3]||'').trim() || '个',
         costPrice: parseFloat(cols[4]) || 0,
         updatedAt: new Date().toISOString()
       });
+      existingNames.add(name.toLowerCase());
       added++;
     });
     YH.saveInventory(inv);
-    alert(`导入完成! 新增 ${added} 个产品`);
+    alert(`导入完成! 新增 ${added} 个产品${skipped > 0 ? '，'+skipped+' 个已存在跳过' : ''}`);
     location.reload();
   };
   reader.readAsText(file);
