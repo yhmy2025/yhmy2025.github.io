@@ -3,20 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>报价单 — 谊璜贸易</title>
+<title>报价单生成器 — 谊璜贸易</title>
 <link rel="stylesheet" href="../_shared/css/yihuang.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-.quote-preview { background:#1a2332; border:1px dashed #334155; border-radius:8px; padding:20px; margin:16px 0; font-size:14px; line-height:2; }
-.quote-preview h2 { text-align:center; font-size:18px; margin-bottom:12px; color:#e2e8f0; }
+.quote-preview { background:#fff; color:#1a1a1a; border-radius:6px; padding:24px; margin:16px 0; font-size:14px; line-height:2; min-height:200px; }
+.quote-preview h2 { text-align:center; font-size:20px; margin-bottom:6px; color:#1a1a1a; }
+.quote-preview .company { text-align:center; font-size:13px; color:#555; margin-bottom:16px; }
 .quote-preview table { width:100%; border-collapse:collapse; margin:12px 0; }
-.quote-preview th { background:#1e3a5f; padding:8px; text-align:left; font-size:12px; color:#94a3b8; }
-.quote-preview td { padding:8px; border-bottom:1px solid #334155; font-size:13px; }
-.quote-preview .total { text-align:right; font-size:16px; font-weight:700; color:#38bdf8; margin-top:12px; }
+.quote-preview th { background:#f0f0f0; padding:8px 10px; text-align:left; font-size:12px; color:#333; border-bottom:2px solid #333; }
+.quote-preview td { padding:8px 10px; border-bottom:1px solid #ddd; font-size:13px; }
+.quote-preview .total { text-align:right; font-size:18px; font-weight:700; margin-top:16px; padding-top:8px; border-top:2px solid #333; }
+.quote-preview .meta { font-size:12px; color:#666; margin-top:12px; }
+.quote-preview .stamp { text-align:right; margin-top:24px; font-size:13px; color:#555; }
 .quote-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
 .quote-row select, .quote-row input { flex:1; }
 .remove-btn { background:#7f1d1d; color:#fca5a5; border:none; border-radius:4px; padding:8px 12px; cursor:pointer; font-size:13px; }
-.clipboard-msg { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#22c55e; color:#fff; padding:10px 24px; border-radius:20px; font-size:14px; z-index:1000; opacity:0; transition:opacity .3s; }
-.clipboard-msg.show { opacity:1; }
+.toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#22c55e; color:#fff; padding:10px 24px; border-radius:20px; font-size:14px; z-index:1000; opacity:0; transition:opacity .3s; }
+.toast.show { opacity:1; }
+@media print {
+  body > *:not(#printArea) { display:none !important; }
+  #printArea { display:block !important; position:absolute; top:0; left:0; width:100%; }
+}
 </style>
 </head>
 <body>
@@ -27,11 +36,9 @@
 
 <div class="card">
   <div class="card-title">客户信息</div>
-  <div style="margin-bottom:12px">
-    <select id="clientSelect" style="width:100%;padding:10px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;">
-      <option value="">-- 选择客户 --</option>
-    </select>
-  </div>
+  <select id="clientSelect" style="width:100%;padding:10px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;">
+    <option value="">-- 选择客户 --</option>
+  </select>
   <div id="clientInfo" style="font-size:13px;color:#94a3b8;margin-top:4px;"></div>
 </div>
 
@@ -43,15 +50,19 @@
 
 <div class="card">
   <div class="card-title">报价参数</div>
-  <div style="display:flex;gap:12px;align-items:center;">
+  <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
     <label style="font-size:13px;color:#94a3b8;">加价率</label>
     <input type="number" id="markupRate" value="30" min="0" max="200" style="width:80px;padding:8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;text-align:center;">
     <span style="font-size:13px;color:#94a3b8;">%</span>
     <span id="previewProfit" style="font-size:13px;color:#38bdf8;margin-left:auto;"></span>
   </div>
-  <div style="margin-top:12px;">
-    <label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">备注（显示在报价单底部）</label>
-    <input type="text" id="quoteNote" placeholder="如: 报价有效期30天,含税含运费" style="width:100%;padding:10px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;">
+  <div style="margin-bottom:8px;">
+    <label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">报价有效期（天）</label>
+    <input type="number" id="validDays" value="30" min="1" max="365" style="width:80px;padding:8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;text-align:center;">
+  </div>
+  <div>
+    <label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">备注</label>
+    <input type="text" id="quoteNote" placeholder="如: 含税含运费,质保1年" style="width:100%;padding:10px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;">
   </div>
 </div>
 
@@ -60,18 +71,36 @@
   <div class="quote-preview" id="quotePreview"></div>
   <div style="display:flex;gap:8px;">
     <button class="btn btn-primary" onclick="saveQuote()" style="flex:1;">保存报价单</button>
-    <button class="btn btn-outline" onclick="printQuote()" style="flex:1;">打印 / 导出PDF</button>
+    <button class="btn btn-outline" onclick="exportPDF()" style="flex:1;">PDF导出</button>
+    <button class="btn btn-outline" onclick="printQuote()" style="flex:1;">打印</button>
   </div>
 </div>
 
+<!-- Print-only area -->
+<div id="printArea" style="display:none;"></div>
+
 <div class="footer">谊璜贸易系统 · 报价单生成器</div>
 <nav class="bottom-nav" id="bottomNav"></nav>
-<div class="clipboard-msg" id="clipboardMsg">报价单已保存</div>
+<div class="toast" id="toast">已保存</div>
 
 <script src="../_shared/js/yihuang-db.js"></script>
 <script src="../_shared/js/yihuang.js"></script>
 <script>
 let items = [];
+let currentQuoteId = null;
+
+function generateQuoteId() {
+  const d = new Date();
+  const date = d.toISOString().slice(0,10).replace(/-/g,'');
+  try {
+    const existing = YH.getQuotes();
+    const today = existing.filter(q => (q.date||'').startsWith(d.toISOString().slice(0,10)));
+    const num = String(today.length + 1).padStart(3, '0');
+    return 'Q-' + date + '-' + num;
+  } catch(e) {
+    return 'Q-' + date + '-' + '001';
+  }
+}
 
 function loadSelects() {
   const clients = YH.getClients();
@@ -82,8 +111,6 @@ function loadSelects() {
     opt.textContent = c.name || c.company || c.id;
     sel.appendChild(opt);
   });
-
-  // Bottom nav
   if (typeof renderBottomNav === 'function') {
     document.getElementById('bottomNav').innerHTML = renderBottomNav('quotes');
   }
@@ -100,6 +127,7 @@ document.getElementById('clientSelect').addEventListener('change', function() {
 
 document.getElementById('markupRate').addEventListener('input', updatePreview);
 document.getElementById('quoteNote').addEventListener('input', updatePreview);
+document.getElementById('validDays').addEventListener('input', updatePreview);
 
 function addItem() {
   items.push({ productId: '', productName: '', costPrice: 0, quantity: 1 });
@@ -117,14 +145,13 @@ function renderItems() {
   const inventory = YH.getInventory();
 
   container.innerHTML = items.map((item, i) => `
-    <div class="quote-row" style="margin-bottom:8px;">
+    <div class="quote-row">
       <select onchange="updateItem(${i},'productId',this.value)" style="background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:8px;flex:2;">
         <option value="">-- 产品 --</option>
         ${products.map(p => `<option value="${p.id}" ${item.productId===p.id?'selected':''}>${p.name||p.id}</option>`).join('')}
-        ${inventory.map(inv => {
-          const p = products.find(pp => pp.id === inv.productId);
-          return p ? '' : `<option value="${inv.id}" ${item.productId===inv.id?'selected':''}>${inv.name||inv.productName||inv.id}</option>`;
-        }).join('')}
+        ${inventory.filter(inv => inv && inv.id && !products.find(p => p.id === inv.productId)).map(inv =>
+          `<option value="${inv.id}" ${item.productId===inv.id?'selected':''}>${inv.name||inv.productName||inv.id}</option>`
+        ).join('')}
       </select>
       <input type="number" placeholder="数量" value="${item.quantity}" min="1"
         onchange="updateItem(${i},'quantity',parseInt(this.value)||1)"
@@ -144,20 +171,13 @@ function renderItems() {
 
 function updateItem(idx, field, value) {
   items[idx][field] = value;
-  // Auto-fill product name and cost
   if (field === 'productId' && value) {
     const products = YH.getProducts();
     const p = products.find(pp => pp.id === value);
-    if (p) {
-      items[idx].productName = p.name || '';
-      items[idx].costPrice = p.costPrice || items[idx].costPrice;
-    }
+    if (p) { items[idx].productName = p.name || ''; items[idx].costPrice = p.costPrice || items[idx].costPrice; }
     const inv = YH.getInventory();
     const i = inv.find(ii => ii.id === value || ii.productId === value);
-    if (i) {
-      items[idx].productName = i.name || i.productName || items[idx].productName;
-      items[idx].costPrice = i.costPrice || items[idx].costPrice;
-    }
+    if (i) { items[idx].productName = i.name || i.productName || items[idx].productName; items[idx].costPrice = i.costPrice || items[idx].costPrice; }
     renderItems();
   }
   updatePreview();
@@ -168,6 +188,7 @@ function updatePreview() {
   const client = YH.getClientById(clientId);
   const markup = parseFloat(document.getElementById('markupRate').value) || 0;
   const note = document.getElementById('quoteNote').value;
+  const validDays = parseInt(document.getElementById('validDays').value) || 30;
 
   if (!client || items.length === 0) {
     document.getElementById('previewCard').style.display = 'none';
@@ -175,83 +196,142 @@ function updatePreview() {
   }
 
   document.getElementById('previewCard').style.display = 'block';
+  const today = new Date();
+  const expiry = new Date(today.getTime() + validDays * 86400000);
+  const qid = generateQuoteId();
 
-  let totalCost = 0;
-  let totalPrice = 0;
+  let totalCost = 0, totalPrice = 0;
   const rows = items.map(item => {
     const cost = (item.costPrice || 0) * (item.quantity || 1);
     const price = cost * (1 + markup / 100);
-    totalCost += cost;
-    totalPrice += price;
-    return `<tr>
-      <td>${item.productName || item.productId || '-'}</td>
-      <td>${item.quantity}</td>
-      <td>¥${item.costPrice.toFixed(2)}</td>
-      <td>¥${price.toFixed(2)}</td>
-    </tr>`;
+    totalCost += cost; totalPrice += price;
+    return `<tr><td>${item.productName||item.productId||'-'}</td><td>${item.quantity}</td><td>¥${item.costPrice.toFixed(2)}</td><td>¥${price.toFixed(2)}</td></tr>`;
   }).join('');
 
-  document.getElementById('quotePreview').innerHTML = `
-    <h2>报价单</h2>
-    <p style="text-align:center;font-size:13px;color:#94a3b8;">${new Date().toLocaleDateString('zh-CN')}</p>
-    <p><strong>客户:</strong> ${client.name || client.company || '--'}</p>
+  const html = `
+    <h2>报 价 单</h2>
+    <div class="company">谊璜贸易 | 编号: ${qid}</div>
+    <table style="width:100%;margin-bottom:12px;">
+      <tr><td style="border:none;font-size:13px;"><strong>客户:</strong> ${client.name||client.company||'--'}</td><td style="border:none;font-size:13px;text-align:right;"><strong>日期:</strong> ${today.toLocaleDateString('zh-CN')}</td></tr>
+      <tr><td style="border:none;font-size:13px;"><strong>电话:</strong> ${client.phone||'-'}</td><td style="border:none;font-size:13px;text-align:right;"><strong>有效期至:</strong> ${expiry.toLocaleDateString('zh-CN')}</td></tr>
+    </table>
     <table>
-      <thead><tr><th>产品</th><th>数量</th><th>单价</th><th>金额</th></tr></thead>
+      <thead><tr><th>产品名称</th><th>数量</th><th>单价</th><th>金额</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <div class="total">合计: ¥${totalPrice.toFixed(2)}</div>
-    <p style="font-size:12px;color:#64748b;margin-top:8px;">加价率: ${markup}% | 成本: ¥${totalCost.toFixed(2)} | 毛利: ¥${(totalPrice-totalCost).toFixed(2)}</p>
-    ${note ? `<p style="font-size:12px;color:#94a3b8;margin-top:8px;">备注: ${note}</p>` : ''}
+    <div class="total">合计: ¥${totalPrice.toFixed(2)} (人民币)</div>
+    <div class="meta">加价率: ${markup}% | 成本: ¥${totalCost.toFixed(2)} | 毛利: ¥${(totalPrice-totalCost).toFixed(2)}</div>
+    ${note ? `<div class="meta">备注: ${note}</div>` : ''}
+    <div class="stamp">谊璜贸易<br>${today.toLocaleDateString('zh-CN')}</div>
   `;
 
-  document.getElementById('previewProfit').textContent =
-    `预估毛利: ¥${(totalPrice - totalCost).toFixed(2)}`;
+  document.getElementById('quotePreview').innerHTML = html;
+  document.getElementById('previewProfit').textContent = `预估毛利: ¥${(totalPrice - totalCost).toFixed(2)}`;
+  currentQuoteId = qid;
 }
 
 function saveQuote() {
   const clientId = document.getElementById('clientSelect').value;
   const client = YH.getClientById(clientId);
   if (!client) return alert('请选择客户');
+  if (!items.length) return alert('请添加至少一个产品');
 
+  const today = new Date().toISOString().slice(0,10);
   const markup = parseFloat(document.getElementById('markupRate').value) || 0;
   const note = document.getElementById('quoteNote').value;
+  const validDays = parseInt(document.getElementById('validDays').value) || 30;
   let totalCost = 0, totalPrice = 0;
   items.forEach(item => {
     const cost = (item.costPrice || 0) * (item.quantity || 1);
-    totalCost += cost;
-    totalPrice += cost * (1 + markup / 100);
+    totalCost += cost; totalPrice += cost * (1 + markup / 100);
   });
 
   YH.addQuote({
+    quoteId: currentQuoteId || generateQuoteId(),
     clientId, clientName: client.name || client.company || '',
     items: JSON.parse(JSON.stringify(items)),
-    markup, note,
+    markup, note, validDays,
     totalCost, totalPrice,
     profit: totalPrice - totalCost,
-    date: new Date().toISOString().slice(0, 10),
+    date: today,
   });
 
-  const msg = document.getElementById('clipboardMsg');
-  msg.classList.add('show');
-  setTimeout(() => msg.classList.remove('show'), 2000);
+  const toast = document.getElementById('toast');
+  toast.textContent = '报价单 ' + (currentQuoteId||'') + ' 已保存';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
 function printQuote() {
   const preview = document.getElementById('quotePreview').innerHTML;
   const w = window.open('', '_blank', 'width=800,height=600');
   w.document.write(`
-    <html><head><meta charset="UTF-8"><title>报价单</title>
-    <style>body{font-family:sans-serif;max-width:700px;margin:40px auto;color:#333}
-    table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:8px}
-    th{background:#f5f5f5}.total{text-align:right;font-size:18px;font-weight:bold;margin-top:16px}
-    @media print{body{margin:20px}}</style></head>
-    <body>${preview}</body></html>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>报价单</title>
+<style>
+  @page { size: A4; margin: 15mm; }
+  body { font-family: 'SimSun','Microsoft YaHei',sans-serif; color:#1a1a1a; max-width:190mm; margin:0 auto; padding:10mm; }
+  h2 { text-align:center; font-size:22pt; margin-bottom:4mm; letter-spacing:8pt; }
+  .company { text-align:center; font-size:11pt; color:#555; margin-bottom:8mm; }
+  table { width:100%; border-collapse:collapse; margin:6mm 0; }
+  th { background:#e8e8e8; padding:3mm 4mm; text-align:left; font-size:10pt; border-bottom:2px solid #333; }
+  td { padding:3mm 4mm; border-bottom:0.5px solid #ccc; font-size:10pt; }
+  .total { text-align:right; font-size:14pt; font-weight:bold; margin-top:6mm; padding-top:3mm; border-top:2px solid #333; }
+  .meta { font-size:9pt; color:#666; margin-top:3mm; }
+  .stamp { text-align:right; margin-top:12mm; font-size:10pt; color:#555; }
+  @media print { body { -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+</style></head>
+<body>${preview}</body></html>
   `);
   w.document.close();
-  setTimeout(() => w.print(), 500);
+  setTimeout(() => w.print(), 600);
 }
 
-// Init
+async function exportPDF() {
+  const preview = document.getElementById('quotePreview');
+  const toast = document.getElementById('toast');
+  toast.textContent = '正在生成PDF...';
+  toast.classList.add('show');
+
+  try {
+    const canvas = await html2canvas(preview, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      logging: false
+    });
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth - 20;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 10;
+    pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
+    heightLeft -= (pageHeight - 20);
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight + 10;
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
+      heightLeft -= (pageHeight - 20);
+    }
+
+    const clientId = document.getElementById('clientSelect').value;
+    const client = YH.getClientById(clientId);
+    const fname = '报价单_' + (client ? (client.name||client.company||'客户') : '未命名') + '_' + new Date().toISOString().slice(0,10) + '.pdf';
+    pdf.save(fname);
+
+    toast.textContent = 'PDF已下载: ' + fname;
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  } catch(e) {
+    toast.textContent = 'PDF生成失败，请使用打印按钮';
+    setTimeout(() => toast.classList.remove('show'), 2500);
+    console.error(e);
+  }
+}
+
 loadSelects();
 addItem();
 </script>
