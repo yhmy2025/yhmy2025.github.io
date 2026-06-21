@@ -33,24 +33,9 @@
   <div class="tb-right"><span class="tb-badge">v2.0</span></div>
 </div>
 
-<a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
-  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
-  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
-  <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
-  <a class="bn-item active" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
-  <a class="bn-item" href="/yihuang/quotes/"><span class="bn-icon">💵</span><span class="bn-text">报价</span></a>
-  <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
-  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
 
 <div id="taskList"></div>
 
-<div class="bottom-nav">
-  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
-  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
-  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
-  <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
-  <a class="bn-item active" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
-</div>
 
 <div class="popup-overlay" id="popup">
   <div class="popup">
@@ -162,5 +147,17 @@ function del(id){if(confirm('确定删除？')){DATA.tasks=DATA.tasks.filter(t=>
 document.querySelectorAll('.popup-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')})});
 render();
 </script>
+
+<div class="bottom-nav">
+  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
+  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
+  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
+  <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
+  <a class="bn-item" class="bn-item active" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
+  <a class="bn-item" href="/yihuang/quotes/"><span class="bn-icon">💵</span><span class="bn-text">报价</span></a>
+  <a class="bn-item" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
+  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
+</div>
 </body>
 </html>
+

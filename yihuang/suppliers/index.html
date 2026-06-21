@@ -33,30 +33,6 @@
 
 <div id="supplierList"></div>
 
-<div class="bottom-nav">
-  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
-<a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
-  <a class="bn-item active" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
-  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
-  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
-  <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
-  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
-  <a class="bn-item" href="/yihuang/quotes/"><span class="bn-icon">💵</span><span class="bn-text">报价</span></a>
-  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
-    <h3 id="popupTitle">🏭 新增供应商</h3>
-    <label>供应商名称</label><input type="text" id="supName" placeholder="公司全称">
-    <label>平台/来源</label>
-    <select id="supPlatform"><option>1688</option><option>Alibaba</option><option>线下</option><option>推荐</option><option>其他</option></select>
-    <label>评分 (1-5)</label><input type="number" id="supRating" min="1" max="5" step="0.5" value="4">
-    <label>主营品类</label><input type="text" id="supCategory" placeholder="如：调味品、粮食">
-    <label>联系人</label><input type="text" id="supContact" placeholder="联系人姓名">
-    <label>联系方式</label><input type="text" id="supPhone" placeholder="电话/微信">
-    <label>付款条件</label><input type="text" id="supPayment" placeholder="如：T/T 30%订金">
-    <label>备注</label><textarea id="supNotes" rows="2"></textarea>
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="closePopup()">取消</button>
-      <button class="btn btn-primary" onclick="save()">✅ 保存</button>
-    </div>
     <input type="hidden" id="editId">
   </div>
 </div>
@@ -132,5 +108,17 @@ function del(id){if(confirm('确定删除？')){DATA.suppliers=DATA.suppliers.fi
 document.querySelectorAll('.popup-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')})});
 render();
 </script>
+
+<div class="bottom-nav">
+  <a class="bn-item" href="/yihuang/dashboard/"><span class="bn-icon">📊</span><span class="bn-text">概览</span></a>
+  <a class="bn-item" href="/yihuang/crm/"><span class="bn-icon">👥</span><span class="bn-text">客户</span></a>
+  <a class="bn-item" href="/yihuang/orders/"><span class="bn-icon">📦</span><span class="bn-text">订单</span></a>
+  <a class="bn-item" href="/yihuang/finance/"><span class="bn-icon">💰</span><span class="bn-text">财务</span></a>
+  <a class="bn-item" href="/yihuang/tasks/"><span class="bn-icon">✅</span><span class="bn-text">任务</span></a>
+  <a class="bn-item" href="/yihuang/quotes/"><span class="bn-icon">💵</span><span class="bn-text">报价</span></a>
+  <a class="bn-item" class="bn-item active" href="/yihuang/suppliers/"><span class="bn-icon">🏭</span><span class="bn-text">供应商</span></a>
+  <a class="bn-item" href="/yihuang/inventory/"><span class="bn-icon">📦</span><span class="bn-text">库存</span></a>
+</div>
 </body>
 </html>
+

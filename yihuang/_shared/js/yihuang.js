@@ -128,6 +128,26 @@ function isToday(dateStr) {
   return dateStr === today();
 }
 
+// ───── 底部导航（8模块统一） ─────
+function renderBottomNav(active) {
+  const items = [
+    { id:'dashboard',  icon:'📊', label:'概览', href:'/yihuang/dashboard/' },
+    { id:'crm',        icon:'👥', label:'客户', href:'/yihuang/crm/' },
+    { id:'orders',     icon:'📦', label:'订单', href:'/yihuang/orders/' },
+    { id:'finance',    icon:'💰', label:'财务', href:'/yihuang/finance/' },
+    { id:'tasks',      icon:'✅', label:'任务', href:'/yihuang/tasks/' },
+    { id:'quotes',     icon:'💵', label:'报价', href:'/yihuang/quotes/' },
+    { id:'suppliers',  icon:'🏭', label:'供应商', href:'/yihuang/suppliers/' },
+    { id:'inventory',  icon:'📦', label:'库存', href:'/yihuang/inventory/' },
+  ];
+  return items.map(i => `
+    <a class="bn-item${i.id===active?' active':''}" href="${i.href}">
+      <span class="bn-icon">${i.icon}</span>
+      <span class="bn-text">${i.label}</span>
+    </a>`
+  ).join('');
+}
+
 function isThisWeek(dateStr) {
   const d = new Date(dateStr);
   const nowDate = new Date();
@@ -137,3 +157,4 @@ function isThisWeek(dateStr) {
   endOfWeek.setDate(startOfWeek.getDate() + 6);
   return d >= startOfWeek && d <= endOfWeek;
 }
+
