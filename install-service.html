@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>OpenClaw AI系统代安装 — OpenClaw 工具箱</title>
+<script src="/pro-check.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px 40px}
+.header{padding:40px 0 24px;text-align:center}
+.header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .sub{font-size:12px;color:#64748b;margin-top:4px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;margin-bottom:12px}
+.card.highlight{border-color:#3b82f6;background:linear-gradient(135deg,#1e3a5f,#1e293b)}
+.card-title{font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:10px}
+.price{font-size:32px;font-weight:800;color:#38bdf8}
+.price small{font-size:14px;color:#94a3b8;font-weight:400}
+.feature-list{list-style:none;margin:12px 0}
+.feature-list li{padding:6px 0;font-size:13px;color:#cbd5e1;border-bottom:1px solid #1e293b}
+.feature-list li:last-child{border-bottom:none}
+.step-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #1e293b}
+.step-num{width:32px;height:32px;border-radius:50%;background:#1e3a5f;color:#38bdf8;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.step-text{font-size:13px;color:#cbd5e1}
+.btn{display:block;width:100%;padding:12px;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;margin-top:8px}
+.btn-primary{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}
+.btn-gold{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff}
+.btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
+.comparison-table{width:100%;font-size:12px;border-collapse:collapse;margin:12px 0}
+.comparison-table th{background:#0f172a;padding:8px;text-align:left;color:#94a3b8;font-weight:600}
+.comparison-table td{padding:8px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+.comparison-table .check{color:#22c55e}
+.comparison-table .cross{color:#ef4444}
+.badge-pro{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:700;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff}
+.footer{text-align:center;padding:20px 0;font-size:11px;color:#475569}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>OpenClaw AI系统代安装</h1>
+  <p class="sub">远程部署 · 三节点生产级经验 · 零基础可上手</p>
+  <span id="proBadge" style="font-size:11px;padding:3px 10px;border-radius:4px;font-weight:600;margin-top:6px;display:inline-block;"></span>
+</div>
+
+<!-- 为什么选我 -->
+<div class="card">
+  <div class="card-title">为什么找我安装？</div>
+  <ul class="feature-list">
+    <li>🦞 <b>三节点生产环境实操</b> — 非纸上谈兵，15+版本迭代踩坑全记录</li>
+    <li>🦞 <b>FDE灾难恢复架构</b> — 市面上独有的多节点同步+自动备份完整方案</li>
+    <li>🦞 <b>附送《安装避坑白皮书》</b> — 价值¥99的知识沉淀</li>
+    <li>🦞 <b>远程+交付文档</b> — 装完不是结束，交付文档让你自己也能维护</li>
+  </ul>
+</div>
+
+<!-- 基础版 -->
+<div class="card" id="basicPlan">
+  <div class="card-title">基础版 · 入门部署</div>
+  <div class="price">¥199 <small>/ 约60分钟</small></div>
+  <ul class="feature-list">
+    <li>✅ OpenClaw 最新版安装</li>
+    <li>✅ Claude Code / DeepSeek 模型对接</li>
+    <li>✅ 基础工具链部署（WebUI + API网关）</li>
+    <li>✅ 远程安装（向日葵/Todesk）</li>
+    <li>✅ 《安装避坑白皮书》电子版</li>
+    <li>✅ 3天基础使用指导</li>
+  </ul>
+  <div style="font-size:12px;color:#94a3b8;margin-top:8px;">
+    ❌ 不含FDE多节点架构<br>
+    ❌ 不含Agent自动化脚本<br>
+    ❌ 模型API费用需自行充值
+  </div>
+</div>
+
+<!-- 完整版 -->
+<div class="card highlight" id="fullPlan">
+  <div style="float:right"><span class="badge-pro">推荐</span></div>
+  <div class="card-title">完整版 · 企业级部署</div>
+  <div class="price">¥399 <small>/ 约2小时</small></div>
+  <ul class="feature-list">
+    <li>✅ <b>基础版全部内容</b></li>
+    <li>✅ <b>FDE灾难恢复架构</b> — 多节点自动备份+随时恢复</li>
+    <li>✅ <b>多Agent自动化脚本</b> — 交易/内容/监控一站式</li>
+    <li>✅ <b>系统运维看板</b> — Gateway/FDE/Cron一屏总览</li>
+    <li>✅ <b>个人知识库搭建</b> — 跨会话记忆+自动归档</li>
+    <li>✅ <b>定时备份+跨节点同步</b></li>
+    <li>✅ 交付《完整部署报告》+《运维手册》</li>
+    <li>✅ <b>7天深度指导</b>（基础版3天）</li>
+  </ul>
+</div>
+
+<!-- 对比表 -->
+<div class="card">
+  <div class="card-title">版本对比</div>
+  <table class="comparison-table">
+    <tr><th>项目</th><th>基础版 ¥199</th><th>完整版 ¥399</th></tr>
+    <tr><td>系统安装+模型对接</td><td class="check">✅</td><td class="check">✅</td></tr>
+    <tr><td>避坑白皮书</td><td class="check">✅</td><td class="check">✅</td></tr>
+    <tr><td>FDE多节点架构</td><td class="cross">❌</td><td class="check">✅</td></tr>
+    <tr><td>Agent自动化脚本</td><td class="cross">❌</td><td class="check">✅</td></tr>
+    <tr><td>运维看板</td><td class="cross">❌</td><td class="check">✅</td></tr>
+    <tr><td>知识库搭建</td><td class="cross">❌</td><td class="check">✅</td></tr>
+    <tr><td>部署报告+运维手册</td><td class="cross">❌</td><td class="check">✅</td></tr>
+    <tr><td>指导周期</td><td>3天</td><td>7天</td></tr>
+  </table>
+</div>
+
+<!-- 服务流程 -->
+<div class="card">
+  <div class="card-title">服务流程</div>
+  <div class="step-row"><span class="step-num">1</span><span class="step-text">私信沟通 · 确认系统环境+需求</span></div>
+  <div class="step-row"><span class="step-num">2</span><span class="step-text">约定时间 · 远程安装（30-120分钟）</span></div>
+  <div class="step-row"><span class="step-num">3</span><span class="step-text">完成部署 · 交付配置文档+白皮书</span></div>
+  <div class="step-row"><span class="step-num">4</span><span class="step-text">持续支持 · 3天/7天一对一指导</span></div>
+</div>
+
+<!-- 系统要求 -->
+<div class="card">
+  <div class="card-title">系统要求</div>
+  <ul class="feature-list">
+    <li>💻 Windows / Linux / macOS（Ubuntu优先）</li>
+    <li>🌐 能远程连接（向日葵/Todesk）</li>
+    <li>📦 Node.js 环境（安装前我会检查）</li>
+    <li>💰 自备模型API Key（DeepSeek/Claude等）</li>
+  </ul>
+</div>
+
+<!-- CTA -->
+<div class="card highlight" style="text-align:center;">
+  <div class="card-title">准备好拥有自己的AI系统了吗？</div>
+  <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">私信确认环境 → 约定时间 → 远程部署</p>
+  <a class="btn btn-gold" href="#" onclick="alert('闲鱼搜索: YHmy\n或添加微信: Yhgc_2025\n\n备注: OpenClaw安装')">📱 闲鱼搜索 YHmy 联系我</a>
+  <p style="font-size:11px;color:#64748b;margin-top:6px;">或微信 Yhgc_2025 · 备注"OpenClaw安装"</p>
+</div>
+
+<!-- 免费咨询 -->
+<div class="card">
+  <div class="card-title">不确定适不适合？免费聊</div>
+  <p style="font-size:13px;color:#94a3b8;margin-bottom:8px;">15分钟免费诊断：环境评估 / 方案建议 / 可行性分析</p>
+  <a class="btn btn-outline" href="#" onclick="alert('闲鱼直接私信即可，不收费。\n搜索: YHmy')">💬 免费咨询</a>
+</div>
+
+<div class="footer">
+  <a href="/" style="color:#64748b;">← 返回工具箱</a> · OpenClaw 工具箱
+</div>
+
+<script>
+(function(){
+  var b=document.getElementById("proBadge");
+  if(!b)return;
+  if(typeof Pro!=="undefined"&&Pro.isPro()){b.textContent="PRO";b.style.background="linear-gradient(135deg,#f59e0b,#ef4444)";b.style.color="#fff";}
+  else{b.textContent="FREE";b.style.background="#334155";b.style.color="#94a3b8";}
+})();
+</script>
+</body>
+</html>

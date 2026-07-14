@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>🦞 OpenClaw 工具箱</title>
-<meta name="description" content="OpenClaw工具箱 — 免费在线工具：AI写作、小红书卡片生成器、简易记账、Logo设计需求提交、泰国工作生活指南">
+<title>OpenClaw 工具箱</title>
+<meta name="description" content="OpenClaw工具箱 — AI驱动的全域经营工具：交易信号、AI写作、闲鱼辅助、记账、跨境选品">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px 40px}
@@ -12,6 +12,8 @@ body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2
 .header .icon{font-size:48px;margin-bottom:8px}
 .header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .header .sub{font-size:12px;color:#64748b;margin-top:4px}
+.promo-bar{background:linear-gradient(135deg,#1e3a5f,#312e81);border:1px solid #3b82f6;border-radius:10px;padding:10px 16px;margin-bottom:16px;text-align:center;font-size:13px}
+.promo-bar a{color:#38bdf8;font-weight:600;text-decoration:underline}
 .section{margin-bottom:20px}
 .section-title{font-size:13px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px}
 .card{display:flex;align-items:center;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;margin-bottom:8px;text-decoration:none;color:#e2e8f0;transition:all .15s}
@@ -26,23 +28,31 @@ body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2
 .badge-hot{background:#ef4444;color:#fff}
 .footer{text-align:center;padding:30px 0 20px;font-size:11px;color:#475569}
 .footer a{color:#64748b}
-.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100}.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}.cta-bar .cta-divider{color:#334155;margin:0 8px}
+.cta-bar{position:sticky;bottom:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-top:1px solid #334155;padding:12px 16px;text-align:center;z-index:100}
+.cta-bar .cta-text{font-size:12px;color:#94a3b8;margin-bottom:4px}
+.cta-bar .cta-links{font-size:13px;font-weight:600;color:#38bdf8}
+.cta-bar .cta-divider{color:#334155;margin:0 8px}
+.status-block{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px 16px;margin-bottom:20px}
+.status-block .status-title{font-size:13px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.status-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid #1e293b}
+.status-row:last-child{border-bottom:none}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;background:#22c55e}
+.status-val{color:#94a3b8;font-family:monospace;font-size:11px}
+.status-ts{font-size:10px;color:#475569;text-align:right;margin-top:8px}
 </style>
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag("js", new Date());
-gtag("config", "G-XXXXXXXXXX");
-</script>
 </head>
 <body>
 
 <div class="header">
   <div class="icon">🦞</div>
-  <h1>OpenClaw 工具箱</h1>
+  <script src="/pro-check.js"></script>
+<h1>OpenClaw 全域助手</h1>
+  <p class="sub">AI驱动的全域经营工具 · 从个人副业到企业级方案 <span id="proBadgeTop" style="font-size:10px;padding:2px 8px;border-radius:4px;margin-left:6px;font-weight:600;"></span></p>
+  <a href="/settings.html" style="display:inline-block;margin-top:6px;font-size:11px;color:#64748b;text-decoration:underline;">⚙ Pro 订阅管理</a>
+</div>
 
+<div class="promo-bar">
+  Pro版 $19.9/月 限时开放 <a href="/pricing/">查看定价 →</a>
 </div>
 
 <div class="section">
@@ -146,7 +156,7 @@ gtag("config", "G-XXXXXXXXXX");
 </div>
 
 <div class="section">
-  <div class="section-title">📦 服务 &amp; 案例</div>
+  <div class="section-title">📦 服务 & 案例</div>
   <a class="card" href="/services/">
     <span class="emoji">📝</span>
     <div class="info">
@@ -165,17 +175,71 @@ gtag("config", "G-XXXXXXXXXX");
   </a>
 </div>
 
+<div class="section">
+  <div class="section-title">💎 会员服务</div>
+  <a class="card" href="/pricing/">
+    <span class="emoji">💎</span>
+    <div class="info">
+      <div class="name">升级 Pro 会员<span class="badge badge-hot">HOT</span></div>
+      <div class="desc">$19.9/月解锁全部功能 · 交易信号 · 闲鱼辅助 · 不限次AI写作</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="/trial/">
+    <span class="emoji">🎁</span>
+    <div class="info">
+      <div class="name">免费试用 3 天</div>
+      <div class="desc">全功能体验 · 无需付费 · 24小时内开通</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="section">
+  <div class="section">
+  <div class="section-title">🦞 热门服务</div>
+  <a class="card" href="/install-service.html">
+    <span class="emoji">🦞</span>
+    <div class="info">
+      <div class="name">OpenClaw AI系统代安装<span class="badge badge-hot">NEW</span></div>
+      <div class="desc">远程部署 · ¥199起 · 含FDE灾难恢复方案</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="section">
+  <div class="section-title">📡 系统状态</div>
+  <div class="status-block">
+    <div class="status-row"><span><span class="status-dot"></span>EQ14 Gateway</span><span class="status-val">100.87.49.51:18789 🟢</span></div>
+    <div class="status-row"><span><span class="status-dot"></span>i3 Gateway</span><span class="status-val">100.90.165.58:18789 🟢</span></div>
+    <div class="status-row"><span><span class="status-dot"></span>Alienware Gateway</span><span class="status-val">100.64.146.127:18790 🟢</span></div>
+    <div class="status-row"><span><span class="status-dot"></span>Bridge</span><span class="status-val">:8088 🟢</span></div>
+    <div class="status-row"><span><span class="status-dot"></span>Cron 任务</span><span class="status-val">29个 · 28正常</span></div>
+    <div class="status-row"><span><span class="status-dot"></span>FDE 同步</span><span class="status-val">双方向 🟢</span></div>
+    <div class="status-ts">最后更新：2026-07-14 19:00 CST · CONSTITUTION v1.5</div>
+  </div>
+</div>
+
 <div class="footer">
   Powered by <a href="https://openclaw.ai" target="_blank">OpenClaw</a> · 三节点全域AI助手
 </div>
 
 <div class="cta-bar">
-  <div class="cta-text">需要更专业的定制服务？</div>
+  <div class="cta-text">Pro版 $19.9/月 限时开放 · 解锁全部功能</div>
   <div class="cta-links">
-    <span>闲鱼搜 YHmy</span>
+    <a href="/pricing/" style="color:#38bdf8;text-decoration:underline;">查看定价</a>
     <span class="cta-divider">|</span>
-    <span>微信 Yhgc_2025</span>
+    <a href="/trial/" style="color:#38bdf8;text-decoration:underline;">免费试用</a>
   </div>
 </div>
+<script>
+(function(){
+  var b=document.getElementById("proBadgeTop");
+  if(!b)return;
+  if(typeof Pro!=="undefined"</body></body>Pro.isPro()){b.textContent="PRO";b.style.background="linear-gradient(135deg,#f59e0b,#ef4444)";b.style.color="#fff";}
+  else{b.textContent="FREE";b.style.background="#334155";b.style.color="#94a3b8";}
+})();
+</script>
 </body>
 </html>
