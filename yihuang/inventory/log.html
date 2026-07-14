@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>库存日志 — 谊璜贸易</title>
+<link rel="stylesheet" href="../_shared/css/yihuang.css">
+<style>
+.log-entry { padding:10px 12px; border-bottom:1px solid #334155; font-size:13px; display:flex; justify-content:space-between; align-items:center; }
+.log-in { border-left:3px solid #22c55e; }
+.log-out { border-left:3px solid #ef4444; }
+.log-adj { border-left:3px solid #fbbf24; }
+.log-meta { font-size:11px; color:#64748b; }
+.log-detail { font-weight:600; }
+.alert-card { border:1px solid #ef4444; border-radius:8px; padding:12px; margin:8px 0; background:#1a0f0f; }
+.alert-warn { border-color:#f59e0b; background:#1a150f; }
+.alert-ok { border-color:#22c55e; background:#0f1a0f; }
+.badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+.badge-red { background:#7f1d1d; color:#fca5a5; }
+.badge-yellow { background:#713f12; color:#fde68a; }
+.badge-green { background:#14532d; color:#86efac; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>库存日志</h1>
+  <p class="sub" id="summaryStats"></p>
+</div>
+
+<div class="card">
+  <div class="card-title">安全库存预警</div>
+  <div id="alertsContainer"></div>
+</div>
+
+<div class="card">
+  <div class="card-title">出入库记录</div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;">
+    <select id="logFilter" onchange="renderLogs()" style="flex:1;padding:8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;">
+      <option value="all">全部记录</option>
+      <option value="in">入库</option>
+      <option value="out">出库</option>
+      <option value="adj">盘点调整</option>
+    </select>
+  </div>
+  <div id="logsContainer"></div>
+</div>
+
+<div class="card">
+  <div class="card-title">库存盘点</div>
+  <p style="font-size:13px;color:#94a3b8;margin-bottom:8px;">选择产品，输入实际盘点数量，自动计算差异</p>
+  <select id="checkProduct" style="width:100%;padding:10px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;margin-bottom:8px;">
+    <option value="">-- 选择产品 --</option>
+  </select>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+    <span style="font-size:13px;color:#94a3b8;">系统库存:</span>
+    <span id="sysQty" style="font-size:16px;font-weight:600;">-</span>
+    <span style="font-size:13px;color:#94a3b8;margin-left:12px;">实际盘点:</span>
+    <input type="number" id="actualQty" min="0" style="width:80px;padding:8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;" oninput="calcDiff()">
+    <span style="font-size:13px;color:#94a3b8;">差异:</span>
+    <span id="diffQty" style="font-size:16px;font-weight:700;">-</span>
+  </div>
+  <button class="btn btn-primary" onclick="submitCheck()" style="width:100%;">提交盘点</button>
+</div>
+
+<div class="card">
+  <div class="card-title">CSV 导入导出</div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-outline" onclick="exportCSV()" style="flex:1;">导出 CSV</button>
+    <label class="btn btn-outline" style="flex:1;text-align:center;cursor:pointer;">
+      导入 CSV
+      <input type="file" accept=".csv" onchange="importCSV(event)" style="display:none;">
+    </label>
+  </div>
+  <p style="font-size:11px;color:#64748b;margin-top:8px;">CSV格式: 产品名称,数量,安全库存,单位,成本价</p>
+</div>
+
+<div class="footer">谊璜贸易系统 · 库存日志</div>
+<nav class="bottom-nav" id="bottomNav"></nav>
+
+<script src="../_shared/js/yihuang-db.js"></script>
+<script src="../_shared/js/yihuang.js"></script>
+<script>
+const LOG_KEY = 'yihuang_inventory_log';
+
+function getLogs() {
+  try { return JSON.parse(localStorage.getItem(LOG_KEY)) || []; }
+  catch(e) { return []; }
+}
+
+function addLog(itemId, itemName, type, before, after, operator) {
+  const logs = getLogs();
+  logs.unshift({
+    id: YH.genId(), itemId, itemName, type, before, after,
+    delta: after - before,
+    operator: operator || 'WK',
+    time: new Date().toISOString()
+  });
+  // Keep max 500 entries
+  if (logs.length > 500) logs.length = 500;
+  localStorage.setItem(LOG_KEY, JSON.stringify(logs));
+}
+
+function renderAlerts() {
+  const inv = YH.getInventory();
+  const alerts = inv.filter(i => i.quantity <= (i.safetyStock || 10));
+  const container = document.getElementById('alertsContainer');
+
+  if (alerts.length === 0) {
+    container.innerHTML = '<div class="alert-ok" style="padding:12px;border-radius:8px;text-align:center;font-size:13px;">所有产品库存安全</div>';
+  } else {
+    container.innerHTML = alerts.map(i => {
+      const ratio = i.quantity / (i.safetyStock || 10);
+      const cls = ratio <= 0.5 ? 'alert-card' : 'alert-warn';
+      const badge = ratio <= 0.5 ? '<span class="badge badge-red">紧急</span>' : '<span class="badge badge-yellow">预警</span>';
+      return `<div class="${cls}">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-weight:600;">${i.name || i.productName || i.id}</span>${badge}
+        </div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">当前: ${i.quantity} | 安全线: ${i.safetyStock||10} | 占比: ${Math.round(ratio*100)}%</div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('summaryStats').textContent =
+    `总计 ${inv.length} 产品 | ${alerts.length} 个预警`;
+}
+
+function renderLogs() {
+  let logs = getLogs();
+  const filter = document.getElementById('logFilter').value;
+  if (filter !== 'all') logs = logs.filter(l => l.type === filter);
+
+  document.getElementById('logsContainer').innerHTML = logs.length === 0
+    ? '<p style="color:#64748b;text-align:center;padding:20px;">暂无记录</p>'
+    : logs.map(l => {
+        const cls = l.type === 'in' ? 'log-in' : l.type === 'out' ? 'log-out' : 'log-adj';
+        const sign = l.delta >= 0 ? '+' : '';
+        const sym = l.type === 'in' ? '↓' : l.type === 'out' ? '↑' : '↻';
+        return `<div class="log-entry ${cls}">
+          <div>
+            <div class="log-detail">${sym} ${l.itemName||l.itemId} ${sign}${l.delta}</div>
+            <div class="log-meta">${l.operator} · ${new Date(l.time).toLocaleString('zh-CN')}</div>
+          </div>
+          <div style="text-align:right;font-size:13px;">${l.before} → ${l.after}</div>
+        </div>`;
+      }).join('');
+}
+
+function loadProducts() {
+  const inv = YH.getInventory();
+  const sel = document.getElementById('checkProduct');
+  inv.forEach(i => {
+    const opt = document.createElement('option');
+    opt.value = i.id;
+    opt.textContent = `${i.name||i.productName||i.id} (系统:${i.quantity})`;
+    opt.dataset.qty = i.quantity;
+    sel.appendChild(opt);
+  });
+}
+
+document.getElementById('checkProduct').addEventListener('change', function() {
+  const opt = this.selectedOptions[0];
+  const qty = opt ? parseInt(opt.dataset.qty) : 0;
+  document.getElementById('sysQty').textContent = qty;
+  calcDiff();
+});
+
+function calcDiff() {
+  const sys = parseInt(document.getElementById('sysQty').textContent) || 0;
+  const actual = parseInt(document.getElementById('actualQty').value);
+  if (isNaN(actual)) { document.getElementById('diffQty').textContent = '-'; return; }
+  const diff = actual - sys;
+  const el = document.getElementById('diffQty');
+  el.textContent = (diff >= 0 ? '+' : '') + diff;
+  el.style.color = diff === 0 ? '#94a3b8' : diff > 0 ? '#86efac' : '#fca5a5';
+}
+
+function submitCheck() {
+  const sel = document.getElementById('checkProduct');
+  if (!sel.value) return alert('请选择产品');
+  const actual = parseInt(document.getElementById('actualQty').value);
+  if (isNaN(actual)) return alert('请输入实际盘点数量');
+  const sys = parseInt(document.getElementById('sysQty').textContent);
+
+  const inv = YH.getInventory();
+  const idx = inv.findIndex(i => i.id === sel.value);
+  if (idx === -1) return;
+
+  const name = inv[idx].name || inv[idx].productName || sel.value;
+  addLog(inv[idx].id, name, 'adj', inv[idx].quantity, actual, '盘点');
+  inv[idx].quantity = actual;
+  inv[idx].updatedAt = new Date().toISOString();
+  YH.saveInventory(inv);
+
+  alert(`盘点完成! 差异: ${actual - sys >= 0 ? '+' : ''}${actual - sys}`);
+  location.reload();
+}
+
+function exportCSV() {
+  const inv = YH.getInventory();
+  let csv = '产品名称,数量,安全库存,单位,成本价\n';
+  inv.forEach(i => {
+    csv += `${i.name||i.productName||''},${i.quantity||0},${i.safetyStock||10},${i.unit||'个'},${i.costPrice||0}\n`;
+  });
+  const blob = new Blob(['﻿' + csv], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'inventory_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+function importCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.split('\n').slice(1);
+    const inv = YH.getInventory();
+    let added = 0;
+    lines.forEach(line => {
+      if (!line.trim()) return;
+      const cols = line.split(',');
+      if (cols.length < 2) return;
+      inv.push({
+        id: YH.genId(),
+        name: cols[0].trim(),
+        quantity: parseInt(cols[1]) || 0,
+        safetyStock: parseInt(cols[2]) || 10,
+        unit: (cols[3]||'').trim() || '个',
+        costPrice: parseFloat(cols[4]) || 0,
+        updatedAt: new Date().toISOString()
+      });
+      added++;
+    });
+    YH.saveInventory(inv);
+    alert(`导入完成! 新增 ${added} 个产品`);
+    location.reload();
+  };
+  reader.readAsText(file);
+}
+
+function init() {
+  loadProducts();
+  renderAlerts();
+  renderLogs();
+  if (typeof renderBottomNav === 'function') {
+    document.getElementById('bottomNav').innerHTML = renderBottomNav('inventory');
+  }
+}
+init();
+</script>
+</body>
+</html>
