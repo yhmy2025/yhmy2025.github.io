@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>谊璜贸易系统</title>
+<link rel="stylesheet" href="_shared/css/yihuang.css">
+<style>
+.home-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:16px; }
+.home-card { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:20px 14px; text-align:center; text-decoration:none; color:#e2e8f0; transition:all .15s; }
+.home-card:hover { border-color:#3b82f6; background:#1e3a5f; transform:translateY(-2px); }
+.home-card .icon { font-size:32px; display:block; margin-bottom:8px; }
+.home-card .title { font-size:15px; font-weight:700; margin-bottom:4px; }
+.home-card .desc { font-size:11px; color:#94a3b8; }
+.hero { text-align:center; padding:24px 16px 8px; }
+.hero h1 { font-size:24px; margin-bottom:4px; }
+.hero .sub { font-size:13px; color:#94a3b8; }
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>📦 谊璜贸易系统</h1>
+  <p class="sub">贸易全流程管理 · 数据驱动决策</p>
+</div>
+
+<div class="home-grid">
+  <a href="dashboard/" class="home-card">
+    <span class="icon">📊</span>
+    <div class="title">经营看板</div>
+    <div class="desc">核心指标 · 库存预警 · 动态总览</div>
+  </a>
+  <a href="crm/" class="home-card">
+    <span class="icon">👥</span>
+    <div class="title">客户管理</div>
+    <div class="desc">客户档案 · 等级分类 · 来源追踪</div>
+  </a>
+  <a href="orders/" class="home-card">
+    <span class="icon">📋</span>
+    <div class="title">订单管理</div>
+    <div class="desc">订单跟踪 · 状态流转 · 交付记录</div>
+  </a>
+  <a href="finance/" class="home-card">
+    <span class="icon">💰</span>
+    <div class="title">财务管理</div>
+    <div class="desc">收支记录 · 利润核算 · 对账</div>
+  </a>
+  <a href="quotes/" class="home-card">
+    <span class="icon">📝</span>
+    <div class="title">报价单</div>
+    <div class="desc">快速报价 · PDF导出 · 历史记录</div>
+  </a>
+  <a href="suppliers/" class="home-card">
+    <span class="icon">🏭</span>
+    <div class="title">供应商管理</div>
+    <div class="desc">供应商档案 · 评分体系 · 采购记录</div>
+  </a>
+  <a href="inventory/" class="home-card">
+    <span class="icon">📦</span>
+    <div class="title">库存看板</div>
+    <div class="desc">库存监控 · 安全预警 · 出入库记录</div>
+  </a>
+  <a href="tasks/" class="home-card">
+    <span class="icon">✅</span>
+    <div class="title">任务管理</div>
+    <div class="desc">待办追踪 · 优先级 · 进度管理</div>
+  </a>
+</div>
+
+<div class="footer" style="margin-top:16px;">谊璜贸易系统 · v2.0</div>
+</body>
+</html>
