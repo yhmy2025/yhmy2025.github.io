@@ -250,6 +250,21 @@ function saveQuote() {
     date: new Date().toISOString().slice(0, 10),
   });
 
+  // Also save to localStorage for history page
+  const STORAGE_KEY = 'yihuang_quote_history';
+  const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  history.push({
+    quoteId: currentQuoteId,
+    clientId, clientName: client.name || client.company || '',
+    rawItems: JSON.parse(JSON.stringify(items)),
+    itemCount: items.length,
+    markup, note, validDays,
+    totalCost, totalPrice,
+    products: items.map(i => i.productName || i.productId || '-').join(', '),
+    savedAt: new Date().toISOString()
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+
   const toast = document.getElementById('toast');
   toast.textContent = '报价单 ' + currentQuoteId + ' 已保存';
   toast.classList.add('show');

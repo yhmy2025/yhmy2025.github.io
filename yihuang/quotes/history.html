@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>报价历史 — 谊璜贸易</title>
+<link rel="stylesheet" href="../_shared/css/yihuang.css">
+<style>
+.history-item { padding:12px; border-bottom:1px solid #334155; cursor:pointer; transition:background .2s; }
+.history-item:hover { background:#1e293b; }
+.history-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+.history-client { font-weight:600; font-size:14px; }
+.history-date { font-size:11px; color:#64748b; }
+.history-summary { font-size:12px; color:#94a3b8; }
+.history-actions { display:flex; gap:4px; margin-top:6px; }
+.history-actions button { font-size:11px; padding:3px 10px; border-radius:4px; border:none; cursor:pointer; }
+.btn-view { background:#1e3a5f; color:#93c5fd; }
+.btn-copy { background:#14532d; color:#86efac; }
+.btn-delete { background:#7f1d1d; color:#fca5a5; }
+.search-bar { margin-bottom:12px; }
+.search-bar input { width:100%; padding:10px; background:#0f172a; color:#e2e8f0; border:1px solid #334155; border-radius:6px; font-size:14px; }
+.empty-state { text-align:center; padding:48px 16px; color:#64748b; }
+.count-badge { background:#1e3a5f; color:#93c5fd; padding:2px 8px; border-radius:10px; font-size:11px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>报价历史</h1>
+  <p class="sub" id="countDisplay"></p>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="搜索客户名/编号/产品..." oninput="renderList()">
+</div>
+
+<div id="historyList"></div>
+<div id="emptyState" class="empty-state" style="display:none">
+  <p>暂无报价记录</p>
+  <p style="font-size:12px;margin-top:4px;">生成报价后自动保存在这里</p>
+  <a href="index.html" class="btn btn-outline" style="margin-top:12px;">去生成报价</a>
+</div>
+
+<script src="../_shared/js/yihuang-db.js"></script>
+<script src="../_shared/js/yihuang.js"></script>
+<script>
+const STORAGE_KEY = 'yihuang_quote_history';
+
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function saveHistory(list) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+function renderList() {
+  const all = getHistory();
+  const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  const filtered = q ? all.filter(item =>
+    (item.clientName || '').toLowerCase().includes(q) ||
+    (item.quoteId || '').toLowerCase().includes(q) ||
+    (item.products || '').toLowerCase().includes(q)
+  ) : all;
+
+  document.getElementById('countDisplay').innerHTML =
+    `共 <span class="count-badge">${all.length}</span> 条记录` +
+    (q ? ` · 匹配 <span class="count-badge">${filtered.length}</span>` : '');
+
+  const container = document.getElementById('historyList');
+  const empty = document.getElementById('emptyState');
+
+  if (!all.length) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  if (!filtered.length) {
+    container.innerHTML = '<div class="empty-state"><p>无匹配记录</p></div>';
+    return;
+  }
+
+  container.innerHTML = filtered.slice().reverse().map((item, idx) => {
+    const ts = item.savedAt ? new Date(item.savedAt).toLocaleString('zh-CN') : '未知';
+    const summary = item.itemCount ? `${item.itemCount} 项 · ¥${(item.totalPrice||0).toFixed(2)}` : '';
+    return `
+      <div class="history-item">
+        <div class="history-meta">
+          <span class="history-client">${item.clientName || '未命名客户'}</span>
+          <span class="history-date">${ts}</span>
+        </div>
+        <div class="history-summary">编号: ${item.quoteId || '-'} &nbsp; ${summary}</div>
+        <div class="history-actions">
+          <button class="btn-view" onclick="viewQuote(${idx})">查看</button>
+          <button class="btn-copy" onclick="copyAsTemplate(${idx})">复制为模板</button>
+          <button class="btn-delete" onclick="deleteQuote(${idx})">删除</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function viewQuote(idx) {
+  const all = getHistory();
+  const item = all[all.length - 1 - idx];
+  if (!item) return;
+  const params = new URLSearchParams({
+    from: item.quoteId,
+    client: item.clientId || '',
+    items: JSON.stringify(item.rawItems || []),
+    markup: item.markup || '',
+    note: item.note || ''
+  });
+  window.location.href = 'index.html?' + params;
+}
+
+function copyAsTemplate(idx) {
+  const all = getHistory();
+  const item = all[all.length - 1 - idx];
+  if (!item) return;
+  localStorage.setItem('yihuang_quote_template', JSON.stringify({
+    clientId: item.clientId,
+    clientName: item.clientName,
+    rawItems: item.rawItems || [],
+    markup: item.markup
+  }));
+  showToast('已复制为模板，去生成报价');
+  setTimeout(() => window.location.href = 'index.html', 800);
+}
+
+function deleteQuote(idx) {
+  if (!confirm('确认删除这条报价记录？')) return;
+  const all = getHistory();
+  all.splice(all.length - 1 - idx, 1);
+  saveHistory(all);
+  renderList();
+}
+
+function showToast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast show';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
+}
+
+renderList();
+</script>
+<style>
+.toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#22c55e; color:#fff; padding:10px 24px; border-radius:20px; font-size:14px; z-index:1000; }
+.toast.show { opacity:1; }
+</style>
+</body>
+</html>
