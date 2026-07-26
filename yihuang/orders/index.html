@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>谊璜贸易 · 订单管理</title>
+<link rel="stylesheet" href="../_shared/css/yihuang.css">
+<style>
+.order-card .oc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.order-card .oc-id{font-size:11px;color:var(--text-muted);font-family:monospace}
+.order-card .oc-client{font-size:14px;font-weight:700}
+.order-card .oc-amount{font-size:20px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.order-card .oc-info{font-size:11px;color:var(--text-secondary);line-height:1.6;margin-top:4px}
+.order-card .oc-status{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.oc-status.quote{background:rgba(56,189,248,.15);color:#38bdf8}
+.oc-status.confirmed{background:rgba(251,191,36,.15);color:#fbbf24}
+.oc-status.processing{background:rgba(129,140,248,.15);color:#818cf8}
+.oc-status.shipped{background:rgba(52,211,153,.15);color:#34d399}
+.oc-status.completed{background:rgba(34,197,94,.15);color:#22c55e}
+.oc-status.cancelled{background:rgba(239,68,68,.15);color:#ef4444}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="tb-left">
+    <div class="tb-brand">📦 订单管理</div>
+    <div class="tb-sub">订单全生命周期跟踪</div>
+  </div>
+  <div class="tb-right"><span class="tb-badge">v2.1</span></div>
+</div>
+
+<div class="summary-bar" id="summary"></div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="搜索订单号/客户/产品..." oninput="render()">
+  <button onclick="openPopup()">+ 新建</button>
+</div>
+
+<div class="filter-tabs" id="filterTabs"></div>
+
+<div id="orderList"></div>
+
+<div class="popup-overlay" id="popup">
+  <div class="popup">
+    <h3 id="popupTitle">📦 新建订单</h3>
+    <label>客户名称 <span style="color:var(--danger)">*</span></label>
+    <input type="text" id="orderClient" placeholder="输入或选择已有客户" list="clientList">
+    <datalist id="clientList"></datalist>
+    <label>产品</label>
+    <select id="orderProduct" onchange="autoCalc()">
+      <option value="">-- 选择产品 --</option>
+    </select>
+    <label>数量</label>
+    <input type="number" id="orderQuantity" placeholder="1" value="1" min="1" oninput="autoCalc()">
+    <label>金额 (¥) <span style="color:var(--danger)">*</span></label>
+    <input type="number" id="orderAmount" placeholder="0.00" step="0.01">
+    <label>关联供应商</label>
+    <select id="orderSupplier">
+      <option value="">-- 选择供应商 --</option>
+    </select>
+    <label>订单状态</label>
+    <select id="orderStatus">
+      <option value="quote">报价中</option><option value="confirmed">已确认</option>
+      <option value="processing">处理中</option><option value="shipped">已发货</option>
+      <option value="completed">已完成</option><option value="cancelled">已取消</option>
+    </select>
+    <label>备注</label>
+    <textarea id="orderNotes" rows="2" placeholder="备注信息..."></textarea>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closePopup()">取消</button>
+      <button class="btn btn-primary" onclick="save()">✅ 保存</button>
+    </div>
+    <input type="hidden" id="editId">
+  </div>
+</div>
+
+<script src="../_shared/js/yihuang.js"></script>
+<script src="../_shared/js/yihuang-db.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let filter='all';
+let previousStatus=null;
+
+function autoCalc(){
+  const pid=$('orderProduct').value;
+  const qty=parseInt($('orderQuantity').value)||1;
+  if(!pid)return;
+  const products=YH.getProducts();
+  const p=products.find(x=>x.id===pid);
+  if(p){
+    $('orderAmount').value=((p.costPrice||0)*qty).toFixed(2);
+  }
+}
+
+function render(){
+  const q=$('searchInput').value.toLowerCase();
+  let f=YH.getOrders();
+  if(filter!=='all')f=f.filter(o=>o.status===filter);
+  if(q)f=f.filter(o=>(o.id||'').toLowerCase().includes(q)||(o.client||'').toLowerCase().includes(q)||(o.product||'').toLowerCase().includes(q));
+
+  const orders=YH.getOrders();
+  const total=orders.length;
+  const active=orders.filter(o=>!['completed','cancelled'].includes(o.status)).length;
+  const totalAmt=orders.reduce((s,o)=>s+parseFloat(o.amount||0),0);
+  $('summary').innerHTML=`
+    <div class="summary-item"><div class="si-value">${total}</div><div class="si-label">总订单</div></div>
+    <div class="summary-item"><div class="si-value">${active}</div><div class="si-label">进行中</div></div>
+    <div class="summary-item"><div class="si-value">¥${totalAmt.toFixed(0)}</div><div class="si-label">总金额</div></div>`;
+
+  const statusMap={'all':'全部','quote':'报价','confirmed':'已确认','processing':'处理中','shipped':'已发货','completed':'已完成','cancelled':'已取消'};
+  $('filterTabs').innerHTML=Object.entries(statusMap).map(([k,v])=>`<div class="filter-tab ${filter===k?'active':''}" onclick="filter='${k}';render()">${v}</div>`).join('');
+
+  const el=$('orderList');
+  if(!f.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">暂无订单</div><div class="empty-desc">点击"+新建"创建第一个订单</div></div>';
+    return;
+  }
+  f.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const sm={quote:'报价中',confirmed:'已确认',processing:'处理中',shipped:'已发货',completed:'已完成',cancelled:'已取消'};
+  el.innerHTML=f.map(o=>{
+    const productName=o.productName||o.product||'';
+    const supplierName=o.supplierName||'';
+    return `
+    <div class="item-card order-card fade-in">
+      <div class="oc-header">
+        <span class="oc-id">#${o.id.slice(-6)}</span>
+        <span class="oc-status ${o.status}">${sm[o.status]}</span>
+      </div>
+      <div class="oc-client">${o.client}</div>
+      <div class="oc-amount">¥${parseFloat(o.amount||0).toFixed(2)}</div>
+      <div class="oc-info">
+        ${productName?'📦 '+productName+'':''}${o.quantity?' ×'+o.quantity:''}
+        ${supplierName?'<br>🏭 '+supplierName:''}
+        <br>📅 ${o.createdAt?formatDate(o.createdAt):'-'}
+        ${o.notes?'<br>💬 '+o.notes:''}
+      </div>
+      <div class="actions">
+        <span class="act-edit" onclick="edit('${o.id}')">✏️ 编辑</span>
+        <span class="act-delete" onclick="del('${o.id}')">🗑 删除</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openPopup(){
+  $('popupTitle').textContent='📦 新建订单';$('editId').value='';
+  ['orderClient','orderAmount','orderQuantity'].forEach(id=>$(id).value='');
+  $('orderQuantity').value='1';
+  $('orderProduct').value='';$('orderSupplier').value='';
+  $('orderNotes').value='';$('orderStatus').value='quote';
+  previousStatus='quote';
+
+  // Load client datalist
+  const clients=YH.getClients();
+  $('clientList').innerHTML=clients.map(c=>`<option value="${c.name}">`).join('');
+
+  // Load product dropdown
+  const products=YH.getProducts();
+  $('orderProduct').innerHTML='<option value="">-- 选择产品 --</option>'+products.map(p=>{
+    const sup=YH.getSupplierById(p.supplierId);
+    return `<option value="${p.id}" data-price="${p.costPrice||0}" data-name="${p.name||p.sku||''}">${p.name||p.sku||''} (¥${p.costPrice||0})${sup?' ['+sup.name+']':''}</option>`;
+  }).join('');
+
+  // Load supplier dropdown
+  const suppliers=YH.getSuppliers();
+  $('orderSupplier').innerHTML='<option value="">-- 选择供应商 --</option>'+suppliers.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+
+  $('popup').classList.add('show');
+}
+function closePopup(){$('popup').classList.remove('show')}
+
+function save(){
+  const client=$('orderClient').value.trim(),amount=parseFloat($('orderAmount').value)||0;
+  if(!client)return showToast('请输入客户名称');
+  if(!amount||amount<=0)return showToast('请输入有效金额');
+
+  const editId=$('editId').value;
+  const pid=$('orderProduct').value;
+  const sid=$('orderSupplier').value;
+  const productNameOpt=$('orderProduct').selectedOptions[0]?.dataset?.name||'';
+  const supplierName=sid?YH.getSupplierById(sid)?.name||'':'';
+
+  const obj={
+    client,amount,quantity:parseInt($('orderQuantity').value)||1,
+    product:productNameOpt,productId:pid||'',
+    supplierId:sid||'',supplierName,
+    status:$('orderStatus').value,
+    notes:$('orderNotes').value.trim()
+  };
+
+  if(editId){
+    const orders=YH.getOrders();
+    const o=orders.find(x=>x.id===editId);
+    if(o){
+      const oldStatus=o.status;
+      Object.assign(o,obj);
+      YH.saveOrders(orders);
+      // If new status is completed and wasn't before, create income
+      if(obj.status==='completed'&&oldStatus!=='completed'){
+        YH.addTransaction({amount,type:'income',category:'主营业务收入',note:'订单完成收入: '+client,date:today()});
+      }
+    }
+  }else{
+    obj.id=YH.genId();obj.createdAt=now();
+    YH.addOrder(obj);
+    // If new order immediately completed, create income
+    if(obj.status==='completed'){
+      YH.addTransaction({amount,type:'income',category:'主营业务收入',note:'订单完成收入: '+client,date:today()});
+    }
+  }
+  render();closePopup();showToast('✅ 已保存');
+}
+function edit(id){
+  const o=YH.getOrders().find(x=>x.id===id);
+  if(!o)return;
+  $('popupTitle').textContent='✏️ 编辑订单';$('editId').value=id;
+  $('orderClient').value=o.client;$('orderAmount').value=o.amount;
+  $('orderQuantity').value=o.quantity||1;
+  $('orderNotes').value=o.notes||'';$('orderStatus').value=o.status;
+  previousStatus=o.status;
+
+  // Reload products + suppliers + client datalist
+  const clients=YH.getClients();
+  $('clientList').innerHTML=clients.map(c=>`<option value="${c.name}">`).join('');
+  const products=YH.getProducts();
+  $('orderProduct').innerHTML='<option value="">-- 选择产品 --</option>'+products.map(p=>{
+    const sup=YH.getSupplierById(p.supplierId);
+    return `<option value="${p.id}" data-price="${p.costPrice||0}" data-name="${p.name||p.sku||''}" ${p.id===o.productId?'selected':''}>${p.name||p.sku||''} (¥${p.costPrice||0})${sup?' ['+sup.name+']':''}</option>`;
+  }).join('');
+  const suppliers=YH.getSuppliers();
+  $('orderSupplier').innerHTML='<option value="">-- 选择供应商 --</option>'+suppliers.map(s=>`<option value="${s.id}" ${s.id===o.supplierId?'selected':''}>${s.name}</option>`).join('');
+
+  $('popup').classList.add('show');
+}
+function del(id){
+  if(!confirm('确定删除此订单？'))return;
+  const orders=YH.getOrders();
+  YH.saveOrders(orders.filter(o=>o.id!==id));
+  render();showToast('🗑 已删除');
+}
+
+document.querySelectorAll('.popup-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')})});
+render();
+</script>
+
+<div class="bottom-nav" id="bottomNav"></div>
+<script>document.getElementById('bottomNav').innerHTML=renderBottomNav('orders');</script>
+</body>
+</html>

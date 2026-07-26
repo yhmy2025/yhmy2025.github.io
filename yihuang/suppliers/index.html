@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>谊璜贸易 · 供应商管理</title>
+<link rel="stylesheet" href="../_shared/css/yihuang.css">
+<style>
+.sup-card .sc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sup-card .sc-name{font-size:14px;font-weight:700}
+.sup-card .sc-stars{color:#f59e0b;font-size:12px;letter-spacing:1px}
+.sup-card .sc-meta{font-size:11px;color:var(--text-secondary);line-height:1.6;margin-top:4px}
+.sup-card .sc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.sup-card .sc-tags span{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:600}
+.tag-active{background:rgba(34,197,94,.15);color:#22c55e}
+.tag-inactive{background:rgba(148,163,184,.15);color:#94a3b8}
+.tag-blacklisted{background:rgba(239,68,68,.15);color:#ef4444}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="tb-left">
+    <div class="tb-brand">🏭 供应商管理</div>
+    <div class="tb-sub">供应商档案 · 合作管理</div>
+  </div>
+  <div class="tb-right"><span class="tb-badge">v2.1</span></div>
+</div>
+
+<div class="summary-bar" id="summary"></div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="搜索供应商名称/联系人..." oninput="render()">
+  <button onclick="openPopup()">+ 新增</button>
+</div>
+
+<div class="filter-tabs" id="filterTabs"></div>
+
+<div id="supplierList"></div>
+
+<div class="popup-overlay" id="popup">
+  <div class="popup">
+    <h3 id="popupTitle">🏭 新增供应商</h3>
+    <label>名称 <span style="color:var(--danger)">*</span></label>
+    <input type="text" id="supName" placeholder="供应商名称">
+    <label>公司全称</label>
+    <input type="text" id="supCompany" placeholder="营业执照全称">
+    <label>联系人</label>
+    <input type="text" id="supContact" placeholder="联系人姓名">
+    <label>电话</label>
+    <input type="text" id="supPhone" placeholder="联系电话">
+    <label>邮箱</label>
+    <input type="email" id="supEmail" placeholder="email@example.com">
+    <label>地址</label>
+    <input type="text" id="supAddress" placeholder="公司地址">
+    <label>银行账户</label>
+    <input type="text" id="supBank" placeholder="开户行及账号">
+    <label>合作起始日</label>
+    <input type="date" id="supStartDate">
+    <label>合作状态</label>
+    <select id="supStatus">
+      <option value="active">✅ 合作中</option>
+      <option value="inactive">⏸️ 暂停</option>
+      <option value="blacklisted">🚫 黑名单</option>
+    </select>
+    <label>备注</label>
+    <textarea id="supNotes" rows="2" placeholder="备注信息..."></textarea>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closePopup()">取消</button>
+      <button class="btn btn-primary" onclick="save()">✅ 保存</button>
+    </div>
+    <input type="hidden" id="editId">
+  </div>
+</div>
+
+<script src="../_shared/js/yihuang.js"></script>
+<script src="../_shared/js/yihuang-db.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let filter='all';
+
+function render(){
+  const q=$('searchInput').value.toLowerCase();
+  let suppliers=YH.getSuppliers();
+  if(filter==='active')suppliers=suppliers.filter(s=>s.status==='active');
+  else if(filter==='inactive')suppliers=suppliers.filter(s=>s.status==='inactive');
+  else if(filter==='blacklisted')suppliers=suppliers.filter(s=>s.status==='blacklisted');
+  if(q)suppliers=suppliers.filter(s=>(s.name||'').toLowerCase().includes(q)||(s.contact||'').toLowerCase().includes(q)||(s.company||'').toLowerCase().includes(q));
+
+  const all=YH.getSuppliers();
+  const total=all.length;
+  const active=all.filter(s=>s.status!=='inactive'&&s.status!=='blacklisted').length;
+  const avgScore=total?(all.reduce((s,x)=>s+(parseFloat(x.score)||0),0)/total).toFixed(1):'-';
+  $('summary').innerHTML=`
+    <div class="summary-item"><div class="si-value">${total}</div><div class="si-label">总供应商</div></div>
+    <div class="summary-item"><div class="si-value">${active}</div><div class="si-label">合作中</div></div>
+    <div class="summary-item"><div class="si-value">${avgScore}⭐</div><div class="si-label">平均评分</div></div>`;
+
+  const tabs=[
+    {id:'all',label:'全部('+total+')'},
+    {id:'active',label:'合作中('+all.filter(s=>s.status==='active').length+')'},
+    {id:'inactive',label:'暂停('+all.filter(s=>s.status==='inactive').length+')'},
+    {id:'blacklisted',label:'黑名单('+all.filter(s=>s.status==='blacklisted').length+')'}
+  ];
+  $('filterTabs').innerHTML=tabs.map(t=>`<div class="filter-tab ${filter===t.id?'active':''}" onclick="filter='${t.id}';render()">${t.label}</div>`).join('');
+
+  const el=$('supplierList');
+  if(!suppliers.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">🏭</div><div class="empty-title">暂无供应商</div><div class="empty-desc">点击"+新增"添加第一个供应商</div></div>';
+    return;
+  }
+  suppliers.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const statusLabel={active:'合作中',inactive:'已暂停',blacklisted:'黑名单'};
+  const statusClass={active:'tag-active',inactive:'tag-inactive',blacklisted:'tag-blacklisted'};
+  el.innerHTML=suppliers.map(s=>{
+    const score=parseFloat(s.score)||0;
+    const fullStars=Math.floor(score);
+    const halfStar=score%1>=0.5;
+    const maxStars=5;
+    let stars='';
+    for(let i=0;i<fullStars;i++)stars+='★';
+    if(halfStar)stars+='☆';
+    for(let i=fullStars+(halfStar?1:0);i<maxStars;i++)stars+='☆';
+
+    return `
+    <div class="item-card sup-card fade-in">
+      <div class="sc-header">
+        <div class="sc-name">${s.name}</div>
+        <div class="sc-stars">${stars} ${score>0?score:''}</div>
+      </div>
+      <div class="sc-meta">
+        ${s.company?'🏢 '+s.company+'<br>':''}
+        ${s.contact?'📞 '+s.contact+(s.phone?' · '+s.phone:''):''}
+        ${s.email?'<br>✉️ '+s.email:''}
+        ${s.address?'<br>📍 '+s.address:''}
+        ${s.bank?'<br>🏦 '+s.bank:''}
+        ${s.startDate?'<br>🤝 合作自 '+formatDate(s.startDate):''}
+        ${s.notes?'<br>💬 '+s.notes:''}
+      </div>
+      <div class="sc-tags">
+        <span class="${statusClass[s.status]||'tag-active'}">${statusLabel[s.status]||s.status}</span>
+      </div>
+      <div class="actions">
+        <span class="act-edit" onclick="edit('${s.id}')">✏️ 编辑</span>
+        <span class="act-delete" onclick="del('${s.id}')">🗑 删除</span>
+        ${s.status!=='blacklisted'?`<span style="color:var(--danger);cursor:pointer" onclick="blacklist('${s.id}')">🚫 拉黑</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openPopup(){
+  $('popupTitle').textContent='🏭 新增供应商';$('editId').value='';
+  ['supName','supCompany','supContact','supPhone','supEmail','supAddress','supBank','supNotes'].forEach(id=>$(id).value='');
+  $('supStartDate').value=today();$('supStatus').value='active';
+  $('popup').classList.add('show');
+}
+function closePopup(){$('popup').classList.remove('show')}
+
+function save(){
+  const name=$('supName').value.trim();
+  if(!name)return showToast('请输入供应商名称');
+  const editId=$('editId').value;
+  const obj={
+    name,company:$('supCompany').value.trim(),
+    contact:$('supContact').value.trim(),phone:$('supPhone').value.trim(),
+    email:$('supEmail').value.trim(),address:$('supAddress').value.trim(),
+    bank:$('supBank').value.trim(),startDate:$('supStartDate').value,
+    status:$('supStatus').value,
+    notes:$('supNotes').value.trim()
+  };
+
+  if(editId){
+    const suppliers=YH.getSuppliers();
+    const s=suppliers.find(x=>x.id===editId);
+    if(s){Object.assign(s,obj);YH.saveSuppliers(suppliers);}
+  }else{
+    YH.addSupplier(obj);
+  }
+  render();closePopup();showToast('✅ 已保存');
+}
+function edit(id){
+  const s=YH.getSuppliers().find(x=>x.id===id);
+  if(!s)return;
+  $('popupTitle').textContent='✏️ 编辑供应商';$('editId').value=id;
+  $('supName').value=s.name||'';
+  $('supCompany').value=s.company||'';
+  $('supContact').value=s.contact||'';
+  $('supPhone').value=s.phone||'';
+  $('supEmail').value=s.email||'';
+  $('supAddress').value=s.address||'';
+  $('supBank').value=s.bank||'';
+  $('supStartDate').value=s.startDate||'';
+  $('supStatus').value=s.status||'active';
+  $('supNotes').value=s.notes||'';
+  $('popup').classList.add('show');
+}
+function del(id){
+  if(!confirm('确定删除此供应商？相关产品将失去关联。'))return;
+  const suppliers=YH.getSuppliers();
+  YH.saveSuppliers(suppliers.filter(s=>s.id!==id));
+  render();showToast('🗑 已删除');
+}
+function blacklist(id){
+  if(!confirm('确定将此供应商加入黑名单？'))return;
+  const suppliers=YH.getSuppliers();
+  const s=suppliers.find(x=>x.id===id);
+  if(s){s.status='blacklisted';YH.saveSuppliers(suppliers);render();showToast('🚫 已拉黑');}
+}
+
+document.querySelectorAll('.popup-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')})});
+render();
+</script>
+
+<div class="bottom-nav" id="bottomNav"></div>
+<script>document.getElementById('bottomNav').innerHTML=renderBottomNav('suppliers');</script>
+</body>
+</html>

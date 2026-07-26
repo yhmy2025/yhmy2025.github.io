@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>谊璜贸易 · 客户管理</title>
+<link rel="stylesheet" href="../_shared/css/yihuang.css">
+<style>
+.client-card .cc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.client-card .cc-name{font-size:14px;font-weight:700}
+.client-card .cc-stars{color:#f59e0b;font-size:13px;letter-spacing:1px}
+.client-card .cc-info{font-size:11px;color:var(--text-secondary);line-height:1.6;margin-top:4px}
+.client-card .cc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.client-card .cc-tags span{font-size:9px;padding:2px 8px;border-radius:10px;background:rgba(100,116,139,.1);color:var(--text-muted)}
+.client-card .cc-source{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600}
+.src-referral{background:rgba(56,189,248,.15);color:#38bdf8}
+.src-website{background:rgba(34,197,94,.15);color:#22c55e}
+.src-exhibition{background:rgba(251,191,36,.15);color:#fbbf24}
+.src-other{background:rgba(148,163,184,.15);color:#94a3b8}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="tb-left">
+    <div class="tb-brand">👥 客户管理</div>
+    <div class="tb-sub">CRM · 客户关系管理</div>
+  </div>
+  <div class="tb-right"><span class="tb-badge">v2.1</span></div>
+</div>
+
+<div class="summary-bar" id="summary"></div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="搜索客户名称/电话/公司..." oninput="render()">
+  <button onclick="openPopup()">+ 新增</button>
+</div>
+
+<div class="filter-tabs" id="filterTabs"></div>
+
+<div id="clientList"></div>
+
+<div class="popup-overlay" id="popup">
+  <div class="popup">
+    <h3 id="popupTitle">👤 新增客户</h3>
+    <label>名称 <span style="color:var(--danger)">*</span></label>
+    <input type="text" id="clientName" placeholder="客户名称/公司名称">
+    <label>公司</label>
+    <input type="text" id="clientCompany" placeholder="公司全称（选填）">
+    <label>电话</label>
+    <input type="text" id="clientPhone" placeholder="手机号">
+    <label>邮箱</label>
+    <input type="email" id="clientEmail" placeholder="email@example.com">
+    <label>地址</label>
+    <input type="text" id="clientAddress" placeholder="联系地址">
+    <label>客户等级 ⭐</label>
+    <select id="clientLevel">
+      <option value="5">⭐⭐⭐⭐⭐ 五星</option><option value="4">⭐⭐⭐⭐ 四星</option>
+      <option value="3" selected>⭐⭐⭐ 三星</option><option value="2">⭐⭐ 二星</option><option value="1">⭐ 一星</option>
+    </select>
+    <label>来源</label>
+    <select id="clientSource">
+      <option value="referral">推荐</option><option value="website">官网</option>
+      <option value="exhibition">展会</option><option value="other">其他</option>
+    </select>
+    <label>备注</label>
+    <textarea id="clientNotes" rows="2" placeholder="客户特点/需求..."></textarea>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="closePopup()">取消</button>
+      <button class="btn btn-primary" onclick="save()">✅ 保存</button>
+    </div>
+    <input type="hidden" id="editId">
+  </div>
+</div>
+
+<script src="../_shared/js/yihuang.js"></script>
+<script src="../_shared/js/yihuang-db.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let filter='all';
+const sourceMap={referral:'推荐',website:'官网',exhibition:'展会',other:'其他'};
+
+function render(){
+  const q=$('searchInput').value.toLowerCase();
+  let clients=YH.getClients();
+  if(filter!=='all')clients=clients.filter(c=>(c.source||'')===filter);
+  if(q)clients=clients.filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').toLowerCase().includes(q)||(c.company||'').toLowerCase().includes(q));
+
+  const all=YH.getClients();
+  const thisMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString();
+  const newThisMonth=all.filter(c=>(c.createdAt||'')>=thisMonth).length;
+  const activeCount=all.filter(c=>parseInt(c.level||0)>=3).length;
+  $('summary').innerHTML=`
+    <div class="summary-item"><div class="si-value">${all.length}</div><div class="si-label">总客户</div></div>
+    <div class="summary-item"><div class="si-value">${newThisMonth}</div><div class="si-label">本月新增</div></div>
+    <div class="summary-item"><div class="si-value">${activeCount}</div><div class="si-label">活跃客户</div></div>`;
+
+  const tabs=[
+    {id:'all',label:'全部('+all.length+')'},
+    {id:'referral',label:'推荐'},
+    {id:'website',label:'官网'},
+    {id:'exhibition',label:'展会'},
+    {id:'other',label:'其他'}
+  ];
+  $('filterTabs').innerHTML=tabs.map(t=>`<div class="filter-tab ${filter===t.id?'active':''}" onclick="filter='${t.id}';render()">${t.label}</div>`).join('');
+
+  const el=$('clientList');
+  if(!clients.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">暂无客户数据</div><div class="empty-desc">点击"+新增"添加第一个客户</div></div>';
+    return;
+  }
+  clients.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  el.innerHTML=clients.map(c=>{
+    const level=parseInt(c.level)||1;
+    const stars='⭐'.repeat(level);
+    const srcLabel=sourceMap[c.source]||c.source||'其他';
+    return `
+    <div class="item-card client-card fade-in">
+      <div class="cc-header">
+        <div class="cc-name">${c.name||'--'}</div>
+        <div class="cc-stars">${stars}</div>
+      </div>
+      <div class="cc-info">
+        ${c.company?'🏢 '+c.company+'<br>':''}
+        ${c.phone?'📞 '+c.phone:''}${c.email?' · ✉️ '+c.email:''}
+        ${c.address?'<br>📍 '+c.address:''}
+        ${c.notes?'<br>💬 '+c.notes:''}
+      </div>
+      <div class="cc-tags">
+        <span class="cc-source src-${c.source||'other'}">${srcLabel}</span>
+        <span>📅 ${c.createdAt?formatDate(c.createdAt):'-'}</span>
+      </div>
+      <div class="actions">
+        <span class="act-edit" onclick="edit('${c.id}')">✏️ 编辑</span>
+        <span class="act-delete" onclick="del('${c.id}')">🗑 删除</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openPopup(){
+  $('popupTitle').textContent='👤 新增客户';$('editId').value='';
+  ['clientName','clientCompany','clientPhone','clientEmail','clientAddress','clientNotes'].forEach(id=>$(id).value='');
+  $('clientLevel').value='3';$('clientSource').value='referral';
+  $('popup').classList.add('show');
+}
+function closePopup(){$('popup').classList.remove('show')}
+
+function save(){
+  const name=$('clientName').value.trim();
+  if(!name)return showToast('请输入客户名称');
+  const editId=$('editId').value;
+  const obj={
+    name,company:$('clientCompany').value.trim(),
+    phone:$('clientPhone').value.trim(),email:$('clientEmail').value.trim(),
+    address:$('clientAddress').value.trim(),
+    level:parseInt($('clientLevel').value)||1,
+    source:$('clientSource').value,
+    notes:$('clientNotes').value.trim()
+  };
+
+  if(editId){
+    const clients=YH.getClients();
+    const c=clients.find(x=>x.id===editId);
+    if(c){Object.assign(c,obj);YH.saveClients(clients);}
+  }else{
+    YH.addClient(obj);
+  }
+  render();closePopup();showToast('✅ 已保存');
+}
+function edit(id){
+  const c=YH.getClients().find(x=>x.id===id);
+  if(!c)return;
+  $('popupTitle').textContent='✏️ 编辑客户';$('editId').value=id;
+  $('clientName').value=c.name||'';
+  $('clientCompany').value=c.company||'';
+  $('clientPhone').value=c.phone||'';
+  $('clientEmail').value=c.email||'';
+  $('clientAddress').value=c.address||'';
+  $('clientLevel').value=c.level||3;
+  $('clientSource').value=c.source||'referral';
+  $('clientNotes').value=c.notes||'';
+  $('popup').classList.add('show');
+}
+function del(id){
+  if(!confirm('确定删除此客户？'))return;
+  const clients=YH.getClients();
+  YH.saveClients(clients.filter(c=>c.id!==id));
+  render();showToast('🗑 已删除');
+}
+
+document.querySelectorAll('.popup-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')})});
+render();
+</script>
+
+<div class="bottom-nav" id="bottomNav"></div>
+<script>document.getElementById('bottomNav').innerHTML=renderBottomNav('crm');</script>
+</body>
+</html>

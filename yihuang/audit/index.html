@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>谊璜贸易 · 审计日志</title>
+<link rel="stylesheet" href="../_shared/css/yihuang.css">
+<style>
+.log-item{padding:10px 0;border-bottom:1px solid rgba(51,65,85,.5);font-size:12px}
+.log-item:last-child{border:none}
+.log-entity{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600;display:inline-block;margin-right:4px}
+.log-action{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600;display:inline-block}
+.act-create{background:rgba(34,197,94,.15);color:#22c55e}
+.act-update{background:rgba(56,189,248,.15);color:#38bdf8}
+.act-delete{background:rgba(239,68,68,.15);color:#ef4444}
+.ent-clients{background:rgba(129,140,248,.15);color:#818cf8}
+.ent-orders{background:rgba(52,211,153,.15);color:#34d399}
+.ent-finance{background:rgba(245,158,11,.15);color:#f59e0b}
+.ent-tasks{background:rgba(34,197,94,.15);color:#22c55e}
+.ent-suppliers{background:rgba(168,85,247,.15);color:#a855f7}
+.ent-inventory{background:rgba(251,191,36,.15);color:#fbbf24}
+.ent-products{background:rgba(56,189,248,.15);color:#38bdf8}
+.ent-quotes{background:rgba(244,114,182,.15);color:#f472b6}
+.log-time{font-size:10px;color:var(--text-muted)}
+.log-detail{font-size:11px;color:var(--text-secondary);margin-top:2px}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="tb-left">
+    <div class="tb-brand">📋 审计日志</div>
+    <div class="tb-sub">操作记录 · 数据追溯</div>
+  </div>
+  <div class="tb-right"><span class="tb-badge">v1.0</span></div>
+</div>
+
+<div class="filter-tabs" id="filterTabs"></div>
+
+<div id="logList"></div>
+
+<script src="../_shared/js/yihuang.js"></script>
+<script src="../_shared/js/yihuang-db.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let filter='all';
+
+const entityMap={
+  clients:'客户',orders:'订单',finance:'财务',tasks:'任务',
+  suppliers:'供应商',inventory:'库存',products:'产品',quotes:'报价'
+};
+const entityClass={
+  clients:'ent-clients',orders:'ent-orders',finance:'ent-finance',tasks:'ent-tasks',
+  suppliers:'ent-suppliers',inventory:'ent-inventory',products:'ent-products',quotes:'ent-quotes'
+};
+const actionClass={create:'act-create',update:'act-update',delete:'act-delete'};
+const actionLabel={create:'新增',update:'修改',delete:'删除'};
+
+function render(){
+  let logs=YH.getAuditLog();
+  if(filter!=='all')logs=logs.filter(l=>l.entity===filter);
+
+  const all=YH.getAuditLog();
+  const entityCounts={};
+  all.forEach(l=>{entityCounts[l.entity]=(entityCounts[l.entity]||0)+1;});
+
+  let tabsHTML='<div class="filter-tab '+(filter==='all'?'active':'')+'" onclick="filter=\'all\';render()">全部('+all.length+')</div>';
+  Object.entries(entityCounts).forEach(([e,count])=>{
+    tabsHTML+='<div class="filter-tab '+(filter===e?'active':'')+'" onclick="filter=\''+e+'\';render()">'+entityMap[e]+'('+count+')</div>';
+  });
+  $('filterTabs').innerHTML=tabsHTML;
+
+  const el=$('logList');
+  if(!logs.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">暂无审计日志</div><div class="empty-desc">系统操作记录将显示在此处</div></div>';
+    return;
+  }
+  // Already sorted by getAuditLog
+  el.innerHTML=logs.slice(0,200).map(l=>`
+    <div class="log-item fade-in">
+      <div>
+        <span class="log-entity ${entityClass[l.entity]||''}">${entityMap[l.entity]||l.entity}</span>
+        <span class="log-action ${actionClass[l.action]||''}">${actionLabel[l.action]||l.action}</span>
+        <span class="log-time">${l.timestamp?new Date(l.timestamp).toLocaleString('zh-CN'):'-'}</span>
+      </div>
+      <div class="log-detail">${l.detail||''}</div>
+    </div>`).join('');
+}
+
+function exportLogs(){
+  const logs=YH.getAuditLog(filter==='all'?null:{entity:filter});
+  exportJSON(logs,'yihuang_audit_'+today()+'.json');
+}
+
+document.querySelectorAll('.popup-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')})});
+render();
+</script>
+
+<div class="bottom-nav" id="bottomNav"></div>
+<script>document.getElementById('bottomNav').innerHTML=renderBottomNav('dashboard');</script>
+</body>
+</html>
