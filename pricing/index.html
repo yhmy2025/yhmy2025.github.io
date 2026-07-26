@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>定价 — OpenClaw 全域助手</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px 40px}
+.header{padding:36px 0 20px;text-align:center}
+.header .icon{font-size:44px;margin-bottom:8px}
+.header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .sub{font-size:12px;color:#64748b;margin-top:4px}
+.plan-card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:20px;margin-bottom:12px;position:relative;transition:all .15s}
+.plan-card.featured{border-color:#3b82f6;background:linear-gradient(180deg,#1e3a5f 0%,#1e293b 100%)}
+.plan-badge{position:absolute;top:-10px;right:16px;background:#3b82f6;color:#fff;padding:3px 12px;border-radius:10px;font-size:11px;font-weight:600}
+.plan-name{font-size:18px;font-weight:700;margin-bottom:4px}
+.plan-price{font-size:32px;font-weight:800;margin:8px 0}
+.plan-price span{font-size:14px;font-weight:400;color:#94a3b8}
+.plan-desc{font-size:12px;color:#94a3b8;margin-bottom:16px}
+.plan-features{list-style:none;margin-bottom:16px}
+.plan-features li{padding:6px 0;font-size:13px;display:flex;align-items:center;gap:8px}
+.plan-features .check{color:#22c55e;font-weight:700}
+.plan-features .cross{color:#ef4444;font-weight:700}
+.btn{display:block;width:100%;padding:12px;border-radius:8px;font-size:15px;font-weight:600;text-align:center;cursor:pointer;border:none;text-decoration:none;color:#fff}
+.btn-primary{background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.btn-outline{background:transparent;border:1px solid #3b82f6;color:#3b82f6}
+.faq{margin-top:24px}
+.faq-item{margin-bottom:12px;background:#1e293b;border-radius:10px;padding:14px}
+.faq-q{font-size:14px;font-weight:600;margin-bottom:4px}
+.faq-a{font-size:12px;color:#94a3b8;line-height:1.5}
+.footer{text-align:center;padding:30px 0 20px;font-size:11px;color:#475569}
+.footer a{color:#64748b}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+th,td{padding:8px 6px;border-bottom:1px solid #334155;text-align:center}
+th{color:#94a3b8;font-weight:600;font-size:11px}
+td:first-child{text-align:left;color:#e2e8f0}
+th:first-child{text-align:left}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="icon">🦞</div>
+  <h1>OpenClaw 全域助手</h1>
+  <p class="sub">AI驱动的全域经营工具 · 从个人副业到企业级方案</p>
+</div>
+
+<!-- Free -->
+<div class="plan-card">
+  <div class="plan-name">Free 免费版</div>
+  <div class="plan-price">¥0<span>/月</span></div>
+  <div class="plan-desc">3天全功能试用，体验后再决定</div>
+  <ul class="plan-features">
+    <li><span class="check">✓</span> AI代写/文案工具（限3次）</li>
+    <li><span class="check">✓</span> 记账工具</li>
+    <li><span class="check">✓</span> 简历诊断器</li>
+    <li><span class="check">✓</span> 泰国工作生活指南</li>
+    <li><span class="cross">✗</span> 交易信号推送</li>
+    <li><span class="cross">✗</span> 闲鱼上架辅助</li>
+  </ul>
+  <a href="/trial/" class="btn btn-outline">免费试用 3 天</a>
+</div>
+
+<!-- Pro -->
+<div class="plan-card featured">
+  <div class="plan-badge">推荐</div>
+  <div class="plan-name">Pro 专业版</div>
+  <div class="plan-price">$19.9<span>/月</span></div>
+  <div class="plan-desc">适合个人创业者和副业玩家</div>
+  <ul class="plan-features">
+    <li><span class="check">✓</span> 交易信号推送（实时）</li>
+    <li><span class="check">✓</span> 全市场监控扫描</li>
+    <li><span class="check">✓</span> 每日行情早报</li>
+    <li><span class="check">✓</span> AI代写/文案工具（不限次）</li>
+    <li><span class="check">✓</span> 记账工具</li>
+    <li><span class="check">✓</span> 闲鱼上架辅助</li>
+    <li><span class="cross">✗</span> 跨境选品数据</li>
+    <li><span class="cross">✗</span> 知识库/周报</li>
+  </ul>
+  <a href="/trial/" class="btn btn-primary">立即订阅 Pro</a>
+</div>
+
+<!-- Enterprise -->
+<div class="plan-card">
+  <div class="plan-name">Enterprise 企业版</div>
+  <div class="plan-price">$199<span>/年</span></div>
+  <div class="plan-desc">适合专业团队和企业级需求</div>
+  <ul class="plan-features">
+    <li><span class="check">✓</span> 交易信号推送（实时+历史回测）</li>
+    <li><span class="check">✓</span> 全市场监控扫描（含L1-L5五层）</li>
+    <li><span class="check">✓</span> 每日行情早报（含深度分析）</li>
+    <li><span class="check">✓</span> AI代写/文案工具（不限次+专属模板）</li>
+    <li><span class="check">✓</span> 记账工具（含导出报表）</li>
+    <li><span class="check">✓</span> 闲鱼上架辅助（含SEO优化）</li>
+    <li><span class="check">✓</span> 跨境选品数据</li>
+    <li><span class="check">✓</span> 知识库/周报（AI自动生成）</li>
+  </ul>
+  <a href="/trial/" class="btn btn-outline">联系销售</a>
+</div>
+
+<!-- Feature comparison table -->
+<div style="margin-top:24px;background:#1e293b;border-radius:14px;padding:20px;">
+  <h3 style="font-size:16px;margin-bottom:12px;">功能对比</h3>
+  <table>
+    <thead><tr><th>功能</th><th>Free</th><th>Pro</th><th>Enterprise</th></tr></thead>
+    <tbody>
+      <tr><td>交易信号推送</td><td>—</td><td>✓</td><td>✓</td></tr>
+      <tr><td>全市场监控扫描</td><td>—</td><td>✓</td><td>✓</td></tr>
+      <tr><td>每日行情早报</td><td>—</td><td>✓</td><td>✓</td></tr>
+      <tr><td>AI代写/文案工具</td><td>3次</td><td>不限次</td><td>不限次</td></tr>
+      <tr><td>记账工具</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>闲鱼上架辅助</td><td>—</td><td>✓</td><td>✓</td></tr>
+      <tr><td>跨境选品数据</td><td>—</td><td>—</td><td>✓</td></tr>
+      <tr><td>知识库/周报</td><td>—</td><td>—</td><td>✓</td></tr>
+      <tr><td>专属客户支持</td><td>—</td><td>邮件</td><td>1v1</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- FAQ -->
+<div class="faq">
+  <h3 style="font-size:16px;margin-bottom:12px;">常见问题</h3>
+  <div class="faq-item"><div class="faq-q">怎么试用？</div><div class="faq-a">点击任意套餐的按钮，填写简单的申请表单，我们会在24小时内为您开通3天全功能试用。</div></div>
+  <div class="faq-item"><div class="faq-q">支持什么支付方式？</div><div class="faq-a">目前支持微信支付和银行转账。订阅付款页面正在开发中，现在联系客服可享首月优惠。</div></div>
+  <div class="faq-item"><div class="faq-q">可以随时取消吗？</div><div class="faq-a">Pro版按月订阅，随时可取消，未使用天数按比例退款。Enterprise版按年订阅，提前解约按剩余月数退款。</div></div>
+</div>
+
+<div class="footer">
+  <a href="/">返回首页</a> · 联系: 闲鱼搜 YHmy · <a href="/trial/">免费试用</a>
+</div>
+<div class="plan-card featured" style="text-align:center;margin-top:12px;">
+  <div class="plan-name">🦞 需要代安装OpenClaw？</div>
+  <p style="font-size:12px;color:#94a3b8;margin:8px 0;">不用自己折腾，我们远程帮你装好</p>
+  <a href="/install-service.html" style="display:block;padding:10px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">查看代安装服务 →</a>
+</div>
+</body>
+</html>

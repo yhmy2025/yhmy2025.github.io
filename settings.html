@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Pro 设置 — OpenClaw 工具箱</title>
+<script src="/pro-check.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px 40px}
+.header{padding:40px 0 24px;text-align:center}
+.header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .sub{font-size:12px;color:#64748b;margin-top:4px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:600;color:#e2e8f0;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.badge-pro{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:700;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff}
+.badge-free{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:600;background:#334155;color:#94a3b8}
+.input-row{display:flex;gap:8px}
+.input-row input{flex:1;padding:10px 14px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:8px;font-size:14px;outline:none}
+.input-row input:focus{border-color:#3b82f6}
+.btn{padding:10px 20px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff}
+.btn-outline{background:transparent;border:1px solid #dc2626;color:#fca5a5}
+.info-row{display:flex;justify-content:space-between;padding:8px 0;font-size:13px;border-bottom:1px solid #1e293b}
+.info-row:last-child{border-bottom:none}
+.info-label{color:#94a3b8}
+.info-val{color:#e2e8f0;font-weight:500}
+.toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:20px;font-size:14px;z-index:1000;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+.toast-ok{background:#22c55e;color:#fff}
+.toast-err{background:#ef4444;color:#fff}
+.footer{text-align:center;padding:30px 0;font-size:11px;color:#475569}
+.footer a{color:#64748b}
+.nav-back{display:inline-block;padding:8px 16px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;text-decoration:none;font-size:13px;margin-bottom:16px}
+.usage-bar{background:#0f172a;border-radius:8px;height:8px;margin-top:6px;overflow:hidden}
+.usage-fill{height:100%;border-radius:8px;transition:width .3s}
+.usage-fill.ok{background:#22c55e}
+.usage-fill.warn{background:#f59e0b}
+.usage-fill.full{background:#ef4444}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Pro 订阅管理</h1>
+  <p class="sub">解锁全部功能 · ¥29/月</p>
+</div>
+
+<a href="/" class="nav-back">← 返回工具箱</a>
+
+<div class="card" id="statusCard">
+  <div class="card-title">
+    订阅状态
+    <span id="statusBadge"></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">当前方案</span>
+    <span class="info-val" id="planName">--</span>
+  </div>
+  <div class="info-row" id="activatedRow" style="display:none">
+    <span class="info-label">激活时间</span>
+    <span class="info-val" id="activatedAt">--</span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">今日AI使用</span>
+    <span class="info-val" id="dailyUsage">--</span>
+  </div>
+  <div class="usage-bar"><div class="usage-fill ok" id="usageBar" style="width:0%"></div></div>
+</div>
+
+<div class="card" id="activateCard">
+  <div class="card-title">🔑 激活 Pro</div>
+  <p style="font-size:12px;color:#94a3b8;margin-bottom:10px;">输入收到的激活码，解锁全部功能</p>
+  <div class="input-row">
+    <input type="text" id="tokenInput" placeholder="输入激活码，如 PRO-YHMY-...">
+    <button class="btn btn-primary" onclick="doActivate()">激活</button>
+  </div>
+</div>
+
+<div class="card" id="deactivateCard" style="display:none">
+  <button class="btn btn-outline" onclick="doDeactivate()" style="width:100%">取消 Pro 订阅</button>
+</div>
+
+<div class="card">
+  <div class="card-title">💎 Pro 权益</div>
+  <div class="info-row"><span class="info-label">AI 写作/文案</span><span class="info-val">不限次数</span></div>
+  <div class="info-row"><span class="info-label">交易信号推送</span><span class="info-val">✅</span></div>
+  <div class="info-row"><span class="info-label">闲鱼上架辅助</span><span class="info-val">✅</span></div>
+  <div class="info-row"><span class="info-label">价格</span><span class="info-val" style="color:#f59e0b;font-weight:700;">¥29/月</span></div>
+  <button class="btn btn-primary" onclick="location.href='/pricing/'" style="width:100%;margin-top:10px;">查看定价详情</button>
+</div>
+
+<div class="footer">
+  Powered by <a href="https://openclaw.ai" target="_blank">OpenClaw</a> · Pro 订阅系统
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(msg, ok) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (ok ? 'toast-ok' : 'toast-err') + ' show';
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+function refreshUI() {
+  var isPro = Pro.isPro();
+  var info = Pro.getInfo();
+  var usage = Pro.getDailyUsage();
+  var limit = Pro.getLimit();
+
+  document.getElementById('statusBadge').innerHTML = isPro
+    ? '<span class="badge-pro">PRO</span>'
+    : '<span class="badge-free">FREE</span>';
+  document.getElementById('planName').textContent = isPro ? 'Pro 会员（¥29/月）' : '免费版';
+
+  var aRow = document.getElementById('activatedRow');
+  if (isPro && info.activatedAt) {
+    aRow.style.display = 'flex';
+    document.getElementById('activatedAt').textContent = info.activatedAt.slice(0, 10);
+  } else {
+    aRow.style.display = 'none';
+  }
+
+  document.getElementById('dailyUsage').textContent = isPro
+    ? usage + ' 次（不限）'
+    : usage + ' / ' + limit + ' 次';
+
+  var bar = document.getElementById('usageBar');
+  var pct = isPro ? 100 : Math.min(100, usage / limit * 100);
+  bar.style.width = pct + '%';
+  bar.className = 'usage-fill ' + (isPro ? 'ok' : pct >= 100 ? 'full' : pct >= 66 ? 'warn' : 'ok');
+
+  document.getElementById('activateCard').style.display = isPro ? 'none' : 'block';
+  document.getElementById('deactivateCard').style.display = isPro ? 'block' : 'none';
+}
+
+function doActivate() {
+  var token = document.getElementById('tokenInput').value.trim();
+  if (!token) return showToast('请输入激活码', false);
+  var r = Pro.activate(token);
+  if (r.ok) {
+    showToast("Pro 激活成功！正在跳转...", true);setTimeout(function(){location.href="/";},1500);
+    refreshUI();
+  } else {
+    showToast(r.error || '激活失败', false);
+  }
+}
+
+function doDeactivate() {
+  if (!confirm('确认取消 Pro 订阅？')) return;
+  Pro.deactivate();
+  showToast('已取消 Pro 订阅', true);
+  refreshUI();
+}
+
+refreshUI();
+</script>
+</body>
+</html>

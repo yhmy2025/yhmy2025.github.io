@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>免费试用 — OpenClaw 全域助手</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:#0f172a;min-height:100vh;max-width:500px;margin:0 auto;color:#e2e8f0;padding:0 16px 40px}
+.header{padding:36px 0 20px;text-align:center}
+.header .icon{font-size:44px;margin-bottom:8px}
+.header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .sub{font-size:12px;color:#94a3b8;margin-top:4px}
+.form-card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:24px;margin-top:16px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;color:#94a3b8;margin-bottom:6px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:8px;font-size:14px}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:#3b82f6}
+.btn{display:block;width:100%;padding:14px;border-radius:8px;font-size:16px;font-weight:600;text-align:center;cursor:pointer;border:none;text-decoration:none;color:#fff}
+.btn-primary{background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.benefits{margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.benefit{background:#1e293b;border-radius:10px;padding:14px;text-align:center;font-size:12px}
+.benefit .icon{font-size:28px;display:block;margin-bottom:4px}
+.note{font-size:11px;color:#64748b;text-align:center;margin-top:16px;line-height:1.5}
+.thankyou{display:none;text-align:center;padding:40px 20px}
+.thankyou .icon{font-size:64px;margin-bottom:16px}
+.thankyou h2{font-size:20px;margin-bottom:8px}
+.thankyou p{font-size:14px;color:#94a3b8;margin-bottom:20px}
+</style>
+</head>
+<body>
+
+<!-- Form view -->
+<div id="formView">
+<div class="header">
+  <div class="icon">🦞</div>
+  <h1>免费试用 3 天</h1>
+  <p class="sub">填写以下信息，24小时内为您开通全功能试用</p>
+</div>
+
+<div class="benefits">
+  <div class="benefit"><span class="icon">📊</span>交易信号推送</div>
+  <div class="benefit"><span class="icon">✍️</span>AI代写文案</div>
+  <div class="benefit"><span class="icon">🔍</span>全市场扫描</div>
+  <div class="benefit"><span class="icon">📋</span>闲鱼上架辅助</div>
+</div>
+
+<div class="form-card">
+  <div class="form-group">
+    <label>姓名 *</label>
+    <input type="text" id="name" placeholder="请输入您的姓名" required>
+  </div>
+  <div class="form-group">
+    <label>微信号 *</label>
+    <input type="text" id="wechat" placeholder="请输入您的微信号" required>
+  </div>
+  <div class="form-group">
+    <label>感兴趣的功能</label>
+    <select id="interest">
+      <option value="">请选择（可多选，后续沟通确认）</option>
+      <option value="trading">交易信号推送</option>
+      <option value="writing">AI代写/文案工具</option>
+      <option value="xianyu">闲鱼上架辅助</option>
+      <option value="crossborder">跨境选品数据</option>
+      <option value="all">以上全部</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>需求简述</label>
+    <textarea id="desc" placeholder="请简单描述您的使用场景和需求（选填）"></textarea>
+  </div>
+  <button class="btn btn-primary" onclick="submitForm()">提交申请，开通试用</button>
+</div>
+
+<p class="note">提交后我们会在24小时内通过微信联系您开通试用。<br>试用期间无需付费，到期自动关闭，不会自动续费。</p>
+</div>
+
+<!-- Thank you view -->
+<div id="thankView" class="thankyou">
+  <div class="icon">🎉</div>
+  <h2>申请已提交！</h2>
+  <p>我们将在24小时内通过微信联系您<br>为您开通3天全功能免费试用</p>
+  <a href="/" class="btn btn-primary">返回首页</a>
+</div>
+
+<script>
+function submitForm() {
+  const name = document.getElementById('name').value.trim();
+  const wechat = document.getElementById('wechat').value.trim();
+  if (!name) return alert('请输入姓名');
+  if (!wechat) return alert('请输入微信号');
+
+  // Store locally for now
+  const trials = JSON.parse(localStorage.getItem('openclaw_trials') || '[]');
+  trials.push({
+    name, wechat,
+    interest: document.getElementById('interest').value,
+    desc: document.getElementById('desc').value.trim(),
+    time: new Date().toISOString(),
+    status: 'pending'
+  });
+  localStorage.setItem('openclaw_trials', JSON.stringify(trials));
+
+  document.getElementById('formView').style.display = 'none';
+  document.getElementById('thankView').style.display = 'block';
+}
+</script>
+</body>
+</html>

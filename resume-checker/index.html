@@ -39,6 +39,7 @@ textarea:focus{outline:none;border-color:#3b82f6}textarea::placeholder{color:#47
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-XXXXXXXXXX")</script>
+<script src="/pro-check.js"></script>
 </head>
 <body>
 <div class="header"><div class="icon">📋</div><h1>AI简历诊断</h1><p>粘贴简历 · AI智能分析 · 免费获取诊断报告</p></div>
@@ -63,5 +64,6 @@ textarea:focus{outline:none;border-color:#3b82f6}textarea::placeholder{color:#47
 <div class="footer"><a href="/" style="color:#64748b">← 返回工具箱首页</a></div>
 <div class="cta-bar"><div class="cta-text">需要更专业的定制服务？</div><div class="cta-links"><span>闲鱼搜 YHmy</span><span class="cta-divider">|</span><span>微信 Yhgc_2025</span></div></div>
 <script>const statuses=["正在提取关键词...","正在检测STAR结构...","正在计算ATS友好度...","正在生成改进建议...","分析完成！"];function startAnalysis(){const e=document.getElementById("resume").value.trim();if(e.length<30){alert("简历内容太短，请至少粘贴30字");return}document.getElementById("input-section").style.display="none";document.getElementById("analyzing-section").style.display="block";let t=0;const n=setInterval(()=>{t<statuses.length-1?(document.getElementById("analyze-status").textContent=statuses[t],t++):(clearInterval(n),document.getElementById("analyze-status").textContent=statuses[t],setTimeout(()=>{document.getElementById("analyzing-section").style.display="none";document.getElementById("result-section").style.display="block";window.scrollTo({top:0,behavior:"smooth"})},800))},1200)}function reset(){document.getElementById("input-section").style.display="";document.getElementById("analyzing-section").style.display="none";document.getElementById("result-section").style.display="none";window.scrollTo({top:0,behavior:"smooth"})}</script>
+<script>(function(){var b=document.getElementById("proBadge");if(!b)return;if(typeof Pro!=="undefined"</body></body>Pro.isPro()){b.textContent="PRO";b.style.background="linear-gradient(135deg,#f59e0b,#ef4444)";b.style.color="#fff";}else{var r=Pro.remainingFree();b.textContent="免费 · 剩"+r+"次";b.style.background="#334155";b.style.color="#94a3b8";}})();</script>
 </body>
 </html>
