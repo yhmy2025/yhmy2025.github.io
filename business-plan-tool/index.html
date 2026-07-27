@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>企业发展规划报告工具 · YHmy</title>
+<style>
+:root {
+  --bg: #f0f2f5;
+  --card: #fff;
+  --text: #1a1a2e;
+  --sub: #666;
+  --muted: #999;
+  --primary: #4f46e5;
+  --primary-light: #eef2ff;
+  --green: #22c55e;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --radius: 12px;
+  --shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:80px;
+  max-width:800px;
+  margin:0 auto;
+  min-height:100vh;
+}
+.nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#fff;border-top:1px solid #e5e7eb;
+  display:flex;max-width:800px;margin:0 auto;
+  z-index:100;overflow-x:auto;
+}
+.nav .tab{
+  flex-shrink:0;text-align:center;padding:8px 6px;
+  font-size:10px;color:var(--muted);cursor:pointer;
+  min-width:56px;transition:color 0.15s;
+}
+.nav .tab.on{color:var(--primary)}
+.nav .tab .ic{font-size:18px;display:block;margin-bottom:2px}
+.page{display:none;padding:16px}
+.page.on{display:block}
+.header{
+  background:linear-gradient(135deg,#1e1b4b,#312e81,#4f46e5);
+  color:#fff;padding:20px 16px;text-align:center;
+}
+.header h1{font-size:20px;font-weight:700}
+.header p{font-size:12px;opacity:0.75;margin-top:4px}
+.card{
+  background:var(--card);border-radius:var(--radius);
+  padding:16px;margin-bottom:12px;
+  box-shadow:var(--shadow);
+}
+.card-title{
+  font-size:14px;font-weight:600;margin-bottom:12px;
+  display:flex;align-items:center;gap:6px;
+}
+.fg{margin-bottom:12px}
+.fg label{font-size:12px;color:var(--sub);display:block;margin-bottom:4px;font-weight:500}
+.fg input,.fg select,.fg textarea{
+  width:100%;padding:10px 12px;border:1px solid #ddd;
+  border-radius:8px;font-size:14px;outline:none;
+  font-family:inherit;transition:border 0.15s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--primary)}
+.fg textarea{resize:vertical;min-height:80px}
+.fg .hint{font-size:11px;color:var(--muted);margin-top:4px}
+.row{display:flex;gap:10px}
+.row>div{flex:1}
+.btn{
+  display:inline-block;border:none;border-radius:8px;
+  cursor:pointer;text-align:center;padding:10px 16px;
+  font-size:13px;font-weight:500;transition:all 0.15s;
+  font-family:inherit;
+}
+.btn-p{background:var(--primary);color:#fff;width:100%}
+.btn-p:hover{background:#4338ca}
+.btn-o{background:#f3f4f6;color:var(--text)}
+.btn-o:hover{background:#e5e7eb}
+.btn-s{background:var(--green);color:#fff}
+.btn-d{background:var(--red);color:#fff}
+.btn-sm{padding:6px 10px;font-size:11px}
+.btn-group{display:flex;gap:6px;flex-wrap:wrap}
+.tag{
+  display:inline-block;padding:3px 8px;border-radius:20px;
+  font-size:11px;font-weight:500;
+}
+.tag-g{background:#dcfce7;color:#16a34a}
+.tag-a{background:#fef3c7;color:#d97706}
+.tag-r{background:#fef2f2;color:#dc2626}
+.tag-b{background:#dbeafe;color:#2563eb}
+.tag-p{background:#ede9fe;color:#7c3aed}
+.metric-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;margin-bottom:8px;
+}
+.metric{
+  background:#fafafa;padding:12px;border-radius:10px;
+  text-align:center;
+}
+.metric .val{font-size:22px;font-weight:700}
+.metric .lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.swot-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.swot-box{
+  border-radius:var(--radius);padding:14px;min-height:100px;
+}
+.swot-box h4{font-size:13px;margin-bottom:8px;font-weight:600}
+.swot-box ul{list-style:none;font-size:12px}
+.swot-box li{padding:3px 0;display:flex;align-items:flex-start;gap:4px}
+.swot-box li::before{content:"•";flex-shrink:0}
+.swot-s{background:#dcfce7;border:1px solid #bbf7d0}
+.swot-s h4{color:#16a34a}
+.swot-w{background:#fef2f2;border:1px solid #fecaca}
+.swot-w h4{color:#dc2626}
+.swot-o{background:#dbeafe;border:1px solid #bfdbfe}
+.swot-o h4{color:#2563eb}
+.swot-t{background:#fef3c7;border:1px solid #fde68a}
+.swot-t h4{color:#d97706}
+.competitor-row{
+  display:flex;align-items:center;gap:8px;padding:8px 0;
+  border-bottom:1px solid #f3f4f6;
+}
+.competitor-row:last-child{border-bottom:none}
+.comp-name{font-weight:600;min-width:80px;font-size:13px}
+.comp-bar-bg{flex:1;height:20px;background:#f3f4f6;border-radius:10px;overflow:hidden}
+.comp-bar{height:100%;border-radius:10px;transition:width 0.3s}
+.timeline{position:relative;padding-left:24px}
+.timeline::before{
+  content:"";position:absolute;left:8px;top:0;bottom:0;
+  width:2px;background:#e5e7eb;
+}
+.tl-item{position:relative;margin-bottom:16px;padding-left:8px}
+.tl-item::before{
+  content:"";position:absolute;left:-19px;top:4px;
+  width:12px;height:12px;border-radius:50%;
+  border:2px solid var(--primary);background:#fff;
+}
+.tl-item.done::before{background:var(--primary)}
+.tl-date{font-size:11px;color:var(--muted)}
+.tl-title{font-size:13px;font-weight:600;margin:2px 0}
+.tl-desc{font-size:12px;color:var(--sub)}
+.projection-table{width:100%;font-size:12px;border-collapse:collapse}
+.projection-table th{
+  background:#f8fafc;padding:8px;text-align:left;
+  border-bottom:2px solid #e5e7eb;font-weight:600;color:var(--sub)
+}
+.projection-table td{padding:8px;border-bottom:1px solid #f3f4f6}
+.projection-table .num{text-align:right;font-variant-numeric:tabular-nums}
+.projection-table tr.total{font-weight:700;background:#f8fafc}
+.projection-table tr.total td{border-top:2px solid var(--primary)}
+.chart-bar{display:flex;align-items:center;gap:6px;margin:4px 0}
+.chart-label{font-size:11px;min-width:50px;text-align:right}
+.chart-fill{height:18px;border-radius:4px;min-width:2px;transition:width 0.4s}
+.chart-val{font-size:11px;color:var(--sub);min-width:60px}
+.print-area{display:none}
+@media print{
+  body{background:#fff;max-width:none;padding:0}
+  .nav,.btn,.header{display:none!important}
+  .page{display:block!important;padding:10mm}
+  .print-area{display:block}
+  .card{box-shadow:none;border:1px solid #eee;break-inside:avoid}
+}
+#toast{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,0.85);color:#fff;padding:10px 20px;
+  border-radius:8px;font-size:13px;z-index:999;opacity:0;
+  transition:opacity 0.3s;pointer-events:none;
+}
+#toast.show{opacity:1}
+.banner{
+  background:var(--primary-light);border-radius:10px;
+  padding:12px;text-align:center;font-size:10px;color:var(--sub);
+  margin-top:12px;line-height:1.8;
+}
+.banner b{color:var(--primary)}
+.empty-state{
+  text-align:center;padding:30px 20px;color:var(--muted);
+  font-size:13px;
+}
+.empty-state .icon{font-size:36px;margin-bottom:8px}
+.pill-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pill{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--primary-light);color:var(--primary);
+  padding:4px 10px;border-radius:16px;font-size:11px;
+  cursor:pointer;transition:background 0.15s;
+}
+.pill:hover{background:#ddd6fe}
+.pill .del{font-size:14px;line-height:1;opacity:0.5}
+.pill .del:hover{opacity:1}
+.score-circle{
+  display:inline-flex;width:72px;height:72px;border-radius:50%;
+  align-items:center;justify-content:center;font-size:28px;
+  font-weight:700;color:#fff;margin:8px 0;
+}
+.summary-section{margin-top:16px;padding-top:12px;border-top:1px solid #f3f4f6}
+.summary-section h4{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--sub)}
+.insight-list{font-size:12px;line-height:1.8}
+.insight-list li{margin-bottom:4px}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<div class="header">
+  <h1>📋 企业发展规划报告工具</h1>
+  <p>商业计划 · 财务预测 · SWOT分析 · 竞品研究 · 战略路线图</p>
+</div>
+
+<!-- Page 1: 企业信息 -->
+<div id="p-info" class="page on">
+  <div class="card">
+    <div class="card-title">🏢 企业基本信息</div>
+    <div class="row">
+      <div class="fg"><label>公司/项目名称 *</label><input id="cn" placeholder="输入公司或项目名称"></div>
+      <div class="fg"><label>成立时间</label><input id="cf" type="month"></div>
+    </div>
+    <div class="row">
+      <div class="fg"><label>所属行业 *</label>
+        <select id="ci">
+          <option value="">请选择行业</option>
+          <option value="餐饮">餐饮业</option><option value="零售">零售业</option>
+          <option value="服务">服务业</option><option value="制造">制造业</option>
+          <option value="电商">电商</option><option value="农业">农业</option>
+          <option value="建筑">建筑业</option><option value="教育">教育培训</option>
+          <option value="医疗">医疗健康</option><option value="物流">物流仓储</option>
+          <option value="IT">IT/互联网</option><option value="装修">装修装饰</option>
+          <option value="其他">其他行业</option>
+        </select>
+      </div>
+      <div class="fg"><label>企业规模</label>
+        <select id="cs">
+          <option value="微型">微型（&lt;10人）</option>
+          <option value="小型">小型（10-50人）</option>
+          <option value="中型">中型（50-300人）</option>
+          <option value="大型">大型（&gt;300人）</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="fg"><label>当前年营收（万元）</label><input id="cr" type="number" placeholder="0" step="0.1" min="0"></div>
+      <div class="fg"><label>当前员工数</label><input id="cemp" type="number" placeholder="0" min="0"></div>
+    </div>
+    <div class="fg"><label>核心产品或服务</label><input id="cp" placeholder="主营产品/服务描述"></div>
+    <div class="fg"><label>目标市场</label><textarea id="ctm" placeholder="目标客户群体、市场区域、市场规模等" rows="2"></textarea></div>
+    <button class="btn btn-p" onclick="saveCompany()">💾 保存企业信息 & 生成行业洞察</button>
+  </div>
+
+  <div id="industry-insight" class="card" style="display:none"></div>
+</div>
+
+<!-- Page 2: 商业计划 -->
+<div id="p-plan" class="page">
+  <div class="card">
+    <div class="card-title">📝 商业计划书</div>
+    <div class="fg"><label>执行摘要</label><textarea id="bp-summary" placeholder="简要概述商业模式、价值主张、市场机会（200字以内）" rows="3"></textarea></div>
+    <div class="fg"><label>价值主张</label><textarea id="bp-value" placeholder="你的产品或服务解决了什么问题？为什么客户选择你而不是竞争对手？" rows="2"></textarea></div>
+    <div class="fg"><label>商业模式</label><textarea id="bp-model" placeholder="如何赚钱？收入来源有哪些？（产品销售/订阅/服务费/广告/佣金等）" rows="2"></textarea></div>
+    <div class="fg"><label>市场机会</label><textarea id="bp-market" placeholder="目标市场规模、增长率、市场趋势、进入策略" rows="2"></textarea></div>
+    <div class="fg"><label>竞争优势</label><textarea id="bp-advantage" placeholder="技术壁垒/渠道优势/品牌效应/成本优势/专利等" rows="2"></textarea></div>
+    <div class="fg"><label>风险与应对</label><textarea id="bp-risk" placeholder="主要风险（市场/技术/资金/政策/竞争）及应对措施" rows="2"></textarea></div>
+    <div class="btn-group">
+      <button class="btn btn-p" onclick="savePlan()" style="flex:1">💾 保存商业计划</button>
+      <button class="btn btn-o" onclick="fillPlanTemplate()">🤖 AI智能填充</button>
+    </div>
+  </div>
+</div>
+
+<!-- Page 3: 财务预测 -->
+<div id="p-finance" class="page">
+  <div class="card">
+    <div class="card-title">💰 3年财务预测模型</div>
+    <div class="row">
+      <div class="fg"><label>基准年营收（万元）</label><input id="fy0" type="number" placeholder="如 100" step="0.1" min="0" onchange="calcProjection()"></div>
+      <div class="fg"><label>年增长率（%）</label><input id="fgr" type="number" placeholder="如 20" step="0.1" value="20" onchange="calcProjection()"></div>
+    </div>
+    <div class="row">
+      <div class="fg"><label>毛利率（%）</label><input id="fgm" type="number" placeholder="如 45" step="0.1" value="45" onchange="calcProjection()"></div>
+      <div class="fg"><label>净利率目标（%）</label><input id="fnm" type="number" placeholder="如 15" step="0.1" value="15" onchange="calcProjection()"></div>
+    </div>
+    <div class="row">
+      <div class="fg"><label>初始投入（万元）</label><input id="finv" type="number" placeholder="如 50" step="0.1" value="50" onchange="calcProjection()"></div>
+      <div class="fg"><label>运营成本率（%）</label><input id="foc" type="number" placeholder="如 30" step="0.1" value="30" onchange="calcProjection()"></div>
+    </div>
+
+    <div id="projection-result"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 年度关键指标</div>
+    <div id="kpi-metrics" class="metric-grid"></div>
+  </div>
+</div>
+
+<!-- Page 4: SWOT分析 -->
+<div id="p-swot" class="page">
+  <div class="card">
+    <div class="card-title">🔍 SWOT 矩阵分析</div>
+    <div class="swot-grid">
+      <div class="swot-box swot-s">
+        <h4>💪 优势 (Strengths)</h4>
+        <ul id="swot-s-list"></ul>
+        <div style="margin-top:8px">
+          <input id="swot-s-input" placeholder="添加优势..." style="width:100%;padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:12px" onkeydown="if(event.key==='Enter')addSWOT('s')">
+          <button class="btn btn-sm btn-o" onclick="addSWOT('s')" style="margin-top:4px">+ 添加</button>
+        </div>
+      </div>
+      <div class="swot-box swot-w">
+        <h4>⚠️ 劣势 (Weaknesses)</h4>
+        <ul id="swot-w-list"></ul>
+        <div style="margin-top:8px">
+          <input id="swot-w-input" placeholder="添加劣势..." style="width:100%;padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:12px" onkeydown="if(event.key==='Enter')addSWOT('w')">
+          <button class="btn btn-sm btn-o" onclick="addSWOT('w')" style="margin-top:4px">+ 添加</button>
+        </div>
+      </div>
+      <div class="swot-box swot-o">
+        <h4>🚀 机会 (Opportunities)</h4>
+        <ul id="swot-o-list"></ul>
+        <div style="margin-top:8px">
+          <input id="swot-o-input" placeholder="添加机会..." style="width:100%;padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:12px" onkeydown="if(event.key==='Enter')addSWOT('o')">
+          <button class="btn btn-sm btn-o" onclick="addSWOT('o')" style="margin-top:4px">+ 添加</button>
+        </div>
+      </div>
+      <div class="swot-box swot-t">
+        <h4>⚡ 威胁 (Threats)</h4>
+        <ul id="swot-t-list"></ul>
+        <div style="margin-top:8px">
+          <input id="swot-t-input" placeholder="添加威胁..." style="width:100%;padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:12px" onkeydown="if(event.key==='Enter')addSWOT('t')">
+          <button class="btn btn-sm btn-o" onclick="addSWOT('t')" style="margin-top:4px">+ 添加</button>
+        </div>
+      </div>
+    </div>
+    <div class="btn-group" style="margin-top:12px">
+      <button class="btn btn-p" onclick="saveSWOT()" style="flex:1">💾 保存SWOT</button>
+      <button class="btn btn-o" onclick="fillSWOTTemplate()">🤖 AI智能填充</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 SWOT交叉策略</div>
+    <div id="swot-strategy" style="font-size:12px;line-height:1.8;color:var(--sub)">
+      <p>💡 <b>SO策略（优势×机会）</b>：利用自身优势抓住市场机会，是最优增长路径。</p>
+      <p>💡 <b>WO策略（劣势×机会）</b>：通过外部机会弥补内部劣势，适合投入资源突破瓶颈。</p>
+      <p>💡 <b>ST策略（优势×威胁）</b>：用优势化解或规避外部威胁，构建护城河。</p>
+      <p>💡 <b>WT策略（劣势×威胁）</b>：防御性策略，减少劣势暴露、规避高风险领域。</p>
+    </div>
+  </div>
+</div>
+
+<!-- Page 5: 竞品分析 -->
+<div id="p-compete" class="page">
+  <div class="card">
+    <div class="card-title">🏆 竞品对比分析</div>
+    <div class="row">
+      <div class="fg"><label>竞品名称</label><input id="comp-name" placeholder="竞品公司/产品名"></div>
+      <div class="fg"><label>市场份额/评分(1-10)</label><input id="comp-score" type="number" placeholder="5" min="1" max="10" step="0.1"></div>
+    </div>
+    <div class="row">
+      <div class="fg"><label>价格定位</label>
+        <select id="comp-price">
+          <option value="低端">低端（低价走量）</option>
+          <option value="中端" selected>中端（性价比）</option>
+          <option value="高端">高端（溢价品牌）</option>
+        </select>
+      </div>
+      <div class="fg"><label>目标客群</label><input id="comp-audience" placeholder="如：中小企业/个人消费者"></div>
+    </div>
+    <div class="fg"><label>核心优势</label><input id="comp-advantage" placeholder="竞品的主要优势或差异化特点"></div>
+    <div class="fg"><label>核心劣势</label><input id="comp-weakness" placeholder="竞品的短板或可攻击点"></div>
+    <button class="btn btn-p" onclick="addCompetitor()">➕ 添加竞品</button>
+
+    <div id="comp-list" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📈 竞争格局可视化</div>
+    <div id="comp-visual"></div>
+  </div>
+</div>
+
+<!-- Page 6: 战略路线图 -->
+<div id="p-roadmap" class="page">
+  <div class="card">
+    <div class="card-title">🗺️ 战略路线图</div>
+    <div class="row">
+      <div class="fg"><label>里程碑名称</label><input id="rm-name" placeholder="如：产品V1.0上线"></div>
+      <div class="fg"><label>目标时间</label><input id="rm-date" type="month"></div>
+    </div>
+    <div class="fg"><label>详细描述</label><textarea id="rm-desc" placeholder="里程碑的具体目标、交付物、成功标准" rows="2"></textarea></div>
+    <div class="row">
+      <div class="fg"><label>阶段</label>
+        <select id="rm-phase">
+          <option value="phase1">第一阶段：启动验证（0-6个月）</option>
+          <option value="phase2" selected>第二阶段：增长扩展（6-18个月）</option>
+          <option value="phase3">第三阶段：规模化（18-36个月）</option>
+        </select>
+      </div>
+      <div class="fg"><label>优先级</label>
+        <select id="rm-priority">
+          <option value="high">🔴 高优先级</option>
+          <option value="medium" selected>🟡 中优先级</option>
+          <option value="low">🟢 低优先级</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-p" onclick="addMilestone()">➕ 添加里程碑</button>
+
+    <div id="roadmap-timeline" style="margin-top:16px"></div>
+  </div>
+</div>
+
+<!-- Page 7: 报告导出 -->
+<div id="p-export" class="page">
+  <div class="card">
+    <div class="card-title">📄 完整报告预览 & 导出</div>
+    <p style="font-size:12px;color:var(--sub);margin-bottom:12px">
+      以下为企业发展规划完整报告。点击按钮导出为可打印版本或复制文本。
+    </p>
+    <div class="btn-group" style="margin-bottom:16px">
+      <button class="btn btn-p" onclick="printReport()" style="flex:1">🖨️ 打印 / PDF导出</button>
+      <button class="btn btn-o" onclick="copyReport()" style="flex:1">📋 复制报告文本</button>
+      <button class="btn btn-o" onclick="exportJSON()" style="flex:1">💾 导出数据(JSON)</button>
+    </div>
+
+    <div style="margin-bottom:8px">
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+      <button class="btn btn-o btn-sm" onclick="document.getElementById('import-file').click()">📥 导入数据(JSON)</button>
+    </div>
+  </div>
+
+  <div id="report-preview" class="card" style="font-size:13px;line-height:1.8">
+    <p style="text-align:center;color:var(--muted);padding:20px">请先填写各模块内容，报告将在此实时预览</p>
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="nav">
+  <div class="tab on" onclick="switchPage('info',this)"><span class="ic">🏢</span>企业信息</div>
+  <div class="tab" onclick="switchPage('plan',this)"><span class="ic">📝</span>商业计划</div>
+  <div class="tab" onclick="switchPage('finance',this)"><span class="ic">💰</span>财务预测</div>
+  <div class="tab" onclick="switchPage('swot',this)"><span class="ic">🔍</span>SWOT</div>
+  <div class="tab" onclick="switchPage('compete',this)"><span class="ic">🏆</span>竞品分析</div>
+  <div class="tab" onclick="switchPage('roadmap',this)"><span class="ic">🗺️</span>路线图</div>
+  <div class="tab" onclick="switchPage('export',this)"><span class="ic">📄</span>导出</div>
+</div>
+
+<div class="print-area" id="print-area"></div>
+
+<script>
+// ====== 12 Industry Models ======
+var BM={
+  '餐饮':{n:'餐饮业',r:{食材:35,人工:30,租金:15},g:60,ts:['食材成本控制在35%以内','翻台率是核心盈利指标','建立标准化SOP降低人工依赖'],insight:'餐饮业现金流好但竞争激烈，毛利率需维持在55%以上。连锁化、标准化是扩张关键。'},
+  '零售':{n:'零售业',r:{进货:60,人工:15,租金:10},g:40,ts:['库存周转控制在30天以内','滞销品及时清仓','SKU管理是核心竞争力'],insight:'零售业关注周转率和坪效。线上线下融合（O2O）是趋势，私域流量运营可降低获客成本。'},
+  '服务':{n:'服务业',r:{人工:35,租金:10,营销:10},g:50,ts:['人效比是核心','标准化服务流程','客户复购和口碑传播'],insight:'服务业毛利高但依赖人效。产品化、标准化是规模化前提，SaaS化服务是增长方向。'},
+  '制造':{n:'制造业',r:{原料:45,人工:20,能耗:8},g:35,ts:['原材料期货锁价','自动化降低人工','关注产能利用率'],insight:'制造业关注供应链安全和产能利用率。工业4.0、智能制造是升级方向。环保合规成本逐年上升。'},
+  '电商':{n:'电商',r:{进货:40,推广:15,人工:10,物流:8},g:45,ts:['ROI低于1:3暂停投放','退货率控制在15%以内','复购率比拉新更重要'],insight:'电商流量成本持续上升，私域和内容电商是突破口。直播带货、短视频引流是新增长点。'},
+  '农业':{n:'农业',r:{种子农药:20,人工:25,设备:10,运输:8},g:40,ts:['关注天气和季节影响','积极申请农业补贴','多元化种植分散风险'],insight:'农业受政策和气候影响大。品牌化、产地直供、深加工可提升附加值。预制菜是下游机会。'},
+  '建筑':{n:'建筑业',r:{材料:35,人工:30,设备:10},g:30,ts:['垫资风险严控','项目制独立核算','工程款回收是生命线'],insight:'建筑业受宏观经济和政策影响大。绿色建筑、装配式建筑是趋势。BIM技术提升效率。'},
+  '教育':{n:'教育培训',r:{场地:20,师资:35,营销:10},g:50,ts:['续费率是核心指标','口碑转介绍降获客成本','关注双减等政策变化'],insight:'教育行业向线上+线下融合发展。AI个性化教学、职业教育是增长方向。政策合规是底线。'},
+  '医疗':{n:'医疗健康',r:{药品:25,器械:15,人力:30},g:50,ts:['资质合规是底线','设备折旧成本高','建立重点客户关系'],insight:'医疗行业门槛高但壁垒强。老龄化+消费升级驱动增长。数字医疗、远程诊疗是新机会。'},
+  '物流':{n:'物流仓储',r:{运输:35,仓储:15,人力:20},g:25,ts:['油价波动影响大','旺季运力需提前规划','人车比控制是关键'],insight:'物流业规模化效应明显。智慧物流、无人配送是未来方向。关注冷链和跨境物流机会。'},
+  'IT':{n:'IT/互联网',r:{人力:40,服务器:8,营销:10},g:55,ts:['核心技术人才留存','项目制vs产品化','研发投入需与收入匹配'],insight:'IT/互联网高毛利但竞争激烈。AI应用、SaaS化、出海是三大增长引擎。关注数据安全合规。'},
+  '装修':{n:'装修装饰',r:{材料:40,人工:25,设计:5},g:25,ts:['按进度节点收款','材料损耗严格管控','售后维修预算预留充足'],insight:'装修业依赖口碑和本地化服务。整装、定制化是趋势。数字化设计和VR看房提升体验。'},
+  '其他':{n:'通用行业',r:{运营:40,人工:25,营销:15},g:40,ts:['建立核心竞争壁垒','现金流管理第一','持续关注市场变化'],insight:'建议聚焦细分市场，找到差异化定位。初期控制固定成本，优先验证商业模式。'}
+};
+
+// ====== State ======
+var SK='bp_data_v2';
+var data={company:{},plan:{},finance:{},swot:{s:[],w:[],o:[],t:[]},competitors:[],roadmap:[]};
+
+function $l(){try{var v=localStorage.getItem(SK);if(v)data=JSON.parse(v)}catch(e){}ensureData();}
+function $s(){localStorage.setItem(SK,JSON.stringify(data))}
+function $(id){return document.getElementById(id)}
+function $t(msg){var t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show')},2000)}
+
+function ensureData(){
+  if(!data.company)data.company={};
+  if(!data.plan)data.plan={};
+  if(!data.finance)data.finance={};
+  if(!data.swot)data.swot={s:[],w:[],o:[],t:[]};
+  if(!data.competitors)data.competitors=[];
+  if(!data.roadmap)data.roadmap=[];
+}
+
+function switchPage(page,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.nav .tab').forEach(function(t){t.classList.remove('on')});
+  $('p-'+page).classList.add('on');
+  if(el)el.classList.add('on');
+  if(page==='info')renderIndustryInsight();
+  if(page==='finance'){calcProjection();renderKPIs()}
+  if(page==='swot')renderSWOT();
+  if(page==='compete')renderCompetitors();
+  if(page==='roadmap')renderRoadmap();
+  if(page==='export')renderReport();
+  if(page==='plan')restorePlan();
+}
+
+// ====== Company Info ======
+function saveCompany(){
+  $l();
+  var cn=$('cn').value.trim();
+  if(!cn){$t('请输入公司/项目名称');return}
+  data.company={
+    name:cn,
+    founded:$('cf').value,
+    industry:$('ci').value,
+    scale:$('cs').value,
+    revenue:$('cr').value,
+    employees:$('cemp').value,
+    product:$('cp').value.trim(),
+    targetMarket:$('ctm').value.trim()
+  };
+  $s();
+  $t('✅ 企业信息已保存');
+  renderIndustryInsight();
+}
+
+function restoreCompany(){
+  $l();
+  if(!data.company.name)return;
+  $('cn').value=data.company.name||'';
+  $('cf').value=data.company.founded||'';
+  $('ci').value=data.company.industry||'';
+  $('cs').value=data.company.scale||'';
+  $('cr').value=data.company.revenue||'';
+  $('cemp').value=data.company.employees||'';
+  $('cp').value=data.company.product||'';
+  $('ctm').value=data.company.targetMarket||'';
+  renderIndustryInsight();
+}
+
+function renderIndustryInsight(){
+  $l();
+  var ind=data.company.industry,bm=BM[ind];
+  var div=$('industry-insight');
+  if(!bm){div.style.display='none';return}
+  div.style.display='block';
+
+  var html='<div class="card-title">📈 '+bm.n+' 行业洞察</div>';
+  html+='<div class="metric-grid">';
+  html+='<div class="metric"><div class="val" style="color:var(--green)">'+bm.g+'%</div><div class="lbl">行业参考毛利率</div></div>';
+  html+='<div class="metric"><div class="val" style="color:var(--blue)">'+(100-bm.g)+'%</div><div class="lbl">参考成本率</div></div>';
+
+  var rks=Object.keys(bm.r),vr=rks[0],mx=bm.r[rks[0]];
+  for(var k in bm.r){if(bm.r[k]>mx){mx=bm.r[k];vr=k}}
+  html+='<div class="metric"><div class="val" style="color:var(--amber)">'+mx+'%</div><div class="lbl">最大成本项：'+vr+'</div></div>';
+  html+='<div class="metric"><div class="val" style="color:var(--purple)">'+rks.length+'类</div><div class="lbl">主要成本结构</div></div>';
+  html+='</div>';
+
+  html+='<div><b>成本结构参考：</b></div>';
+  for(var k in bm.r){var pct=bm.r[k];html+='<div class="chart-bar"><span class="chart-label">'+k+'</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:14px"><div class="chart-fill" style="width:'+pct+'%;background:'+getColor(pct)+'"></div></div><span class="chart-val">'+pct+'%</span></div>'}
+  html+='<div style="margin-top:8px;font-size:12px;color:var(--sub)">💡 '+bm.insight+'</div>';
+  html+='<div style="margin-top:8px;font-size:12px"><b>行业建议：</b><br>';
+  for(var i=0;i<bm.ts.length;i++){html+='🔹 '+bm.ts[i]+'<br>'}
+  html+='</div>';
+  div.innerHTML=html;
+}
+
+function getColor(pct){return pct>40?'#ef4444':pct>25?'#f59e0b':'#22c55e'}
+
+// ====== Business Plan ======
+function savePlan(){
+  $l();
+  data.plan={
+    summary:$('bp-summary').value.trim(),
+    value:$('bp-value').value.trim(),
+    model:$('bp-model').value.trim(),
+    market:$('bp-market').value.trim(),
+    advantage:$('bp-advantage').value.trim(),
+    risk:$('bp-risk').value.trim()
+  };
+  $s();$t('✅ 商业计划已保存');
+}
+
+function restorePlan(){
+  $l();
+  if(!data.plan.summary&&!data.plan.value)return;
+  $('bp-summary').value=data.plan.summary||'';
+  $('bp-value').value=data.plan.value||'';
+  $('bp-model').value=data.plan.model||'';
+  $('bp-market').value=data.plan.market||'';
+  $('bp-advantage').value=data.plan.advantage||'';
+  $('bp-risk').value=data.plan.risk||'';
+}
+
+function fillPlanTemplate(){
+  $l();
+  var c=data.company;if(!c.name){$t('请先填写企业信息');return}
+  var bm=BM[c.industry]||BM['其他'];
+
+  var templates={
+    summary:'「'+c.name+'」是一家专注于'+(c.product||'[核心产品]')+'的'+(bm?bm.n:c.industry||'')+'企业，致力于为'+(c.targetMarket||'[目标市场]')+'提供优质解决方案。当前年营收'+(c.revenue||'[X]')+'万元，员工'+(c.employees||'[N]')+'人。本计划旨在未来3年内实现营收翻倍增长，通过'+(bm?bm.ts[0]:'差异化竞争')+'等策略建立行业领先地位。',
+    value:'通过'+(c.product||'创新产品')+'解决目标客户在[痛点描述]方面的核心问题。相比竞争对手，我们的优势在于：1）更精准的客群定位；2）'+(bm?bm.ts[1]:'更高效的运营模式')+'；3）更优质的客户体验。',
+    model:'收入来源包括：1）产品销售/服务收费（核心收入）；2）增值服务/会员订阅（存量客户价值挖掘）；3）渠道分销/合作伙伴佣金。成本结构参考行业基准：'+(bm?Object.keys(bm.r).map(function(k){return k+bm.r[k]+'%'}).join('+'):'运营40%+人工25%+营销15%')+'，目标毛利率'+(bm?bm.g:40)+'%。',
+    market:'目标市场：'+(c.targetMarket||'[待定义]')+'。行业呈[增长/稳定/转型]趋势，当前市场规模约[XX]亿元，年增长率约[XX]%。进入策略：先聚焦细分领域建立口碑，再逐步扩展产品线和区域覆盖。',
+    advantage:'核心竞争优势：1）'+(bm?bm.ts[2]:'技术/渠道壁垒')+'；2）团队行业经验丰富；3）本地化服务和客户关系；4）先发优势和品牌认知。',
+    risk:'主要风险及应对：1）市场风险——建立多元化收入结构；2）竞争风险——持续投入研发保持差异化；3）资金风险——控制固定成本，保持6个月现金流储备；4）政策风险——密切关注行业政策变化，提前布局合规。'
+  };
+
+  $('bp-summary').value=templates.summary;
+  $('bp-value').value=templates.value;
+  $('bp-model').value=templates.model;
+  $('bp-market').value=templates.market;
+  $('bp-advantage').value=templates.advantage;
+  $('bp-risk').value=templates.risk;
+  $t('✅ AI已根据企业信息填充商业计划模板，请检查和修改');
+}
+
+// ====== Financial Projection ======
+function calcProjection(){
+  var y0=parseFloat($('fy0').value)||100;
+  var gr=parseFloat($('fgr').value)||20;
+  var gm=parseFloat($('fgm').value)||45;
+  var nm=parseFloat($('fnm').value)||15;
+  var inv=parseFloat($('finv').value)||50;
+  var oc=parseFloat($('foc').value)||30;
+
+  data.finance={y0:y0,gr:gr,gm:gm,nm:nm,inv:inv,oc:oc};
+  $s();
+
+  var yrs=['第1年','第2年','第3年'];
+  var rev=y0,cumProfit=0,html='';
+  html+='<table class="projection-table" style="margin-top:10px"><thead><tr><th>指标</th>';
+  for(var i=0;i<3;i++)html+='<th class="num">'+yrs[i]+'</th>';
+  html+='</tr></thead><tbody>';
+
+  // Revenue
+  html+='<tr><td>营业收入（万元）</td>';
+  var r=y0;
+  for(var i=0;i<3;i++){
+    html+='<td class="num">'+(i===0?r:r=Math.round(r*(1+gr/100)*10)/10)+'</td>';
+  }
+  html+='</tr>';
+
+  // Cost
+  r=y0;
+  html+='<tr><td>营业成本（万元）</td>';
+  for(var i=0;i<3;i++){
+    var rev_i=i===0?r:r=Math.round(r*(1+gr/100)*10)/10;
+    var cost=Math.round(rev_i*(100-gm)/100*10)/10;
+    html+='<td class="num" style="color:var(--red)">'+cost+'</td>';
+  }
+  html+='</tr>';
+
+  // Gross profit
+  r=y0;
+  html+='<tr><td>毛利润（万元）</td>';
+  for(var i=0;i<3;i++){
+    var rev_i=i===0?r:r=Math.round(r*(1+gr/100)*10)/10;
+    var gp=Math.round(rev_i*gm/100*10)/10;
+    html+='<td class="num" style="color:var(--green)">'+gp+'</td>';
+  }
+  html+='</tr>';
+
+  // Operating cost
+  r=y0;
+  html+='<tr><td>运营费用（万元）</td>';
+  for(var i=0;i<3;i++){
+    var rev_i=i===0?r:r=Math.round(r*(1+gr/100)*10)/10;
+    var opc=Math.round(rev_i*oc/100*10)/10;
+    html+='<td class="num" style="color:var(--red)">'+opc+'</td>';
+  }
+  html+='</tr>';
+
+  // Net profit
+  r=y0;
+  html+='<tr class="total"><td>净利润（万元）</td>';
+  for(var i=0;i<3;i++){
+    var rev_i=i===0?r:r=Math.round(r*(1+gr/100)*10)/10;
+    var np=Math.round(rev_i*nm/100*10)/10;
+    cumProfit+=np;
+    html+='<td class="num" style="color:'+(np>=0?'var(--green)':'var(--red)')+'">'+np+'</td>';
+  }
+  html+='</tr>';
+
+  // ROI
+  var roi=Math.round(cumProfit/inv*100);
+  html+='<tr><td>累计投资回报</td><td class="num" colspan="3"><b>'+cumProfit+'万元 / 投入'+inv+'万元 = ROI '+roi+'%</b></td></tr>';
+  html+='</tbody></table>';
+
+  // Profit margin chart
+  r=y0;
+  html+='<div style="margin-top:12px"><b>净利率趋势：</b></div>';
+  for(var i=0;i<3;i++){
+    var rev_i=i===0?r:r=Math.round(r*(1+gr/100)*10)/10;
+    var npm=Math.round((rev_i*nm/100)/rev_i*100);
+    var w=Math.min(npm*2,100);
+    html+='<div class="chart-bar"><span class="chart-label">'+yrs[i]+'</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:14px"><div class="chart-fill" style="width:'+w+'%;background:var(--green)"></div></div><span class="chart-val">'+npm+'%</span></div>';
+  }
+
+  $('projection-result').innerHTML=html;
+  renderKPIs();
+}
+
+function renderKPIs(){
+  $l();var f=data.finance;
+  if(!f.y0){$('kpi-metrics').innerHTML='<div class="empty-state"><div class="icon">📊</div>请先设置财务预测参数</div>';return}
+
+  var y0=f.y0,gr=f.gr/100,gm=f.gm/100,nm=f.nm/100,inv=f.inv;
+  var y1=y0*(1+gr),y2=y1*(1+gr),y3=y2*(1+gr);
+  var np1=y1*nm,np2=y2*nm,np3=y3*nm;
+  var totalNp=np1+np2+np3,roi=Math.round(totalNp/inv*100);
+
+  var items=[
+    {v:'¥'+fmtW(y1)+'万',l:'第1年营收'},
+    {v:'¥'+fmtW(y3)+'万',l:'第3年营收'},
+    {v:Math.round(gr*100)+'%',l:'年复合增长率'},
+    {v:Math.round(gm*100)+'%',l:'毛利率'},
+    {v:Math.round(nm*100)+'%',l:'净利率'},
+    {v:roi+'%',l:'3年ROI'},
+    {v:roi>=100?'✅ 优秀':roi>=50?'⚠️ 一般':'🔴 偏低',l:'投资评估'}
+  ];
+
+  var html='';
+  for(var i=0;i<items.length;i++){
+    html+='<div class="metric"><div class="val">'+items[i].v+'</div><div class="lbl">'+items[i].l+'</div></div>';
+  }
+  $('kpi-metrics').innerHTML=html;
+}
+
+function fmtW(v){return (Math.round(v*10)/10).toLocaleString()}
+
+// ====== SWOT Analysis ======
+function addSWOT(type){
+  var input=$('swot-'+type+'-input');
+  var val=input.value.trim();
+  if(!val)return;
+  $l();
+  if(!data.swot[type])data.swot[type]=[];
+  data.swot[type].push(val);
+  $s();
+  input.value='';
+  renderSWOT();
+}
+
+function removeSWOT(type,idx){
+  $l();
+  data.swot[type].splice(idx,1);
+  $s();
+  renderSWOT();
+}
+
+function saveSWOT(){$t('✅ SWOT已保存')}
+
+function renderSWOT(){
+  $l();
+  var types={s:'优势',w:'劣势',o:'机会',t:'威胁'};
+  for(var t in types){
+    var list=data.swot[t]||[],html='';
+    for(var i=0;i<list.length;i++){
+      html+='<li><span style="flex:1">'+list[i]+'</span><span style="cursor:pointer;opacity:0.4;font-size:12px" onclick="removeSWOT(\''+t+'\','+i+')">✕</span></li>';
+    }
+    if(!html)html='<li style="color:var(--muted)">暂无内容，点击下方添加</li>';
+    $('swot-'+t+'-list').innerHTML=html;
+  }
+}
+
+function fillSWOTTemplate(){
+  $l();var c=data.company;
+  if(!c.name){$t('请先填写企业信息');return}
+  var bm=BM[c.industry]||BM['其他'];
+
+  data.swot.s=[
+    '行业经验丰富，团队专业',
+    bm.ts[0]||'核心运营能力',
+    '本地化服务和客户关系优势',
+    '灵活决策，快速响应市场'
+  ];
+  data.swot.w=[
+    '品牌知名度有待提升',
+    '资金规模相对有限',
+    '渠道覆盖和市场拓展能力待加强',
+    '数字化和信息化水平需提升'
+  ];
+  data.swot.o=[
+    '行业数字化转型带来新机遇',
+    '消费升级推动市场需求增长',
+    '政策支持和产业扶持',
+    '新兴细分市场尚未充分开发'
+  ];
+  data.swot.t=[
+    '行业竞争加剧，价格战风险',
+    '原材料/人力成本持续上升',
+    '政策法规变化的不确定性',
+    '经济周期波动影响消费能力'
+  ];
+  $s();
+  renderSWOT();
+  $t('✅ AI已根据行业生成SWOT模板，请检查和修改');
+}
+
+// ====== Competitor Analysis ======
+function addCompetitor(){
+  $l();
+  var name=$('comp-name').value.trim();
+  if(!name){$t('请输入竞品名称');return}
+  var score=parseFloat($('comp-score').value)||5;
+  data.competitors.push({
+    name:name,
+    score:Math.min(10,Math.max(1,score)),
+    price:$('comp-price').value,
+    audience:$('comp-audience').value.trim(),
+    advantage:$('comp-advantage').value.trim(),
+    weakness:$('comp-weakness').value.trim()
+  });
+  $s();
+  $('comp-name').value='';$('comp-score').value='';
+  $('comp-audience').value='';$('comp-advantage').value='';$('comp-weakness').value='';
+  renderCompetitors();
+  $t('✅ 竞品已添加');
+}
+
+function removeCompetitor(idx){
+  $l();
+  data.competitors.splice(idx,1);
+  $s();
+  renderCompetitors();
+}
+
+function renderCompetitors(){
+  $l();
+  var list=$('comp-list'),vis=$('comp-visual');
+  var comps=data.competitors;
+
+  if(comps.length===0){
+    list.innerHTML='<div class="empty-state"><div class="icon">🏆</div>暂无竞品数据，请添加竞品信息</div>';
+    vis.innerHTML='';
+    return;
+  }
+
+  // Table
+  var html='<table class="projection-table"><thead><tr><th>竞品</th><th>评分</th><th>定位</th><th>客群</th><th>优势</th><th>劣势</th><th></th></tr></thead><tbody>';
+  for(var i=0;i<comps.length;i++){
+    var c=comps[i];
+    var sc=c.score>=7?'tag-g':c.score>=4?'tag-a':'tag-r';
+    html+='<tr><td><b>'+c.name+'</b></td><td><span class="tag '+sc+'">'+c.score+'</span></td><td>'+c.price+'</td><td>'+c.audience+'</td><td style="font-size:11px">'+c.advantage+'</td><td style="font-size:11px">'+c.weakness+'</td><td><button class="btn btn-sm btn-d" onclick="removeCompetitor('+i+')">删</button></td></tr>';
+  }
+  html+='</tbody></table>';
+  list.innerHTML=html;
+
+  // Visual bars
+  var vhtml='<div style="margin-top:8px"><b>市场份额/竞争力对比：</b></div>';
+  var meScore=7;
+  vhtml+='<div class="chart-bar"><span class="chart-label">🏢 我们</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:18px"><div class="chart-fill" style="width:'+(meScore*10)+'%;background:var(--primary)"></div></div><span class="chart-val">'+meScore+'/10</span></div>';
+  for(var i=0;i<comps.length;i++){
+    var c=comps[i];
+    vhtml+='<div class="chart-bar"><span class="chart-label">'+c.name+'</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:18px"><div class="chart-fill" style="width:'+(c.score*10)+'%;background:'+(c.score>=7?'#22c55e':c.score>=4?'#f59e0b':'#ef4444')+';"></div></div><span class="chart-val">'+c.score+'/10</span></div>';
+  }
+
+  // Add analysis
+  var highComp=comps.filter(function(c){return c.score>=7}).length;
+  var analysis='';
+  if(highComp>=2)analysis='⚠️ 市场存在多个强势竞品，建议差异化定位或寻找细分市场突破口。';
+  else if(highComp===1)analysis='💡 市场有1个领先竞品，可作为对标学习对象，寻找其薄弱环节切入。';
+  else analysis='✅ 当前市场竞争格局有利，不存在明显领先者，是抢占市场的窗口期。';
+  vhtml+='<div style="margin-top:8px;font-size:12px;padding:8px;background:var(--primary-light);border-radius:8px">'+analysis+'</div>';
+
+  vis.innerHTML=vhtml;
+}
+
+// ====== Strategic Roadmap ======
+function addMilestone(){
+  $l();
+  var name=$('rm-name').value.trim();
+  if(!name){$t('请输入里程碑名称');return}
+  data.roadmap.push({
+    name:name,
+    date:$('rm-date').value,
+    desc:$('rm-desc').value.trim(),
+    phase:$('rm-phase').value,
+    priority:$('rm-priority').value,
+    done:false
+  });
+  $s();
+  $('rm-name').value='';$('rm-desc').value='';
+  renderRoadmap();
+  $t('✅ 里程碑已添加');
+}
+
+function toggleMilestone(idx){
+  $l();
+  data.roadmap[idx].done=!data.roadmap[idx].done;
+  $s();
+  renderRoadmap();
+}
+
+function removeMilestone(idx){
+  $l();
+  data.roadmap.splice(idx,1);
+  $s();
+  renderRoadmap();
+}
+
+function renderRoadmap(){
+  $l();
+  var tl=$('roadmap-timeline');
+  var items=data.roadmap;
+
+  if(items.length===0){
+    tl.innerHTML='<div class="empty-state"><div class="icon">🗺️</div>暂无里程碑，请添加战略路线图节点</div>';
+    return;
+  }
+
+  // Sort by date
+  items.sort(function(a,b){return (a.date||'').localeCompare(b.date||'')});
+
+  // Group by phase
+  var phases={
+    phase1:{n:'🚀 第一阶段：启动验证（0-6个月）',items:[]},
+    phase2:{n:'📈 第二阶段：增长扩展（6-18个月）',items:[]},
+    phase3:{n:'🏗️ 第三阶段：规模化（18-36个月）',items:[]}
+  };
+
+  for(var i=0;i<items.length;i++){
+    var p=items[i].phase||'phase2';
+    if(phases[p])phases[p].items.push(items[i]);
+  }
+
+  var html='';
+  for(var pk in phases){
+    var ph=phases[pk];
+    if(ph.items.length===0)continue;
+    html+='<div style="margin-bottom:12px"><b style="font-size:13px">'+ph.n+'</b>';
+    html+='<div class="timeline" style="margin-top:8px">';
+    for(var j=0;j<ph.items.length;j++){
+      var m=ph.items[j];
+      var prioIcon=m.priority==='high'?'🔴':m.priority==='low'?'🟢':'🟡';
+      html+='<div class="tl-item'+(m.done?' done':'')+'">';
+      html+='<div class="tl-date">'+prioIcon+' '+(m.date||'待定')+'</div>';
+      html+='<div class="tl-title" style="'+(m.done?'text-decoration:line-through;color:var(--muted)':'')+'">'+m.name+'</div>';
+      if(m.desc)html+='<div class="tl-desc">'+m.desc+'</div>';
+      html+='<div style="margin-top:4px"><button class="btn btn-sm btn-o" onclick="toggleMilestone('+data.roadmap.indexOf(m)+')">'+(m.done?'↩ 标记未完成':'✅ 完成')+'</button> <button class="btn btn-sm btn-d" onclick="removeMilestone('+data.roadmap.indexOf(m)+')">🗑 删除</button></div>';
+      html+='</div>';
+    }
+    html+='</div></div>';
+  }
+  tl.innerHTML=html;
+}
+
+// ====== Export / Report ======
+function renderReport(){
+  $l();
+  var c=data.company,p=data.plan,f=data.finance;
+  var sw=data.swot,comps=data.competitors,rm=data.roadmap;
+  var bm=BM[c.industry]||BM['其他'];
+
+  var html='';
+
+  // Header
+  html+='<div style="text-align:center;margin-bottom:20px">';
+  html+='<h2 style="font-size:20px;margin-bottom:4px">📋 '+(c.name||'未命名企业')+' — 企业发展规划报告</h2>';
+  html+='<p style="font-size:12px;color:var(--muted)">生成时间：'+new Date().toLocaleDateString('zh-CN')+' | 行业：'+(c.industry||'未设置')+' | 规模：'+(c.scale||'未设置')+'</p>';
+  html+='</div>';
+
+  // Company overview
+  html+='<h3 style="font-size:15px;margin-bottom:8px;color:var(--primary)">一、企业概况</h3>';
+  html+='<table class="projection-table"><tbody>';
+  html+=c.name?'<tr><td style="width:100px;color:var(--sub)">企业名称</td><td><b>'+c.name+'</b></td></tr>':'';
+  html+=c.industry?'<tr><td style="color:var(--sub)">所属行业</td><td>'+bm.n+'</td></tr>':'';
+  html+=c.scale?'<tr><td style="color:var(--sub)">企业规模</td><td>'+c.scale+'</td></tr>':'';
+  html+=c.founded?'<tr><td style="color:var(--sub)">成立时间</td><td>'+c.founded+'</td></tr>':'';
+  html+=c.revenue?'<tr><td style="color:var(--sub)">年营收</td><td>'+c.revenue+'万元</td></tr>':'';
+  html+=c.employees?'<tr><td style="color:var(--sub)">员工数</td><td>'+c.employees+'人</td></tr>':'';
+  html+=c.product?'<tr><td style="color:var(--sub)">核心产品</td><td>'+c.product+'</td></tr>':'';
+  html+=c.targetMarket?'<tr><td style="color:var(--sub)">目标市场</td><td>'+c.targetMarket+'</td></tr>':'';
+  html+='</tbody></table>';
+
+  // Industry benchmark
+  if(bm){
+    html+='<div style="margin-top:8px;padding:8px;background:var(--primary-light);border-radius:8px;font-size:12px">';
+    html+='<b>行业基准：</b>参考毛利率 '+bm.g+'% | 主要成本项：'+Object.keys(bm.r).join('、')+' | 核心建议：'+bm.ts.join('；');
+    html+='</div>';
+  }
+
+  // Business plan
+  html+='<h3 style="font-size:15px;margin:16px 0 8px;color:var(--primary)">二、商业计划</h3>';
+  if(p.summary)html+='<p style="font-size:12px;margin-bottom:8px"><b>执行摘要：</b>'+p.summary+'</p>';
+  else html+='<p style="color:var(--muted);font-size:12px">⚠️ 商业计划尚未填写</p>';
+  if(p.value)html+='<p style="font-size:12px;margin-bottom:6px"><b>价值主张：</b>'+p.value+'</p>';
+  if(p.model)html+='<p style="font-size:12px;margin-bottom:6px"><b>商业模式：</b>'+p.model+'</p>';
+  if(p.market)html+='<p style="font-size:12px;margin-bottom:6px"><b>市场机会：</b>'+p.market+'</p>';
+  if(p.advantage)html+='<p style="font-size:12px;margin-bottom:6px"><b>竞争优势：</b>'+p.advantage+'</p>';
+  if(p.risk)html+='<p style="font-size:12px;margin-bottom:6px"><b>风险应对：</b>'+p.risk+'</p>';
+
+  // Financial projection
+  html+='<h3 style="font-size:15px;margin:16px 0 8px;color:var(--primary)">三、3年财务预测</h3>';
+  if(f.y0){
+    html+='<table class="projection-table"><thead><tr><th>指标</th><th class="num">第1年</th><th class="num">第2年</th><th class="num">第3年</th></tr></thead><tbody>';
+    var rv=f.y0,gr=f.gr/100;
+    var y1=rv,y2=Math.round(rv*(1+gr)*10)/10,y3=Math.round(y2*(1+gr)*10)/10;
+    html+='<tr><td>营收（万元）</td><td class="num">'+y1+'</td><td class="num">'+y2+'</td><td class="num">'+y3+'</td></tr>';
+    html+='<tr><td>净利润（万元）</td><td class="num" style="color:var(--green)">'+Math.round(y1*f.nm/100*10)/10+'</td><td class="num" style="color:var(--green)">'+Math.round(y2*f.nm/100*10)/10+'</td><td class="num" style="color:var(--green)">'+Math.round(y3*f.nm/100*10)/10+'</td></tr>';
+    html+='<tr><td>毛利率</td><td class="num" colspan="3">'+f.gm+'%</td></tr>';
+    html+='<tr><td>净利率</td><td class="num" colspan="3">'+f.nm+'%</td></tr>';
+    var totalNp=Math.round((y1+y2+y3)*f.nm/100*10)/10;
+    html+='<tr><td>累计净利润</td><td class="num" colspan="3"><b>'+totalNp+'万元</b></td></tr>';
+    html+='<tr><td>投资回报率</td><td class="num" colspan="3"><b>'+Math.round(totalNp/f.inv*100)+'%</b></td></tr>';
+    html+='</tbody></table>';
+  }else{html+='<p style="color:var(--muted);font-size:12px">⚠️ 财务预测尚未设置</p>'}
+
+  // SWOT
+  html+='<h3 style="font-size:15px;margin:16px 0 8px;color:var(--primary)">四、SWOT分析</h3>';
+  var swTypes={s:'优势',w:'劣势',o:'机会',t:'威胁'};
+  var hasSWOT=false;
+  for(var st in swTypes){
+    var items=sw[st]||[];
+    if(items.length>0)hasSWOT=true;
+    html+='<p style="font-size:12px;margin-bottom:4px"><b>'+swTypes[st]+'：</b>'+(items.length>0?items.join('；'):'未填写')+'</p>';
+  }
+  if(!hasSWOT)html+='<p style="color:var(--muted);font-size:12px">⚠️ SWOT分析尚未填写</p>';
+
+  // Competitor
+  html+='<h3 style="font-size:15px;margin:16px 0 8px;color:var(--primary)">五、竞品分析</h3>';
+  if(comps.length>0){
+    html+='<table class="projection-table"><thead><tr><th>竞品</th><th>评分</th><th>定位</th><th>优势</th><th>劣势</th></tr></thead><tbody>';
+    for(var i=0;i<comps.length;i++){
+      var cp=comps[i];
+      html+='<tr><td>'+cp.name+'</td><td>'+cp.score+'/10</td><td>'+cp.price+'</td><td style="font-size:11px">'+cp.advantage+'</td><td style="font-size:11px">'+cp.weakness+'</td></tr>';
+    }
+    html+='</tbody></table>';
+  }else{html+='<p style="color:var(--muted);font-size:12px">⚠️ 竞品分析尚未填写</p>'}
+
+  // Roadmap
+  html+='<h3 style="font-size:15px;margin:16px 0 8px;color:var(--primary)">六、战略路线图</h3>';
+  if(rm.length>0){
+    var phaseNames={phase1:'第一阶段：启动验证',phase2:'第二阶段：增长扩展',phase3:'第三阶段：规模化'};
+    for(var ph in phaseNames){
+      var pitems=rm.filter(function(r){return r.phase===ph});
+      if(pitems.length===0)continue;
+      html+='<p style="font-size:12px;margin-bottom:4px"><b>'+phaseNames[ph]+'</b></p>';
+      for(var j=0;j<pitems.length;j++){
+        html+='<p style="font-size:11px;margin:2px 0 2px 12px">'+(pitems[j].done?'✅':'⬜')+' '+pitems[j].name+' ('+(pitems[j].date||'待定')+')'+(pitems[j].desc?' — '+pitems[j].desc:'')+'</p>';
+      }
+    }
+  }else{html+='<p style="color:var(--muted);font-size:12px">⚠️ 战略路线图尚未填写</p>'}
+
+  // Summary
+  html+='<h3 style="font-size:15px;margin:16px 0 8px;color:var(--primary)">七、总结与建议</h3>';
+  html+='<div style="font-size:12px;line-height:1.8">';
+  html+='<p>本报告基于'+(c.name||'未命名企业')+'当前信息生成，涵盖了企业概况、商业计划、财务预测、SWOT分析、竞品分析和战略路线图六大模块。</p>';
+  if(bm){
+    html+='<p><b>行业建议：</b>作为'+bm.n+'企业，重点关注：'+bm.ts.join('；')+'。</p>';
+  }
+  if(f.y0&&f.inv){
+    var totalNp2=Math.round((y1+y2+y3)*f.nm/100*10)/10;
+    var roi2=Math.round(totalNp2/f.inv*100);
+    html+='<p><b>财务展望：</b>3年累计净利润预计'+totalNp2+'万元，投资回报率'+roi2+'%。建议'+(roi2>=100?'积极推进项目落地':'审慎评估投入产出比，优化成本结构')+'。</p>';
+  }
+  html+='<p style="color:var(--muted);margin-top:8px">⚠️ 免责声明：本报告由AI辅助生成，仅供参考。实际经营决策请结合专业财务顾问意见。</p>';
+  html+='</div>';
+
+  $('report-preview').innerHTML=html;
+}
+
+function printReport(){
+  var preview=$('report-preview').innerHTML;
+  var c=data.company;
+  var printWin=window.open('','_blank','width=800,height=600');
+  printWin.document.write('<!DOCTYPE html><html lang=zh-CN><head><meta charset=UTF-8><title>'+(c.name||'企业')+'发展规划报告</title><style>body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;max-width:700px;margin:0 auto;padding:20px;color:#333;line-height:1.8;font-size:13px}h2{text-align:center}h3{color:#4f46e5;border-bottom:2px solid #4f46e5;padding-bottom:4px}table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px}th,td{padding:8px;border:1px solid #ddd;text-align:left}.num{text-align:right}</style></head><body>'+preview+'</body></html>');
+  printWin.document.close();
+  setTimeout(function(){printWin.print()},500);
+}
+
+function copyReport(){
+  var text=$('report-preview').innerText;
+  navigator.clipboard.writeText(text).then(function(){$t('✅ 报告文本已复制到剪贴板')}).catch(function(){$t('❌ 复制失败，请手动选择文本')});
+}
+
+function exportJSON(){
+  $l();
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='企业规划数据_'+(data.company.name||'unnamed')+'_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  $t('✅ 数据已导出为JSON文件');
+}
+
+function importJSON(event){
+  var file=event.target.files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var imported=JSON.parse(e.target.result);
+      data=imported;ensureData();
+      $s();$t('✅ 数据已导入，请刷新各页面查看');
+      restoreAll();
+    }catch(err){$t('❌ JSON格式错误，请检查文件')}
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+function restoreAll(){
+  restoreCompany();
+  restorePlan();
+  calcProjection();
+  renderKPIs();
+  renderSWOT();
+  renderCompetitors();
+  renderRoadmap();
+  renderReport();
+}
+
+// ====== Init ======
+(function(){
+  $l();
+  restoreAll();
+})();
+</script>
+</body>
+</html>
